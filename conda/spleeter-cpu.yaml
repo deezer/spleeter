@@ -1,0 +1,18 @@
+name: spleeter-cpu
+
+channels:
+  - conda-forge
+  - anaconda
+
+dependencies:
+  - python=3.7
+  - tensorflow=1.14.0
+  - ffmpeg
+  - pandas==0.25.1
+  - requests
+  - pip
+  - pip:
+    - museval==0.3.0
+    - musdb==0.3.1
+    - norbert==0.2.1
+    - spleeter

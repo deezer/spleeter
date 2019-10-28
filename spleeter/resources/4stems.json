@@ -1,0 +1,31 @@
+{
+    "train_csv": "path/to/train.csv",
+    "validation_csv": "path/to/val.csv",
+    "model_dir": "4stems",
+    "mix_name": "mix",
+    "instrument_list": ["vocals", "drums", "bass", "other"],
+    "sample_rate":44100,
+    "frame_length":4096,
+    "frame_step":1024,
+    "T":512,
+    "F":1024,
+    "n_channels":2,
+    "separation_exponent":2,
+    "mask_extension":"zeros",
+    "learning_rate": 1e-4,
+    "batch_size":4,
+    "training_cache":"training_cache",
+    "validation_cache":"validation_cache",
+    "train_max_steps": 1500000,
+    "throttle_secs":600,
+    "random_seed":3,
+    "save_checkpoints_steps":300,
+    "save_summary_steps":5,
+    "model":{
+        "type":"unet.unet",
+        "params":{
+               "conv_activation":"ELU",
+               "deconv_activation":"ELU"
+        }
+    }
+}

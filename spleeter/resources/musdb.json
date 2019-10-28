@@ -1,0 +1,32 @@
+{
+    "train_csv": "configs/musdb_train.csv",
+    "validation_csv": "configs/musdb_validation.csv",
+    "model_dir": "musdb_model",
+    "mix_name": "mix",
+    "instrument_list": ["vocals", "drums", "bass", "other"],
+    "sample_rate":44100,
+    "frame_length":4096,
+    "frame_step":1024,
+    "T":512,
+    "F":1024,
+    "n_channels":2,
+    "n_chunks_per_song":1,
+    "separation_exponent":2,
+    "mask_extension":"zeros",
+    "learning_rate": 1e-4,
+    "batch_size":4,
+    "training_cache":"training_cache",
+    "validation_cache":"validation_cache",
+    "train_max_steps": 100000,
+    "throttle_secs":600,
+    "random_seed":3,
+    "save_checkpoints_steps":300,
+    "save_summary_steps":5,
+    "model":{
+        "type":"unet.unet",
+        "params":{
+               "conv_activation":"ELU",
+               "deconv_activation":"ELU"
+        }
+    }
+}

@@ -1,0 +1,3 @@
+include src/resources/*.json
+include README.md
+include LICENSE

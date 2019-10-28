@@ -1,6 +1,6 @@
 <img src="https://github.com/deezer/spleeter/raw/master/images/spleeter_logo.png" height="80" />
 
-[![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) ![Conda](https://img.shields.io/conda/dn/conda-forge/spleeter)
+[![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) ![Conda](https://img.shields.io/conda/dn/conda-forge/spleeter) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spleeter)
 
 ## About
 

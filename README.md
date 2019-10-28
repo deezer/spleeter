@@ -40,7 +40,7 @@ For a more detailed documentation, please check the [repository wiki](https://gi
 ## Reference
 If you use **Spleeter** in your work, please cite:
 
-```
+```BibTeX
 @misc{spleeter2019,
   title={Spleeter: A Fast And State-of-the Art Music Source Separation Tool With Pre-trained Models},
   author={Romain Hennequin and Anis Khlif and Felix Voituret and Manuel Moussallam},

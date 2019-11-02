@@ -5,7 +5,7 @@
 ## About
 
 **Spleeter** is the [Deezer](https://www.deezer.com/) source separation library with pretrained models
-written in [Python](https://www.python.org/) and uses [Tensorflow](tensorflow.org/). It makes it easy
+written in [Python](https://www.python.org/) and uses [Tensorflow](https://tensorflow.org/). It makes it easy
 to train source separation model (assuming you have a dataset of isolated sources), and provides
 already trained state of the art model for performing various flavour of separation :
 

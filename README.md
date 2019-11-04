@@ -46,6 +46,7 @@ If you use **Spleeter** in your work, please cite:
   author={Romain Hennequin and Anis Khlif and Felix Voituret and Manuel Moussallam},
   howpublished={Late-Breaking/Demo ISMIR 2019},
   month={November},
+  note={Deezer Research},
   year={2019}
 }
 ```

@@ -53,6 +53,9 @@ If you use **Spleeter** in your work, please cite:
 ## License
 The code of **Spleeter** is MIT-licensed.
 
+## Disclaimer
+If you plan to use Spleeter on copyrighted material, make sure you get proper authorization from right owners beforehand.
+
 ## Note
 This repository include a demo audio file `audio_example.mp3` which is an excerpt
 from Slow Motion Dream by Steven M Bryant (c) copyright 2011 Licensed under a Creative

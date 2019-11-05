@@ -25,6 +25,7 @@ about: Report a bug
 
 <!-- Fill the following table --!>
 
+|                   |                                 |
 | ----------------- | ------------------------------- |
 | OS                | Windows / Linux / MacOS / other |
 | Installation type | Conda / pip / other             |

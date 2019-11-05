@@ -5,7 +5,10 @@ title: "[Bug] name your bug"
 labels: bug, invalid
 ---
 
-<!-- BE READ THIS CAREFULLY : Any issue which does not respect following template or lack of information will be considered as invalid and automatically closed -->
+<!-- PLEASE READ THIS CAREFULLY :
+- Any issue which does not respect following template or lack of information will be considered as invalid and automatically closed
+- First check FAQ from wiki to see if your problem is not already known
+-->
 
 ## Description
 

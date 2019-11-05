@@ -1,6 +1,8 @@
 ---
 name: Bug
 about: Report a bug
+title: "[Bug] name your bug"
+labels: bug, invalid
 ---
 
 ## Description

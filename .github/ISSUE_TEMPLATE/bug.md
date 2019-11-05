@@ -5,11 +5,11 @@ about: Report a bug
 
 ## Description
 
-<!-- Give us a clear and concise description of the bug you are reporting. --!>
+<!-- Give us a clear and concise description of the bug you are reporting. -->
 
 ## Step to reproduce
 
-<!-- Indicates clearly steps to reproduce the behavior: --!>
+<!-- Indicates clearly steps to reproduce the behavior: -->
 
 1. Installed using `...`
 2. Run as `...`
@@ -18,12 +18,12 @@ about: Report a bug
 ## Output
 
 ```bash
-<!-- Share what your terminal says when you run the script (as well as what you would expect). --!>
+Share what your terminal says when you run the script (as well as what you would expect).
 ```
 
 ## Environment
 
-<!-- Fill the following table --!>
+<!-- Fill the following table -->
 
 |                   |                                 |
 | ----------------- | ------------------------------- |

@@ -37,6 +37,8 @@ in the `output/audio_example` folder.
 
 For a more detailed documentation, please check the [repository wiki](https://github.com/deezer/spleeter/wiki)
 
+Want to try it out but don't want to install anything ? we've setup a [Google Colab](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb)
+
 ## Reference
 
 - [Deezer Research - Source Separation Engine Story - deezer.io blog post](https://deezer.io/releasing-spleeter-deezer-r-d-source-separation-engine-2b88985e797e)

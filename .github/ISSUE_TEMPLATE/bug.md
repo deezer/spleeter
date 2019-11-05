@@ -5,6 +5,8 @@ title: "[Bug] name your bug"
 labels: bug, invalid
 ---
 
+<!-- BE READ THIS CAREFULLY : Any issue which does respect following template or lack of information will be considered as invalid and automatically closed -->
+
 ## Description
 
 <!-- Give us a clear and concise description of the bug you are reporting. -->

@@ -1,6 +1,6 @@
 <img src="https://github.com/deezer/spleeter/raw/master/images/spleeter_logo.png" height="80" />
 
-[![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) ![Conda](https://img.shields.io/conda/dn/conda-forge/spleeter) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spleeter)
+[![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) ![Conda](https://img.shields.io/conda/dn/conda-forge/spleeter) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spleeter) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb]
 
 ## About
 

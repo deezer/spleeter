@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: python:3
+      - image: python:3.7
     working_directory: ~/spleeter
     steps:
       - checkout

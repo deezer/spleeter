@@ -60,7 +60,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             raise IOError('No stream was found with ffprobe')
         metadata = next(
             stream
-            for stream in probe['stream']
+            for stream in probe['streams']
             if stream['codec_type'] == 'audio')
         n_channels = metadata['channels']
         if sample_rate is None:
@@ -75,7 +75,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             .input(path, **input_kwargs)
             .output('-', format='f32le')
             .overwrite_output()
-            .run(quiet=True))
+            .run(capture_stdout=True, capture_stderr=True))
         waveform = np.frombuffer(buffer, dtype='<f4').reshape(-1, n_channels)
         if not waveform.dtype == np.dtype(dtype):
             waveform = waveform.astype(dtype)
@@ -112,8 +112,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             .output(path, format='f32le', **output_kwargs)
             .run_async(pipe_stdin=True))
         try:
-            process.stdin.write(
-                data.astype('<f4').tostring())
+            process.stdin.write(data.astype('<f4').tostring())
             process.stdin.close()
             process.wait()
         except IOError:

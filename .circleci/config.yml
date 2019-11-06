@@ -1,0 +1,40 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: python:3.7
+    working_directory: ~/spleeter
+    steps:
+      - checkout
+      - run:
+          name: install ffmpeg
+          command: apt-get update && apt-get install -y ffmpeg
+      - run:
+          name: install spleeter
+          command: pip install .
+      - run:
+          name: test separation
+          command: spleeter separate -i audio_example.mp3 -o .
+  upload:
+    docker:
+      - image: python:3
+    steps:
+      - checkout
+      - run:  
+          name: package
+          command: python setup.py bdist
+      - run:
+          name: upload to PyPi
+          command: pip install twine && twine upload dist/*
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - test
+      - upload:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - test

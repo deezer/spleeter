@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: install spleeter
-          command: pip install .      
+          command: pip install . --user
       - run:
           name: test separation
           command: spleeter separate -i audio_example.mp3 -o .
@@ -22,7 +22,7 @@ jobs:
           command: python setup.py bdist
       - run:
           name: upload to PyPi
-          command: pip install twine && twine upload dist/*
+          command: pip install twine --user && twine upload dist/*
 workflows:
   version: 2
   test-and-deploy:

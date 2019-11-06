@@ -2,22 +2,22 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/python:3.6.1
+      - image: python:3
     working_directory: ~/spleeter
     steps:
       - checkout
       - run:
           name: install ffmpeg
-          command: sudo apt-get update && sudo apt-get install ffmpeg
+          command: apt-get update && apt-get install ffmpeg
       - run:
           name: install spleeter
-          command: sudo pip install .
+          command: pip install .
       - run:
           name: test separation
-          command: python -m spleeter separate -i audio_example.mp3 -o .
+          command: spleeter separate -i audio_example.mp3 -o .
   upload:
     docker:
-      - image: circleci/python:3.6.1
+      - image: python:3
     steps:
       - checkout
       - run:  
@@ -25,7 +25,7 @@ jobs:
           command: python setup.py bdist
       - run:
           name: upload to PyPi
-          command: pip install twine --user && twine upload dist/*
+          command: pip install twine && twine upload dist/*
 workflows:
   version: 2
   test-and-deploy:

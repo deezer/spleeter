@@ -63,12 +63,12 @@ setup(
     python_requires='>=3.6, <3.8',
     include_package_data=True,
     install_requires=[
+        'ffmpeg-python',
         'importlib_resources ; python_version<"3.7"',
         'norbert==0.2.1',
         'pandas==0.25.1',
         'requests',
         'setuptools>=41.0.0',
-        'ffmpeg-python',
         '{}=={}'.format(tensorflow_dependency, tensorflow_version),
     ],
     extras_require={

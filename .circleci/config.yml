@@ -11,7 +11,7 @@ jobs:
           command: pip install . --user
       - run:
           name: test separation
-          command: spleeter separate -i audio_example.mp3 -o .
+          command: python -m spleeter separate -i audio_example.mp3 -o .
   upload:
     docker:
       - image: circleci/python:3.6.1

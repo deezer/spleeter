@@ -55,6 +55,8 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         :param dtype: (Optional) Numpy data type to use, default to float32.
         :returns: Loaded data a (waveform, sample_rate) tuple.
         """
+        if not isinstance(path, str):
+            path = path.decode()
         probe = ffmpeg.probe(path)
         if 'streams' not in probe or len(probe['streams']) == 0:
             raise IOError('No stream was found with ffprobe')

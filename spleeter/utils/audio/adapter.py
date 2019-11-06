@@ -82,6 +82,7 @@ class AudioAdapter(ABC):
                     duration.numpy(),
                     sample_rate.numpy(),
                     dtype=dtype.numpy())
+                get_logger().info('Audio data loaded successfully')
                 return (data, False)
             except Exception as e:
                 get_logger().warning(e)

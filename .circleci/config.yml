@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: install ffmpeg
-          command: sudo apt-get install ffmpeg
+          command: sudo apt-get update && sudo apt-get install ffmpeg
       - run:
           name: install spleeter
           command: sudo pip install .

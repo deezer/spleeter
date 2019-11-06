@@ -17,9 +17,21 @@ jobs:
       - image: circleci/python:3.6.1
     steps:
       - checkout
-      - run:
+      - run:  
           name: package
           command: python setup.py bdist
       - run:
           name: upload to PyPi
           command: pip install twine && twine upload dist/*
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - test
+      - upload:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - test

@@ -69,6 +69,8 @@ setup(
         'norbert==0.2.1',
         'pandas==0.25.1',
         'requests',
+        'setuptools>=41.0.0',
+        'ffmpeg-python',
         '{}=={}'.format(tensorflow_dependency, tensorflow_version),
     ],
     entry_points={

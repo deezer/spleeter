@@ -65,9 +65,9 @@ class GithubModelProvider(ModelProvider):
             raise IOError(f'Resource {url} not found')
         with TemporaryFile() as stream:
             copyfileobj(response.raw, stream)
-            get_logger().debug('Extracting downloaded archive')
+            get_logger().info('Extracting downloaded %s archive', name)
             stream.seek(0)
             tar = tarfile.open(fileobj=stream)
             tar.extractall(path=path)
             tar.close()
-        get_logger().debug('Model file extracted')
+        get_logger().info('%s model file(s) extracted', name)

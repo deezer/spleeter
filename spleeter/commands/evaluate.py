@@ -13,6 +13,7 @@
         --mus_dir /path/to/musdb dataset
 """
 
+import sys
 import json
 
 from argparse import Namespace
@@ -21,14 +22,21 @@ from glob import glob
 from os.path import join, exists
 
 # pylint: disable=import-error
-import musdb
-import museval
 import numpy as np
 import pandas as pd
 # pylint: enable=import-error
 
 from .separate import entrypoint as separate_entrypoint
 from ..utils.logging import get_logger
+
+try:
+    import musdb
+    import museval
+except ImportError:
+    logger = get_logger()
+    logger.error('Extra dependencies musdb and museval not found')
+    logger.error('Please install musdb and museval first, abort')
+    sys.exit(1)
 
 __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'

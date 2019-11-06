@@ -172,7 +172,7 @@ def create_argument_parser():
 
     :returns: Created argument parser.
     """
-    parser = ArgumentParser(prog='python -m spleeter')
+    parser = ArgumentParser(prog='spleeter')
     subparsers = parser.add_subparsers()
     subparsers.dest = 'command'
     subparsers.required = True

@@ -3,10 +3,9 @@
 
 """
 This module contains building functions for U-net source separation source
-separation models.
-Each instrument is modeled by a single U-net convolutional/deconvolutional
-network that take a mix spectrogram as input and the estimated sound spectrogram
-as output.
+separation models. Each instrument is modeled by a single U-netconvolutional
+/ deconvolutional network that take a mix spectrogram as input and the
+estimated sound spectrogram as output.
 """
 
 from functools import partial

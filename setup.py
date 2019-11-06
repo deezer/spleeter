@@ -14,7 +14,7 @@ __license__ = 'MIT License'
 
 # Default project values.
 project_name = 'spleeter'
-project_version = '1.4.1'
+project_version = '1.4.2'
 device_target = 'cpu'
 tensorflow_dependency = 'tensorflow'
 tensorflow_version = '1.14.0'
@@ -63,14 +63,17 @@ setup(
     python_requires='>=3.6, <3.8',
     include_package_data=True,
     install_requires=[
+        'ffmpeg-python',
         'importlib_resources ; python_version<"3.7"',
-        'musdb==0.3.1',
-        'museval==0.3.0',
         'norbert==0.2.1',
         'pandas==0.25.1',
         'requests',
+        'setuptools>=41.0.0',
         '{}=={}'.format(tensorflow_dependency, tensorflow_version),
     ],
+    extras_require={
+        'evaluation':  ['musdb==0.3.1', 'museval==0.3.0']
+    },
     entry_points={
         'console_scripts': ['spleeter=spleeter.__main__:entrypoint']
     },

@@ -129,7 +129,6 @@ def process_audio(
         yield_single_examples=False)
     # initialize pool for audio export
     pool = Pool(16)
-    tasks = []
     for sample in prediction:
         sample_filename = sample.pop('audio_id', 'unknown_filename').decode()
         input_directory, input_filename = split(sample_filename)
@@ -144,13 +143,12 @@ def process_audio(
                 output_path,
                 output_dirname,
                 f'{instrument}.{codec}')
-            tasks.append(
-                pool.apply_async(
-                    audio_adapter.save,
-                    (filename, waveform, sample_rate, codec)))
+            pool.apply_async(
+                audio_adapter.save,
+                (filename, waveform, sample_rate, codec))
     # Wait for everything to be written
-    for task in tasks:
-        task.wait(timeout=20)
+    pool.close()
+    pool.join()
 
 
 def entrypoint(arguments, params):

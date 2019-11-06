@@ -16,3 +16,4 @@ dependencies:
     - musdb==0.3.1
     - norbert==0.2.1
     - spleeter
+    - ffmpeg-python

@@ -72,11 +72,12 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             output_kwargs['t'] = _to_ffmpeg_time(duration)
         if offset is not None:
             output_kwargs['ss'] = _to_ffmpeg_time(offset)
-        buffer, _ = (
+        process = (
             ffmpeg
             .input(path)
-            .output('-', **output_kwargs)
-            .run(capture_stdout=True, capture_stderr=True))
+            .output('pipe:', **output_kwargs)
+            .run_async(pipe_stdout=True, pipe_stderr=True))
+        buffer, _ = process.communicate()
         waveform = np.frombuffer(buffer, dtype='<f4').reshape(-1, n_channels)
         if not waveform.dtype == np.dtype(dtype):
             waveform = waveform.astype(dtype)
@@ -99,18 +100,17 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         if not os.path.exists(directory):
             os.makedirs(directory)
         get_logger().debug('Writing file %s', path)
-        output_kwargs = {
-            'ar': sample_rate,
-            'ac': data.shape[1],
-            'strict': '-2'}
+        input_kwargs = {'ar': sample_rate, 'ac': data.shape[1]}
+        output_kwargs = {'ar': sample_rate, 'strict': '-2'}
         if bitrate:
             output_kwargs['audio_bitrate'] = bitrate
         if codec is not None and codec != 'wav':
             output_kwargs['codec'] = codec
         process = (
             ffmpeg
-            .input('pipe:', format='f32le')
-            .output(path, format='f32le', **output_kwargs)
+            .input('pipe:', format='f32le', **input_kwargs)
+            .output(path, **output_kwargs)
+            .overwrite_output()
             .run_async(pipe_stdin=True, quiet=True))
         try:
             process.stdin.write(data.astype('<f4').tobytes())

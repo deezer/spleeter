@@ -22,7 +22,7 @@ jobs:
       - checkout
       - run:  
           name: package
-          command: python setup.py bdist
+          command: python setup.py sdist
       - run:
           name: upload to PyPi
           command: pip install twine && twine upload dist/*

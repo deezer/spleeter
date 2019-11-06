@@ -12,7 +12,7 @@ import os
 
 # pylint: disable=import-error
 import ffmpeg
-import numpy as np  
+import numpy as np
 # pylint: enable=import-error
 
 from .adapter import AudioAdapter

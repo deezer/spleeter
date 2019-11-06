@@ -113,7 +113,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             .output(path, format='f32le', **output_kwargs)
             .run_async(pipe_stdin=True, quiet=True))
         try:
-            process.stdin.write(data.astype('<f4').tostring())
+            process.stdin.write(data.astype('<f4').tobytes())
             process.stdin.close()
             process.wait()
         except IOError:

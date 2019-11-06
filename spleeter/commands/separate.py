@@ -147,8 +147,8 @@ def process_audio(
                 audio_adapter.save,
                 (filename, waveform, sample_rate, codec))
     # Wait for everything to be written
-    pool.join()
     pool.close()
+    pool.join()
 
 
 def entrypoint(arguments, params):

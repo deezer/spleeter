@@ -1,6 +1,6 @@
 <img src="https://github.com/deezer/spleeter/raw/master/images/spleeter_logo.png" height="80" />
 
-[![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) ![Conda](https://img.shields.io/conda/dn/conda-forge/spleeter) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spleeter) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb)
+[![CircleCI](https://circleci.com/gh/deezer/spleeter/tree/master.svg?style=shield)](https://circleci.com/gh/deezer/spleeter/tree/master) [![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) ![Conda](https://img.shields.io/conda/dn/conda-forge/spleeter) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spleeter) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb)
 
 ## About
 
@@ -36,6 +36,8 @@ You should get two separated audio files (`vocals.wav` and `accompaniment.wav`)
 in the `output/audio_example` folder.
 
 For a more detailed documentation, please check the [repository wiki](https://github.com/deezer/spleeter/wiki)
+
+Want to try it out but don't want to install anything ? we've setup a [Google Colab](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb)
 
 ## Reference
 

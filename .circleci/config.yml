@@ -7,8 +7,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: install ffmpeg
+          command: sudo apt-get install ffmpeg
+      - run:
           name: install spleeter
-          command: pip install . --user
+          command: sudo pip install .
       - run:
           name: test separation
           command: python -m spleeter separate -i audio_example.mp3 -o .

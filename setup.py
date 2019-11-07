@@ -26,9 +26,9 @@ with open(readme_path, 'r') as stream:
 # Check if GPU target is specified.
 if '--target' in sys.argv:
     target_index = sys.argv.index('--target') + 1
-    target = sys.argv[target_index].lower()
-    sys.argv.remove('--target')
+    device_target = sys.argv[target_index].lower()
     sys.argv.pop(target_index)
+    sys.argv.remove('--target')
 
 # GPU target compatibility check.
 if device_target == 'gpu':

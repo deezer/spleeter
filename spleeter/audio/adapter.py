@@ -16,7 +16,7 @@ import tensorflow as tf
 from tensorflow.contrib.signal import stft, hann_window
 # pylint: enable=import-error
 
-from ..logging import get_logger
+from ..utils.logging import get_logger
 
 __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'

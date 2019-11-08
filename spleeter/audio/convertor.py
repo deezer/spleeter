@@ -8,7 +8,7 @@ import numpy as np
 import tensorflow as tf
 # pylint: enable=import-error
 
-from ..tensor import from_float32_to_uint8, from_uint8_to_float32
+from ..utils.tensor import from_float32_to_uint8, from_uint8_to_float32
 
 __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'

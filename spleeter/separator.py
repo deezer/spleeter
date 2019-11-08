@@ -20,9 +20,9 @@ from multiprocessing import Pool
 from pathlib import Path
 from os.path import join
 
+from .audio.adapter import get_default_audio_adapter
+from .audio.convertor import to_stereo
 from .model import model_fn
-from .utils.audio.adapter import get_default_audio_adapter
-from .utils.audio.convertor import to_stereo
 from .utils.configuration import load_configuration
 from .utils.estimator import create_estimator, to_predictor
 

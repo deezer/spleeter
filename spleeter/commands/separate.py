@@ -20,8 +20,8 @@ import tensorflow as tf
 import numpy as np
 # pylint: enable=import-error
 
-from ..utils.audio.adapter import get_audio_adapter
-from ..utils.audio.convertor import to_n_channels
+from ..audio.adapter import get_audio_adapter
+from ..audio.convertor import to_n_channels
 from ..utils.estimator import create_estimator
 from ..utils.tensor import set_tensor_shape
 

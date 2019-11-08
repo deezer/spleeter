@@ -41,7 +41,7 @@ Want to try it out but don't want to install anything ? we've setup a [Google Co
 
 ## Reference
 
-- [Deezer Research - Source Separation Engine Story - deezer.io blog post](https://deezer.io/releasing-spleeter-deezer-r-d-source-separation-engine-2b88985e797e) - [Japanese version](https://github.com/deezer/spleeter/wiki/Spleeter%E3%82%92%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%EF%BC%9ADeezer-Research%E3%82%BD%E3%83%BC%E3%82%B9%E5%88%86%E9%9B%A2%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%B3)
+- [Deezer Research - Source Separation Engine Story - deezer.io blog post](https://deezer.io/releasing-spleeter-deezer-r-d-source-separation-engine-2b88985e797e)
 - [Music Source Separation tool with pre-trained models / ISMIR2019 extended abstract](http://archives.ismir.net/ismir2019/latebreaking/000036.pdf)
 
 If you use **Spleeter** in your work, please cite:

@@ -155,7 +155,7 @@ class EstimatorSpecBuilder(object):
                 for name, output in output_dict.items()
             }
         else:
-            raise ValueError(f"Unkwnown loss type: {loss_type}")
+            raise ValueError(f"Unknown loss type: {loss_type}")
         loss = tf.reduce_sum(list(losses.values()))
         # Add metrics for monitoring each instrument.
         metrics = {k: tf.compat.v1.metrics.mean(v) for k, v in losses.items()}

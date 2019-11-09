@@ -1,5 +1,8 @@
 version: 2
 jobs:
+  # =======================================================================================
+  # Python 3.6 testing.
+  # =======================================================================================
   test-3.6:
     docker:
       - image: python:3.6
@@ -8,7 +11,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - python-3.6-cache-{{ checksum requirements.txt }}
+            - python-3.6-cache-{{ .branch }}-{{ checksum requirements.txt }}
+            - python-3.6-cache-{{ .branch }}-
             - python-3.6-cache-
       - run:
           name: install ffmpeg
@@ -17,13 +21,17 @@ jobs:
           name: install python dependencies
           command: pip install -r requirements.txt && pip install pytest
       - save_cache:
-          key: python-3.6-cache-{{ checksum requirements.txt }}
+          key: python-3.6-cache-{{ .branch }}-{{ checksum requirements.txt }}
           paths:
+            - "pretrained_models"
             - "/usr/local/bin"
             - "/usr/local/lib/python3.6/site-packages"
       - run:
           name: pytest
           command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning
+  # =======================================================================================
+  # Python 3.7 testing.
+  # =======================================================================================
   test-3.7:
     docker:
       - image: python:3.7
@@ -32,7 +40,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - python-3.7-cache-{{ checksum requirements.txt }}
+            - python-3.7-cache-{{ .branch }}-{{ checksum requirements.txt }}
+            - python-3.7-cache-{{ .branch }}-
             - python-3.7-cache-
       - run:
           name: install ffmpeg
@@ -40,15 +49,19 @@ jobs:
       - run:
           name: install python dependencies
           command: pip install -r requirements.txt && pip install pytest
-      - save_cache:
-          key: python-3.7-cache-{{ checksum requirements.txt }}
-          paths:
-            - "/usr/local/bin"
-            - "/usr/local/lib/python3.7/site-packages"
       - run:
           name: pytest
           command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning
-  pypi-deploy:
+      - save_cache:
+          key: python-3.7-cache-{{ .branch }}-{{ checksum requirements.txt }}
+          paths:
+            - "pretrained_models"
+            - "/usr/local/bin"
+            - "/usr/local/lib/python3.7/site-packages"
+  # =======================================================================================
+  # Source distribution packaging.
+  # =======================================================================================
+  sdist:
     docker:
       - image: python:3
     steps:
@@ -56,6 +69,20 @@ jobs:
       - run:  
           name: package
           command: python setup.py sdist
+      - save_cache:
+          key: sdist-{{ .branch }}-{{ checksum setup.py }}
+          paths:
+            - dist
+  # =======================================================================================
+  # PyPi deployment.
+  # =======================================================================================
+  pypi-deploy:
+    docker:
+      - image: python:3
+    steps:
+      - checkout
+      - restore_cache:
+          key: sdist-{{ .branch }}-{{ checksum setup.py }}
       - run:
           name: upload to PyPi
           command: pip install twine && twine upload dist/*
@@ -65,11 +92,15 @@ workflows:
     jobs:
       - test-3.6
       - test-3.7
+      - sdist:
+          requires:
+            - test-3.6
+            - test-3.7
       - pypi-deploy:
           filters:
             branches:
               only:
                 - master
+                - development
           requires:
-            - test-3.6
-            - test-3.7
+            - sdist

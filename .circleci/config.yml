@@ -11,8 +11,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - python-3.6-cache-{{ .branch }}-{{ checksum requirements.txt }}
-            - python-3.6-cache-{{ .branch }}-
+            - python-3.6-cache-{{ .Branch }}-{{ checksum "requirements.txt" }}
+            - python-3.6-cache-{{ .Branch }}-
             - python-3.6-cache-
       - run:
           name: install ffmpeg
@@ -21,7 +21,7 @@ jobs:
           name: install python dependencies
           command: pip install -r requirements.txt && pip install pytest
       - save_cache:
-          key: python-3.6-cache-{{ .branch }}-{{ checksum requirements.txt }}
+          key: python-3.6-cache-{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
             - "pretrained_models"
             - "/usr/local/bin"
@@ -40,8 +40,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - python-3.7-cache-{{ .branch }}-{{ checksum requirements.txt }}
-            - python-3.7-cache-{{ .branch }}-
+            - python-3.7-cache-{{ .Branch }}-{{ checksum "requirements.txt" }}
+            - python-3.7-cache-{{ .Branch }}-
             - python-3.7-cache-
       - run:
           name: install ffmpeg
@@ -53,7 +53,7 @@ jobs:
           name: pytest
           command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning
       - save_cache:
-          key: python-3.7-cache-{{ .branch }}-{{ checksum requirements.txt }}
+          key: python-3.7-cache-{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
             - "pretrained_models"
             - "/usr/local/bin"
@@ -70,7 +70,7 @@ jobs:
           name: package
           command: python setup.py sdist
       - save_cache:
-          key: sdist-{{ .branch }}-{{ checksum setup.py }}
+          key: sdist-{{ .Branch }}-{{ checksum "setup.py" }}
           paths:
             - dist
   # =======================================================================================
@@ -82,7 +82,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: sdist-{{ .branch }}-{{ checksum setup.py }}
+          key: sdist-{{ .Branch }}-{{ checksum "setup.py" }}
       - run:
           name: upload to PyPi
           command: pip install twine && twine upload dist/*

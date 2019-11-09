@@ -25,7 +25,7 @@ def test_separate():
     """ Test separation from raw data. """
     adapter = get_default_audio_adapter()
     waveform, _ = adapter.load(TEST_AUDIO_DESCRIPTOR)
-    for configuration, instruments in TEST_CONFIGURATIONS:
+    for configuration, instruments in TEST_CONFIGURATIONS.items():
         separator = Separator(configuration)
         prediction = separator.separate(waveform)
         assert len(prediction) == 2
@@ -35,7 +35,7 @@ def test_separate():
 
 def test_separate_to_file():
     """ Test file based separation. """
-    for configuration, instruments in TEST_CONFIGURATIONS:
+    for configuration, instruments in TEST_CONFIGURATIONS.items():
         separator = Separator(configuration)
         with TemporaryDirectory() as directory:
             separator.separate_to_file(

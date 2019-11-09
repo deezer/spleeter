@@ -88,7 +88,7 @@ jobs:
           command: pip install twine && twine upload dist/*
 workflows:
   version: 2
-  test-and-deploy:
+  spleeter-workflow:
     jobs:
       - test-3.6
       - test-3.7

@@ -30,7 +30,7 @@ def test_separate(configuration, instruments):
     waveform, _ = adapter.load(TEST_AUDIO_DESCRIPTOR)
     separator = Separator(configuration)
     prediction = separator.separate(waveform)
-    assert len(prediction) == 2
+    assert len(prediction) == len(instruments)
     for instrument in instruments:
         assert instrument in prediction
 

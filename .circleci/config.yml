@@ -16,10 +16,10 @@ jobs:
           command: apt-get update && apt-get install -y ffmpeg
       - run:
           name: install python dependencies
-          command: pip install -r requirements.txt && pip install pytest
+          command: pip install -r requirements.txt && pip install pytest pytest-xdist
       - run:
           name: pytest
-          command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv
+          command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv --forked
       - save_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
           paths:
@@ -40,10 +40,10 @@ jobs:
           command: apt-get update && apt-get install -y ffmpeg
       - run:
           name: install python dependencies
-          command: pip install -r requirements.txt && pip install pytest
+          command: pip install -r requirements.txt && pip install pytest pytest-xdist
       - run:
           name: pytest
-          command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv
+          command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv --forked
       - save_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
           paths:

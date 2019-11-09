@@ -19,7 +19,7 @@ jobs:
           command: pip install -r requirements.txt && pip install pytest
       - run:
           name: pytest
-          command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning
+          command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv
       - save_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
           paths:
@@ -43,7 +43,7 @@ jobs:
           command: pip install -r requirements.txt && pip install pytest
       - run:
           name: pytest
-          command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning
+          command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv
       - save_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
           paths:

@@ -27,7 +27,7 @@ Want to try it out ? Just clone the repository and install a
 environment to start separating audio file as follows:
 
 ```bash
-git clone https://github.com/Deezer/spleeter
+git clone https://github.com/deezer/spleeter
 conda env create -f spleeter/conda/spleeter-cpu.yaml
 conda activate spleeter-cpu
 spleeter separate -i spleeter/audio_example.mp3 -p spleeter:2stems -o output

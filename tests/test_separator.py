@@ -15,7 +15,7 @@ from spleeter.separator import Separator
 
 TEST_AUDIO_DESCRIPTOR = 'audio_example.mp3'
 TEST_CONFIGURATIONS = {
-    'spleeter:2stems': ('vocals', 'accompaniament'),
+    'spleeter:2stems': ('vocals', 'accompaniment'),
     'spleeter:4stems': ('vocals', 'drums', 'bass', 'other'),
     'spleeter:5stems': ('vocals', 'drums', 'bass', 'piano', 'other')
 }

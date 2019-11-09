@@ -24,7 +24,7 @@ TEST_CONFIGURATIONS = [
 
 
 @pytest.mark.parametrize('configuration, instruments', TEST_CONFIGURATIONS)
-def test_separate():
+def test_separate(configuration, instruments):
     """ Test separation from raw data. """
     adapter = get_default_audio_adapter()
     waveform, _ = adapter.load(TEST_AUDIO_DESCRIPTOR)

@@ -9,30 +9,15 @@ jobs:
     working_directory: ~/spleeter
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - python-3.6-cache-{{ .Branch }}-{{ checksum "requirements.txt" }}
-            - python-3.6-cache-{{ .Branch }}-
-            - python-3.6-cache-
-      - restore_cache:
-          key: models-{{ checksum "spleeter/model/__init__.py" }}
       - run:
           name: install ffmpeg
           command: apt-get update && apt-get install -y ffmpeg
       - run:
           name: install python dependencies
           command: pip install -r requirements.txt && pip install pytest
-      - save_cache:
-          key: python-3.6-cache-{{ .Branch }}-{{ checksum "requirements.txt" }}
-          paths:
-            - "/usr"
       - run:
           name: pytest
           command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning
-      - save_cache:
-          key: models-{{ checksum "spleeter/model/__init__.py" }}
-          paths:
-            - "pretrained_models"
   # =======================================================================================
   # Python 3.7 testing.
   # =======================================================================================
@@ -42,30 +27,15 @@ jobs:
     working_directory: ~/spleeter
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - python-3.7-cache-{{ .Branch }}-{{ checksum "requirements.txt" }}
-            - python-3.7-cache-{{ .Branch }}-
-            - python-3.7-cache-
-      - restore_cache:
-          key: models-{{ checksum "spleeter/model/__init__.py" }}
       - run:
           name: install ffmpeg
           command: apt-get update && apt-get install -y ffmpeg
       - run:
           name: install python dependencies
           command: pip install -r requirements.txt && pip install pytest
-      - save_cache:
-          key: python-3.7-cache-{{ .Branch }}-{{ checksum "requirements.txt" }}
-          paths:
-            - "/usr"
       - run:
           name: pytest
           command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning
-      - save_cache:
-          key: models-{{ checksum "spleeter/model/__init__.py" }}
-          paths:
-            - "pretrained_models"
   # =======================================================================================
   # Source distribution packaging.
   # =======================================================================================

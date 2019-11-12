@@ -39,6 +39,8 @@ For a more detailed documentation, please check the [repository wiki](https://gi
 
 Want to try it out but don't want to install anything ? we've setup a [Google Colab](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb)
 
+Alternatively, you can also try Spleeter in the browser using the free service [Moises.ai](https://moises.ai).
+
 ## Reference
 
 

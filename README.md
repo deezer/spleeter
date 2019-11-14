@@ -1,6 +1,8 @@
 <img src="https://github.com/deezer/spleeter/raw/master/images/spleeter_logo.png" height="80" />
 
-[![CircleCI](https://circleci.com/gh/deezer/spleeter/tree/master.svg?style=shield)](https://circleci.com/gh/deezer/spleeter/tree/master) [![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) [![Conda](https://img.shields.io/conda/vn/conda-forge/spleeter)](https://anaconda.org/conda-forge/spleeter) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spleeter) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb)
+[![CircleCI](https://circleci.com/gh/deezer/spleeter/tree/master.svg?style=shield)](https://circleci.com/gh/deezer/spleeter/tree/master) [![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) [![Conda](https://img.shields.io/conda/vn/conda-forge/spleeter)](https://anaconda.org/conda-forge/spleeter) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spleeter) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/spleeter/community)
+
+
 
 ## About
 
@@ -28,8 +30,7 @@ environment to start separating audio file as follows:
 
 ```bash
 git clone https://github.com/Deezer/spleeter
-conda env create -f spleeter/conda/spleeter-cpu.yaml
-conda activate spleeter-cpu
+conda install -c conda-forge spleeter
 spleeter separate -i spleeter/audio_example.mp3 -p spleeter:2stems -o output
 ```
 You should get two separated audio files (`vocals.wav` and `accompaniment.wav`)

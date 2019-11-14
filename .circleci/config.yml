@@ -75,7 +75,27 @@ jobs:
           key: sdist-{{ .Branch }}-{{ checksum "setup.py" }}
       - run:
           name: upload to PyPi
+          # TODO: Infer destination regarding of branch.
+          #       - master => production PyPi
+          #       - development => testing PyPi
           command: pip install twine && twine upload dist/*
+
+  # =======================================================================================
+  # Conda distribution.
+  # =======================================================================================
+  conda-deploy:
+    docker:
+      - image: null # TODO: use circle ci python image.
+    steps:
+      - run:
+          name: checkout feedstock
+          command: git clone https://github.com/conda-forge/spleeter-feedstock
+      - run:
+          name: update version
+          command: sed -i 's///g'
+      - run:
+          name: deploy
+          command: git add recipe && git commit -m "" && git push
 workflows:
   version: 2
   spleeter-workflow:
@@ -91,6 +111,5 @@ workflows:
             branches:
               only:
                 - master
-                - development
           requires:
             - sdist

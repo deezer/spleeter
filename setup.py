@@ -14,7 +14,7 @@ __license__ = 'MIT License'
 
 # Default project values.
 project_name = 'spleeter'
-project_version = '1.4.3'
+project_version = '1.4.4'
 device_target = 'cpu'
 tensorflow_dependency = 'tensorflow'
 tensorflow_version = '1.14.0'

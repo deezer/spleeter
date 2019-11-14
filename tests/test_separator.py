@@ -7,6 +7,8 @@ __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
+import filecmp
+
 from os.path import exists, join
 from tempfile import TemporaryDirectory
 
@@ -33,6 +35,12 @@ def test_separate(configuration, instruments):
     assert len(prediction) == len(instruments)
     for instrument in instruments:
         assert instrument in prediction
+    for instrument in instruments:
+        track = prediction[instrument]
+        assert not (waveform == track).all()
+        for compared in instruments:
+            if instrument != compared:
+                assert not (track == prediction[compared]).all()
 
 
 @pytest.mark.parametrize('configuration, instruments', TEST_CONFIGURATIONS)
@@ -45,4 +53,9 @@ def test_separate_to_file(configuration, instruments):
             directory)
         for instrument in instruments:
             assert exists(join(directory, '{}.wav'.format(instrument)))
-            # TODO: Consider testing generated file as well.
+        for instrument in instruments:
+            for compared in instrument:
+                if instrument != compared:
+                    assert not filecmp.cmp(
+                        join(directory, '{}.wav'.format(instrument)),
+                        join(directory, '{}.wav'.format(compared)))

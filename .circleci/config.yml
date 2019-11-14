@@ -18,8 +18,8 @@ jobs:
           name: install python dependencies
           command: pip install -r requirements.txt && pip install pytest pytest-xdist
       - run:
-          name: pytest
-          command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv --forked
+          name: run tests
+          command: make test
       - save_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
           paths:
@@ -42,8 +42,8 @@ jobs:
           name: install python dependencies
           command: pip install -r requirements.txt && pip install pytest pytest-xdist
       - run:
-          name: pytest
-          command: pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv --forked
+          name: run tests
+          command: make test
       - save_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
           paths:
@@ -57,8 +57,8 @@ jobs:
     steps:
       - checkout
       - run:  
-          name: package
-          command: python setup.py sdist
+          name: package source distribution
+          command: make build
       - save_cache:
           key: sdist-{{ .Branch }}-{{ checksum "setup.py" }}
           paths:
@@ -78,7 +78,7 @@ jobs:
           # TODO: Infer destination regarding of branch.
           #       - master => production PyPi
           #       - development => testing PyPi
-          command: pip install twine && twine upload dist/*
+          command: make deploy
 
   # =======================================================================================
   # Conda distribution.

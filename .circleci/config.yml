@@ -83,19 +83,19 @@ jobs:
   # =======================================================================================
   # Conda distribution.
   # =======================================================================================
-  conda-deploy:
-    docker:
-      - image: null # TODO: use circle ci python image.
-    steps:
-      - run:
-          name: checkout feedstock
-          command: git clone https://github.com/conda-forge/spleeter-feedstock
-      - run:
-          name: update version
-          command: sed -i 's///g'
-      - run:
-          name: deploy
-          command: git add recipe && git commit -m "" && git push
+  #conda-deploy:
+  #  docker:
+  #    - image: null # TODO: use circle ci python image.
+  #  steps:
+  #    - run:
+  #        name: checkout feedstock
+  #        command: git clone https://github.com/conda-forge/spleeter-feedstock
+  #    - run:
+  #        name: update version
+  #        command: sed -i 's///g'
+  #    - run:
+  #        name: deploy
+  #        command: git add recipe && git commit -m "" && git push
 workflows:
   version: 2
   spleeter-workflow:

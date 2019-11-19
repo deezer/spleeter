@@ -79,7 +79,6 @@ jobs:
           #       - master => production PyPi
           #       - other => testing PyPi
           command: make deploy
-
   # =======================================================================================
   # Conda distribution.
   # =======================================================================================
@@ -93,9 +92,128 @@ jobs:
       - run:
           name: checkout feedstock
           command: make feedstock
+  # =======================================================================================
+  # Docker build.
+  # =======================================================================================
+  docker-conda-cpu:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:conda -f docker/cpu/conda.dockerfile .
+  docker-conda-cpu-2stems:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:2-stems-conda -f docker/cpu/conda-2stems.dockerfile .
+  docker-conda-cpu-4stems:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:4-stems-conda -f docker/cpu/conda-4stems.dockerfile .
+  docker-conda-cpu-5stems:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:5-stems-conda -f docker/cpu/conda-5stems.dockerfile .
+  docker-3.6-cpu:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.6.dockerfile .
+  docker-3.6-cpu-2stems:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.6-2stems.dockerfile .
+  docker-3.6-cpu-4stems:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.6-4stems.dockerfile .
+  docker-3.6-cpu-5stems:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.6-5stems.dockerfile .
+  docker-3.7-cpu:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.7.dockerfile .
+  docker-3.7-cpu-2stems:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.7-2stems.dockerfile .
+  docker-3.7-cpu-4stems:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.7-4stems.dockerfile .
+  docker-3.7-cpu-5stems:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build image
+          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.7-5stems.dockerfile .
 workflows:
   version: 2
-  spleeter-workflow:
+  development-workflow:
+    jobs:
+      - test-3.6
+      - test-3.7
+      - sdist:
+          requires:
+            - test-3.6
+            - test-3.7
+  release-workflow:
     jobs:
       - test-3.6
       - test-3.7
@@ -117,3 +235,92 @@ workflows:
                 - master
           requires:
             - pypi-deploy
+      - hold:
+          type: approval
+          requires:
+            - pypi-deploy
+            - conda-forge-deploy
+      - docker-conda-cpu:
+          requires:
+            - hold
+          filters:
+            branches:
+              only:
+                - master
+      - docker-conda-cpu-2stems:
+          requires:
+            - docker-conda-cpu
+          filters:
+            branches:
+              only:
+                - master
+      - docker-conda-cpu-4stems:
+          requires:
+            - docker-conda-cpu
+          filters:
+            branches:
+              only:
+                - master
+      - docker-conda-cpu-5stems:
+          requires:
+            - docker-conda-cpu
+          filters:
+            branches:
+              only:
+                - master
+      - docker-3.6-cpu:
+          requires:
+            - hold
+          filters:
+            branches:
+              only:
+                - master
+      - docker-3.6-cpu-2stems:
+          requires:
+            - docker-3.6-cpu
+          filters:
+            branches:
+              only:
+                - master
+      - docker-3.6-cpu-4stems:
+          requires:
+            - docker-3.6-cpu
+          filters:
+            branches:
+              only:
+                - master
+      - docker-3.6-cpu-5stems:
+          requires:
+            - docker-3.6-cpu
+          filters:
+            branches:
+              only:
+                - master
+      - docker-3.7-cpu:
+          requires:
+            - hold
+          filters:
+            branches:
+              only:
+                - master
+      - docker-3.7-cpu-2stems:
+          requires:
+            - docker-3.7-cpu
+          filters:
+            branches:
+              only:
+                - master
+      - docker-3.7-cpu-4stems:
+          requires:
+            - docker-3.7-cpu
+          filters:
+            branches:
+              only:
+                - master
+      - docker-3.7-cpu-5stems:
+          requires:
+            - docker-3.7-cpu
+          filters:
+            branches:
+              only:
+                - master

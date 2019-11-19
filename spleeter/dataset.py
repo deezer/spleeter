@@ -103,7 +103,7 @@ def get_validation_dataset(audio_params, audio_adapter, audio_path):
     return builder.build(
         audio_params.get('validation_csv'),
         batch_size=audio_params.get('batch_size'),
-        cache_directory=audio_params.get('training_cache'),
+        cache_directory=audio_params.get('validation_cache'),
         convert_to_uint=True,
         infinite_generator=False,
         n_chunks_per_song=1,

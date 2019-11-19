@@ -11,20 +11,8 @@
         -i /path/to/audio1.wav /path/to/audio2.mp3
 """
 
-from multiprocessing import Pool
-from os.path import isabs, join, split, splitext
-from tempfile import gettempdir
-
-# pylint: disable=import-error
-import tensorflow as tf
-import numpy as np
-# pylint: enable=import-error
-
 from ..audio.adapter import get_audio_adapter
-from ..audio.convertor import to_n_channels
 from ..separator import Separator
-from ..utils.estimator import create_estimator
-from ..utils.tensor import set_tensor_shape
 
 __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'

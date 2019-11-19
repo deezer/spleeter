@@ -205,15 +205,7 @@ jobs:
           command: docker build -t spleeter:3.7-5stems -f docker/cpu/python-3.7-5stems.dockerfile .
 workflows:
   version: 2
-  development-workflow:
-    jobs:
-      - test-3.6
-      - test-3.7
-      - sdist:
-          requires:
-            - test-3.6
-            - test-3.7
-  release-workflow:
+  spleeter-release-pipeline:
     jobs:
       - test-3.6
       - test-3.7
@@ -240,6 +232,10 @@ workflows:
           requires:
             - pypi-deploy
             - conda-forge-deploy
+          filters:
+            branches:
+              only:
+                - master
       - docker-conda-cpu:
           requires:
             - hold

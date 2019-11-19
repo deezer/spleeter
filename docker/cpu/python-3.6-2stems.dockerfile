@@ -1,4 +1,4 @@
-FROM deezer/spleeter:3.6
+FROM spleeter:3.6
 
 RUN mkdir -p /model/2stems \
     && wget -O /tmp/2stems.tar.gz https://github.com/deezer/spleeter/releases/download/v1.4.0/2stems.tar.gz \

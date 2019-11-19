@@ -148,7 +148,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: build image
-          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.6-2stems.dockerfile .
+          command: docker build -t spleeter:3.6-2stems -f docker/cpu/python-3.6-2stems.dockerfile .
   docker-3.6-cpu-4stems:
     docker:
       - image: docker:17.05.0-ce-git
@@ -157,7 +157,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: build image
-          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.6-4stems.dockerfile .
+          command: docker build -t spleeter:3.6-4stems -f docker/cpu/python-3.6-4stems.dockerfile .
   docker-3.6-cpu-5stems:
     docker:
       - image: docker:17.05.0-ce-git
@@ -166,7 +166,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: build image
-          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.6-5stems.dockerfile .
+          command: docker build -t spleeter:3.6-5stems -f docker/cpu/python-3.6-5stems.dockerfile .
   docker-3.7-cpu:
     docker:
       - image: docker:17.05.0-ce-git
@@ -175,7 +175,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: build image
-          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.7.dockerfile .
+          command: docker build -t spleeter:3.7 -f docker/cpu/python-3.7.dockerfile .
   docker-3.7-cpu-2stems:
     docker:
       - image: docker:17.05.0-ce-git
@@ -184,7 +184,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: build image
-          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.7-2stems.dockerfile .
+          command: docker build -t spleeter:3.7-2stems -f docker/cpu/python-3.7-2stems.dockerfile .
   docker-3.7-cpu-4stems:
     docker:
       - image: docker:17.05.0-ce-git
@@ -193,7 +193,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: build image
-          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.7-4stems.dockerfile .
+          command: docker build -t spleeter:3.7-4stems -f docker/cpu/python-3.7-4stems.dockerfile .
   docker-3.7-cpu-5stems:
     docker:
       - image: docker:17.05.0-ce-git
@@ -202,7 +202,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: build image
-          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.7-5stems.dockerfile .
+          command: docker build -t spleeter:3.7-5stems -f docker/cpu/python-3.7-5stems.dockerfile .
 workflows:
   version: 2
   development-workflow:

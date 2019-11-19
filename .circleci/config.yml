@@ -77,25 +77,22 @@ jobs:
           name: upload to PyPi
           # TODO: Infer destination regarding of branch.
           #       - master => production PyPi
-          #       - development => testing PyPi
+          #       - other => testing PyPi
           command: make deploy
 
   # =======================================================================================
   # Conda distribution.
   # =======================================================================================
-  #conda-deploy:
-  #  docker:
-  #    - image: null # TODO: use circle ci python image.
-  #  steps:
-  #    - run:
-  #        name: checkout feedstock
-  #        command: git clone https://github.com/conda-forge/spleeter-feedstock
-  #    - run:
-  #        name: update version
-  #        command: sed -i 's///g'
-  #    - run:
-  #        name: deploy
-  #        command: git add recipe && git commit -m "" && git push
+  conda-forge-deploy:
+    docker:
+      - image: python:3
+    steps:
+      - run:
+          name: install dependencies
+          command: apt-get update && apt-get install -y git openssl hub
+      - run:
+          name: checkout feedstock
+          command: make feedstock
 workflows:
   version: 2
   spleeter-workflow:
@@ -113,3 +110,10 @@ workflows:
                 - master
           requires:
             - sdist
+      - conda-forge-deploy:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - pypi-deploy

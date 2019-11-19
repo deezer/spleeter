@@ -42,15 +42,6 @@ __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
-# Default datasets path parameter to use.
-DEFAULT_DATASETS_PATH = join(
-    'audio_database',
-    'separated_sources',
-    'experiments',
-    'karaoke_vocal_extraction',
-    'tensorflow_experiment'
-)
-
 # Default audio parameters to use.
 DEFAULT_AUDIO_PARAMS = {
     'instrument_list': ('vocals', 'accompaniment'),

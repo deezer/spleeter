@@ -53,9 +53,3 @@ def test_separate_to_file(configuration, instruments):
             directory)
         for instrument in instruments:
             assert exists(join(directory, '{}.wav'.format(instrument)))
-        for instrument in instruments:
-            for compared in instruments:
-                if instrument != compared:
-                    assert not filecmp.cmp(
-                        join(directory, '{}.wav'.format(instrument)),
-                        join(directory, '{}.wav'.format(compared)))

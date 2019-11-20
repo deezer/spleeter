@@ -9,15 +9,17 @@ __license__ = 'MIT License'
 
 import filecmp
 
-from os.path import exists, join
+from os.path import basename, exists, join
 from tempfile import TemporaryDirectory
 
 import pytest
 
+from spleeter import SpleeterError
 from spleeter.audio.adapter import get_default_audio_adapter
 from spleeter.separator import Separator
 
 TEST_AUDIO_DESCRIPTOR = 'audio_example.mp3'
+TEST_AUDIO_BASENAME = basename(TEST_AUDIO_DESCRIPTOR)
 TEST_CONFIGURATIONS = [
     ('spleeter:2stems', ('vocals', 'accompaniment')),
     ('spleeter:4stems', ('vocals', 'drums', 'bass', 'other')),
@@ -52,4 +54,32 @@ def test_separate_to_file(configuration, instruments):
             TEST_AUDIO_DESCRIPTOR,
             directory)
         for instrument in instruments:
-            assert exists(join(directory, '{}.wav'.format(instrument)))
+            assert exists(join(
+                directory,
+                '{}/{}.wav'.format(TEST_AUDIO_BASENAME, instrument)))
+
+
+@pytest.mark.parametrize('configuration, instruments', TEST_CONFIGURATIONS)
+def test_filename_format(configuration, instruments):
+    """ Test custom filename format. """
+    separator = Separator(configuration)
+    with TemporaryDirectory() as directory:
+        separator.separate_to_file(
+            TEST_AUDIO_DESCRIPTOR,
+            directory,
+            filename_format='export/{filename}/{instrument}.{codec}')
+        for instrument in instruments:
+            assert exists(join(
+                directory,
+                'export/{}/{}.wav'.format(TEST_AUDIO_BASENAME, instrument)))
+
+
+def test_filename_confilct():
+    """ Test error handling with static pattern. """
+    separator = Separator(TEST_CONFIGURATIONS[0][0])
+    with TemporaryDirectory() as directory:
+        with pytest.raises(SpleeterError):
+            separator.separate_to_file(
+                TEST_AUDIO_DESCRIPTOR,
+                directory,
+                filename_format='I wanna be your lover')

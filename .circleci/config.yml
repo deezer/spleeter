@@ -99,110 +99,44 @@ jobs:
     docker:
       - image: docker:17.05.0-ce-git
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:conda -f docker/cpu/conda.dockerfile .
-  docker-conda-cpu-2stems:
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:2-stems-conda -f docker/cpu/conda-2stems.dockerfile .
-  docker-conda-cpu-4stems:
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:4-stems-conda -f docker/cpu/conda-4stems.dockerfile .
-  docker-conda-cpu-5stems:
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:5-stems-conda -f docker/cpu/conda-5stems.dockerfile .
+      - checkout
+      - run: docker build -t researchdeezer/spleeter:conda -f docker/cpu/conda.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:conda-2stems -f docker/cpu/conda-2stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:conda-4stems -f docker/cpu/conda-2stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:conda-5stems -f docker/cpu/conda-2stems.dockerfile .
+      - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - run: docker push researchdeezer/spleeter:conda
+      - run: docker push researchdeezer/spleeter:conda-2stems
+      - run: docker push researchdeezer/spleeter:conda-4stems
+      - run: docker push researchdeezer/spleeter:conda-5stems
   docker-3.6-cpu:
     docker:
       - image: docker:17.05.0-ce-git
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:3.6 -f docker/cpu/python-3.6.dockerfile .
-  docker-3.6-cpu-2stems:
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:3.6-2stems -f docker/cpu/python-3.6-2stems.dockerfile .
-  docker-3.6-cpu-4stems:
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:3.6-4stems -f docker/cpu/python-3.6-4stems.dockerfile .
-  docker-3.6-cpu-5stems:
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:3.6-5stems -f docker/cpu/python-3.6-5stems.dockerfile .
+      - checkout
+      - run: docker build -t researchdeezer/spleeter:3.6 -f docker/cpu/python-3.6.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:3.6-2stems -f docker/cpu/python-3.6-2stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:3.6-4stems -f docker/cpu/python-3.6-4stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:3.6-5stems -f docker/cpu/python-3.6-5stems.dockerfile .
+      - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - run: docker push researchdeezer/spleeter:3.6
+      - run: docker push researchdeezer/spleeter:3.6-2stems
+      - run: docker push researchdeezer/spleeter:3.6-4stems
+      - run: docker push researchdeezer/spleeter:3.6-5stems
   docker-3.7-cpu:
     docker:
       - image: docker:17.05.0-ce-git
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:3.7 -f docker/cpu/python-3.7.dockerfile .
-  docker-3.7-cpu-2stems:
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:3.7-2stems -f docker/cpu/python-3.7-2stems.dockerfile .
-  docker-3.7-cpu-4stems:
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:3.7-4stems -f docker/cpu/python-3.7-4stems.dockerfile .
-  docker-3.7-cpu-5stems:
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build image
-          command: docker build -t spleeter:3.7-5stems -f docker/cpu/python-3.7-5stems.dockerfile .
+      - checkout
+      - run: docker build -t spleeter:3.7 -f docker/cpu/python-3.7.dockerfile .
+      - run: docker build -t spleeter:3.7-2stems -f docker/cpu/python-3.7-2stems.dockerfile .
+      - run: docker build -t spleeter:3.7-4stems -f docker/cpu/python-3.7-4stems.dockerfile .
+      - run: docker build -t spleeter:3.7-5stems -f docker/cpu/python-3.7-5stems.dockerfile .
+      - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - run: docker push researchdeezer/spleeter:3.7
+      - run: docker push researchdeezer/spleeter:3.7-2stems
+      - run: docker push researchdeezer/spleeter:3.7-4stems
+      - run: docker push researchdeezer/spleeter:3.7-5stems
 workflows:
   version: 2
   spleeter-release-pipeline:
@@ -243,27 +177,6 @@ workflows:
             branches:
               only:
                 - master
-      - docker-conda-cpu-2stems:
-          requires:
-            - docker-conda-cpu
-          filters:
-            branches:
-              only:
-                - master
-      - docker-conda-cpu-4stems:
-          requires:
-            - docker-conda-cpu
-          filters:
-            branches:
-              only:
-                - master
-      - docker-conda-cpu-5stems:
-          requires:
-            - docker-conda-cpu
-          filters:
-            branches:
-              only:
-                - master
       - docker-3.6-cpu:
           requires:
             - hold
@@ -271,51 +184,9 @@ workflows:
             branches:
               only:
                 - master
-      - docker-3.6-cpu-2stems:
-          requires:
-            - docker-3.6-cpu
-          filters:
-            branches:
-              only:
-                - master
-      - docker-3.6-cpu-4stems:
-          requires:
-            - docker-3.6-cpu
-          filters:
-            branches:
-              only:
-                - master
-      - docker-3.6-cpu-5stems:
-          requires:
-            - docker-3.6-cpu
-          filters:
-            branches:
-              only:
-                - master
       - docker-3.7-cpu:
           requires:
             - hold
-          filters:
-            branches:
-              only:
-                - master
-      - docker-3.7-cpu-2stems:
-          requires:
-            - docker-3.7-cpu
-          filters:
-            branches:
-              only:
-                - master
-      - docker-3.7-cpu-4stems:
-          requires:
-            - docker-3.7-cpu
-          filters:
-            branches:
-              only:
-                - master
-      - docker-3.7-cpu-5stems:
-          requires:
-            - docker-3.7-cpu
           filters:
             branches:
               only:

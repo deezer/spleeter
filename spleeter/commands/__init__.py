@@ -28,6 +28,18 @@ OPT_OUTPUT = {
     'help': 'Path of the output directory to write audio files in'
 }
 
+# -f opt specification (separate).
+OPT_FORMAT = {
+    'dest': 'filename_format',
+    'default': '{filename}/{instrument}.{codec}',
+    'help': (
+        'Template string that will be formatted to generated'
+        'output filename. Such template should be Python formattable'
+        'string, and could use {filename}, {instrument}, and {codec}'
+        'variables.'
+    )
+}
+
 # -p opt specification (train, evaluate and separate).
 OPT_PARAMS = {
     'dest': 'configuration',
@@ -35,23 +47,6 @@ OPT_PARAMS = {
     'type': str,
     'action': 'store',
     'help': 'JSON filename that contains params'
-}
-
-# -n opt specification (separate).
-OPT_OUTPUT_NAMING = {
-    'dest': 'output_naming',
-    'default': 'filename',
-    'choices': ('directory', 'filename'),
-    'help': (
-        'Choice for naming the output base path: '
-        '"filename" (use the input filename, i.e '
-        '/path/to/audio/mix.wav will be separated to '
-        '<output_path>/mix/<instument1>.wav, '
-        '<output_path>/mix/<instument2>.wav...) or '
-        '"directory" (use the name of the input last level'
-        ' directory, for instance /path/to/audio/mix.wav '
-        'will be separated to <output_path>/audio/<instument1>.wav'
-        ', <output_path>/audio/<instument2>.wav)')
 }
 
 # -s opt specification (separate).
@@ -175,7 +170,7 @@ def _create_separate_parser(parser_factory):
     _add_common_options(parser)
     parser.add_argument('-i', '--inputs', **OPT_INPUT)
     parser.add_argument('-o', '--output_path', **OPT_OUTPUT)
-    parser.add_argument('-n', '--output_naming', **OPT_OUTPUT_NAMING)
+    parser.add_argument('-f', '--filename_format', **OPT_FORMAT)
     parser.add_argument('-d', '--duration', **OPT_DURATION)
     parser.add_argument('-s', '--offset', **OPT_OFFSET)
     parser.add_argument('-c', '--codec', **OPT_CODEC)

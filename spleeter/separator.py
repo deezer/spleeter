@@ -18,8 +18,9 @@ import json
 from functools import partial
 from multiprocessing import Pool
 from pathlib import Path
-from os.path import join
+from os.path import basename, join
 
+from . import SpleeterError
 from .audio.adapter import get_default_audio_adapter
 from .audio.convertor import to_stereo
 from .model import model_fn
@@ -93,9 +94,12 @@ class Separator(object):
             self, audio_descriptor, destination,
             audio_adapter=get_default_audio_adapter(),
             offset=0, duration=600., codec='wav', bitrate='128k',
-            synchronous=True):
+            filename_format='{filename}/{instrument}.{codec}', synchronous=True):
         """ Performs source separation and export result to file using
         given audio adapter.
+
+        Filename format should be a Python formattable string that could use
+        following parameters : {instrument}, {filename} and {codec}.
 
         :param audio_descriptor:    Describe song to separate, used by audio
                                     adapter to retrieve and load audio data,
@@ -107,6 +111,7 @@ class Separator(object):
         :param duration:            (Optional) Duration of loaded song.
         :param codec:               (Optional) Export codec.
         :param bitrate:             (Optional) Export bitrate.
+        :param filename_format:     (Optional) Filename format.
         :param synchronous:         (Optional) True is should by synchronous.
         """
         waveform, _ = audio_adapter.load(
@@ -115,9 +120,20 @@ class Separator(object):
             duration=duration,
             sample_rate=self._sample_rate)
         sources = self.separate(waveform)
+        filename = basename(audio_descriptor)
+        generated = []
         for instrument, data in sources.items():
+            path = join(destination, filename_format.format(
+                filename=filename,
+                instrument=instrument,
+                codec=codec))
+            if path in generated:
+                raise SpleeterError((
+                    f'Separated source path conflict : {path},'
+                    'please check your filename format'))
+            generated.append(path)
             task = self._pool.apply_async(audio_adapter.save, (
-                join(destination, f'{instrument}.{codec}'),
+                path,
                 data,
                 self._sample_rate,
                 codec,

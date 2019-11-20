@@ -27,7 +27,9 @@ def entrypoint(arguments, params):
     """
     # TODO: check with output naming.
     audio_adapter = get_audio_adapter(arguments.audio_adapter)
-    separator = Separator(arguments.configuration, arguments.MWF)
+    separator = Separator(
+        arguments.configuration,
+        arguments.MWF)
     for filename in arguments.inputs:
         separator.separate_to_file(
             filename,
@@ -37,6 +39,7 @@ def entrypoint(arguments, params):
             duration=arguments.duration,
             codec=arguments.codec,
             bitrate=arguments.bitrate,
+            filename_format=arguments.filename_format,
             synchronous=False
         )
     separator.join()

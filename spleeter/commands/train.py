@@ -16,6 +16,7 @@ import tensorflow as tf
 from ..audio.adapter import get_audio_adapter
 from ..dataset import get_training_dataset, get_validation_dataset
 from ..model import model_fn
+from ..model.provider import ModelProvider
 from ..utils.logging import get_logger
 
 __email__ = 'research@deezer.com'
@@ -95,4 +96,5 @@ def entrypoint(arguments, params):
         estimator,
         train_spec,
         evaluation_spec)
+    ModelProvider.writeProbe(params['model_dir'])
     get_logger().info('Model training done')

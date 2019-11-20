@@ -16,6 +16,7 @@ import numpy as np
 # pylint: enable=import-error
 
 from .adapter import AudioAdapter
+from .. import SpleeterError
 from ..utils.logging import get_logger
 
 __email__ = 'research@deezer.com'
@@ -54,12 +55,18 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         :param sample_rate: (Optional) Sample rate to load audio with.
         :param dtype: (Optional) Numpy data type to use, default to float32.
         :returns: Loaded data a (waveform, sample_rate) tuple.
+        :raise SpleeterError: If any error occurs while loading audio.
         """
         if not isinstance(path, str):
             path = path.decode()
-        probe = ffmpeg.probe(path)
+        try:
+            probe = ffmpeg.probe(path)
+        except ffmpeg._run.Error as e:
+            raise SpleeterError(
+                'An error occurs with ffprobe (see ffprobe output below)\n\n{}'
+                .format(e.stderr.decode()))
         if 'streams' not in probe or len(probe['streams']) == 0:
-            raise IOError('No stream was found with ffprobe')
+            raise SpleeterError('No stream was found with ffprobe')
         metadata = next(
             stream
             for stream in probe['streams']
@@ -117,5 +124,5 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             process.stdin.close()
             process.wait()
         except IOError:
-            raise IOError(f'FFMPEG error: {process.stderr.read()}')
+            raise SpleeterError(f'FFMPEG error: {process.stderr.read()}')
         get_logger().info('File %s written', path)

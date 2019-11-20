@@ -57,7 +57,7 @@ class Separator(object):
             self._predictor = to_predictor(estimator)
         return self._predictor
 
-    def join(self, timeout=20):
+    def join(self, timeout=200):
         """ Wait for all pending tasks to be finished.
 
         :param timeout: (Optional) task waiting timeout.

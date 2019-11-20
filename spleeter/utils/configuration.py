@@ -13,7 +13,7 @@ except ImportError:
 
 from os.path import exists
 
-from .. import resources
+from .. import resources, SpleeterError
 
 
 __email__ = 'research@deezer.com'
@@ -31,17 +31,17 @@ def load_configuration(descriptor):
     :param descriptor: Configuration descriptor to use for lookup.
     :returns: Loaded description as dict.
     :raise ValueError: If required embedded configuration does not exists.
-    :raise IOError: If required configuration file does not exists.
+    :raise SpleeterError: If required configuration file does not exists.
     """
     # Embedded configuration reading.
     if descriptor.startswith(_EMBEDDED_CONFIGURATION_PREFIX):
         name = descriptor[len(_EMBEDDED_CONFIGURATION_PREFIX):]
         if not loader.is_resource(resources, f'{name}.json'):
-            raise ValueError(f'No embedded configuration {name} found')
+            raise SpleeterError(f'No embedded configuration {name} found')
         with loader.open_text(resources, f'{name}.json') as stream:
             return json.load(stream)
     # Standard file reading.
     if not exists(descriptor):
-        raise IOError(f'Configuration file {descriptor} not found')
+        raise SpleeterError(f'Configuration file {descriptor} not found')
     with open(descriptor, 'r') as stream:
         return json.load(stream)

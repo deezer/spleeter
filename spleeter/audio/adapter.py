@@ -16,6 +16,7 @@ import tensorflow as tf
 from tensorflow.contrib.signal import stft, hann_window
 # pylint: enable=import-error
 
+from .. import SpleeterError
 from ..utils.logging import get_logger
 
 __email__ = 'research@deezer.com'
@@ -73,7 +74,8 @@ class AudioAdapter(ABC):
 
         # Defined safe loading function.
         def safe_load(path, offset, duration, sample_rate, dtype):
-            get_logger().info(
+            logger = get_logger()
+            logger.info(
                 f'Loading audio {path} from {offset} to {offset + duration}')
             try:
                 (data, _) = self.load(
@@ -82,10 +84,12 @@ class AudioAdapter(ABC):
                     duration.numpy(),
                     sample_rate.numpy(),
                     dtype=dtype.numpy())
-                get_logger().info('Audio data loaded successfully')
+                logger.info('Audio data loaded successfully')
                 return (data, False)
             except Exception as e:
-                get_logger().warning(e)
+                logger.exception(
+                    'An error occurs while loading audio',
+                    exc_info=e)
             return (np.float32(-1.0), True)
 
         # Execute function and format results.
@@ -140,6 +144,6 @@ def get_audio_adapter(descriptor):
     adapter_module = import_module(module_path)
     adapter_class = getattr(adapter_module, adapter_class_name)
     if not isinstance(adapter_class, AudioAdapter):
-        raise ValueError(
+        raise SpleeterError(
             f'{adapter_class_name} is not a valid AudioAdapter class')
     return adapter_class()

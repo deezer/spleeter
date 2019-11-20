@@ -28,13 +28,13 @@ def entrypoint(arguments, params):
     # TODO: check with output naming.
     audio_adapter = get_audio_adapter(arguments.audio_adapter)
     separator = Separator(arguments.configuration, arguments.MWF)
-    for filename in arguments.audio_filenames:
+    for filename in arguments.inputs:
         separator.separate_to_file(
             filename,
             arguments.output_path,
             audio_adapter=audio_adapter,
             offset=arguments.offset,
-            duration=arguments.max_duration,
+            duration=arguments.duration,
             codec=arguments.codec,
             bitrate=arguments.bitrate,
             synchronous=False

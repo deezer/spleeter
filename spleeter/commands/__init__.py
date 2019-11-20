@@ -84,7 +84,6 @@ OPT_CODEC = {
 # -b opt specification (separate).
 OPT_BITRATE = {
     'dest': 'bitrate',
-    'type': int,
     'default': '128k',
     'help': 'Audio bitrate to be used for the separated output'
 }
@@ -177,8 +176,8 @@ def _create_separate_parser(parser_factory):
     parser.add_argument('-i', '--inputs', **OPT_INPUT)
     parser.add_argument('-o', '--output_path', **OPT_OUTPUT)
     parser.add_argument('-n', '--output_naming', **OPT_OUTPUT_NAMING)
-    parser.add_
     parser.add_argument('-d', '--duration', **OPT_DURATION)
+    parser.add_argument('-s', '--offset', **OPT_OFFSET)
     parser.add_argument('-c', '--codec', **OPT_CODEC)
     parser.add_argument('-b', '--birate', **OPT_BITRATE)
     parser.add_argument('-m', '--mwf', **OPT_MWF)

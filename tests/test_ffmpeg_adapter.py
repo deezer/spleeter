@@ -11,12 +11,13 @@ from os.path import join
 from tempfile import TemporaryDirectory
 
 # pylint: disable=import-error
-from pytest import fixture
+from pytest import fixture, raises
 
 import numpy as np
 import ffmpeg
 # pylint: enable=import-error
 
+from spleeter import SpleeterError
 from spleeter.audio.adapter import AudioAdapter
 from spleeter.audio.adapter import get_default_audio_adapter
 from spleeter.audio.adapter import get_audio_adapter
@@ -59,6 +60,16 @@ def test_load(audio_data):
     assert len(waveform.shape) == 2
     assert waveform.shape[0] == 479832
     assert waveform.shape[1] == 2
+
+
+def test_load_error(adapter):
+    """ Test load ffprobe exception """
+    with raises(SpleeterError):
+        adapter.load(
+            'Paris City Jazz',
+            TEST_OFFSET,
+            TEST_DURATION,
+            TEST_SAMPLE_RATE)
 
 
 def test_save(adapter, audio_data):

@@ -66,16 +66,6 @@ jobs:
           #       - other => testing PyPi
           command: make deploy
   # =======================================================================================
-  # Conda distribution.
-  # =======================================================================================
-  conda-forge-deploy:
-    docker:
-      - image: python:3
-    steps:
-      - checkout
-      - run: apt-get update && apt-get install -y git openssl hub
-      - run: make feedstock
-  # =======================================================================================
   # Docker build.
   # =======================================================================================
   docker-conda-cpu:
@@ -165,32 +155,24 @@ workflows:
                 - master
           requires:
             - sdist
-      - conda-forge-deploy:
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - pypi-deploy
-      - hold:
+      - conda-forge-validation:
           type: approval
           requires:
             - pypi-deploy
-            - conda-forge-deploy
           filters:
             branches:
               only:
                 - master
       - docker-conda-cpu:
           requires:
-            - hold
+            - conda-forge-validation
           filters:
             branches:
               only:
                 - master
       - docker-conda-gpu:
           requires:
-            - hold
+            - conda-forge-validation
           filters:
             branches:
               only:

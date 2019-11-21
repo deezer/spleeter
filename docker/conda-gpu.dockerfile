@@ -10,7 +10,8 @@ RUN apt-get update --fix-missing \
     && /opt/conda/bin/conda clean -tipsy \
     && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
     && echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc \
-    && echo "conda activate base" >> ~/.bashrc
+    && echo "conda activate base" >> ~/.bashrc \
+    && ln -s /opt/conda/bin/conda /usr/bin/conda
 
 RUN conda install -y cudatoolkit=9.0 \
     && conda install -y tensorflow-gpu==1.14.0 \

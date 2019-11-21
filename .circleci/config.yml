@@ -49,6 +49,16 @@ jobs:
           key: sdist-{{ .Branch }}-{{ checksum "setup.py" }}
           paths:
             - dist
+  sdist-gpu:
+    docker:
+      - image: python:3
+    steps:
+      - checkout
+      - run: make build-gpu
+      - save_cache:
+          key: sdist-{{ .Branch }}-{{ checksum "setup.py" }}
+          paths:
+            - dist
   # =======================================================================================
   # PyPi deployment.
   # =======================================================================================
@@ -64,7 +74,20 @@ jobs:
           # TODO: Infer destination regarding of branch.
           #       - master => production PyPi
           #       - other => testing PyPi
-          command: make deploy
+          command: make build deploy
+  pypi-deploy-gpu:
+    docker:
+      - image: python:3
+    steps:
+      - checkout
+      - restore_cache:
+          key: sdist-{{ .Branch }}-{{ checksum "setup.py" }}
+      - run:
+          name: upload to PyPi
+          # TODO: Infer destination regarding of branch.
+          #       - master => production PyPi
+          #       - other => testing PyPi
+          command: make build-gpu deploy
   # =======================================================================================
   # Docker build.
   # =======================================================================================
@@ -102,6 +125,8 @@ jobs:
       - run: docker push researchdeezer/spleeter:conda-gpu-2stems
       - run: docker push researchdeezer/spleeter:conda-gpu-4stems
       - run: docker push researchdeezer/spleeter:conda-gpu-5stems
+      - run: docker tag researchdeezer/spleeter:conda-gpu researchdeezer/spleeter:gpu
+      - run: docker push researchdeezer/spleeter:gpu
   docker-3.6-cpu:
     docker:
       - image: docker:17.05.0-ce-git
@@ -152,7 +177,18 @@ workflows:
           requires:
             - test-3.6
             - test-3.7
+      - sdist-gpu:
+          requires:
+            - test-3.6
+            - test-3.7
       - pypi-deploy:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - sdist
+      - pypi-deploy-gpu:
           filters:
             branches:
               only:
@@ -163,6 +199,7 @@ workflows:
           type: approval
           requires:
             - pypi-deploy
+            - pypi-deploy-gpu
           filters:
             branches:
               only:

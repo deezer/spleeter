@@ -15,7 +15,14 @@ clean:
 	rm -Rf *.egg-info
 	rm -Rf dist
 
-build:
+build: clean
+	sed -i "s/project_name = ''/project_name = 'spleeter'/g"
+	sed -i "s/tensorflow_dependency = '[^']*'/tensorflow_dependency = 'tensorflow'/g" setup.py
+	python3 setup.py sdist
+
+build-gpu: clean
+	sed -i "s/project_name = ''/project_name = 'spleeter-gpu'/g"
+	sed -i "s/tensorflow_dependency = '[^']*'/tensorflow_dependency = 'tensorflow-gpu'/g" setup.py
 	python3 setup.py sdist
 
 test:

@@ -16,12 +16,12 @@ clean:
 	rm -Rf dist
 
 build: clean
-	sed -i "s/project_name = ''/project_name = 'spleeter'/g"
+	sed -i "s/project_name = ''/project_name = 'spleeter'/g" setup.py
 	sed -i "s/tensorflow_dependency = '[^']*'/tensorflow_dependency = 'tensorflow'/g" setup.py
 	python3 setup.py sdist
 
 build-gpu: clean
-	sed -i "s/project_name = ''/project_name = 'spleeter-gpu'/g"
+	sed -i "s/project_name = ''/project_name = 'spleeter-gpu'/g" setup.py
 	sed -i "s/tensorflow_dependency = '[^']*'/tensorflow_dependency = 'tensorflow-gpu'/g" setup.py
 	python3 setup.py sdist
 

@@ -73,6 +73,7 @@ jobs:
       - image: docker:17.05.0-ce-git
     steps:
       - checkout
+      - setup_remote_docker
       - run: docker build -t researchdeezer/spleeter:conda -f docker/cpu/conda.dockerfile .
       - run: docker build -t researchdeezer/spleeter:conda-2stems -f docker/cpu/conda-2stems.dockerfile .
       - run: docker build -t researchdeezer/spleeter:conda-4stems -f docker/cpu/conda-2stems.dockerfile .
@@ -91,6 +92,7 @@ jobs:
       - image: docker:17.05.0-ce-git
     steps:
       - checkout
+      - setup_remote_docker
       - run: docker build -t researchdeezer/spleeter:conda-gpu -f docker/cpu/conda.dockerfile .
       - run: docker build -t researchdeezer/spleeter:conda-gpu-2stems -f docker/cpu/conda-2stems.dockerfile .
       - run: docker build -t researchdeezer/spleeter:conda-gpu-4stems -f docker/cpu/conda-2stems.dockerfile .
@@ -105,6 +107,7 @@ jobs:
       - image: docker:17.05.0-ce-git
     steps:
       - checkout
+      - setup_remote_docker
       - run: docker build -t researchdeezer/spleeter:3.6 -f docker/cpu/python-3.6.dockerfile .
       - run: docker build -t researchdeezer/spleeter:3.6-2stems -f docker/cpu/python-3.6-2stems.dockerfile .
       - run: docker build -t researchdeezer/spleeter:3.6-4stems -f docker/cpu/python-3.6-4stems.dockerfile .
@@ -123,6 +126,7 @@ jobs:
       - image: docker:17.05.0-ce-git
     steps:
       - checkout
+      - setup_remote_docker
       - run: docker build -t spleeter:3.7 -f docker/cpu/python-3.7.dockerfile .
       - run: docker build -t spleeter:3.7-2stems -f docker/cpu/python-3.7-2stems.dockerfile .
       - run: docker build -t spleeter:3.7-4stems -f docker/cpu/python-3.7-4stems.dockerfile .

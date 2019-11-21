@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.7
 
 # Cuda installation.
 # Note : original cuda base file from https://gitlab.com/nvidia/container-images/cuda/blob/master/dist/ubuntu18.04/10.1/base/Dockerfile

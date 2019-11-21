@@ -146,6 +146,21 @@ jobs:
       - run: docker push researchdeezer/spleeter:3.6-2stems
       - run: docker push researchdeezer/spleeter:3.6-4stems
       - run: docker push researchdeezer/spleeter:3.6-5stems
+  docker-3.6-gpu:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: docker build -t researchdeezer/spleeter:3.6-gpu -f docker/python-3.6-gpu.dockerfile .
+      - run: docker build --build-arg BASETAG=3.6-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:3.6-gpu-2stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=3.6-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:3.6-gpu-4stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=3.6-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:3.6-gpu-5stems -f docker/embedded-model.dockerfile .
+      - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - run: docker push researchdeezer/spleeter:3.6-gpu
+      - run: docker push researchdeezer/spleeter:3.6-gpu-2stems
+      - run: docker push researchdeezer/spleeter:3.6-gpu-4stems
+      - run: docker push researchdeezer/spleeter:3.6-gpu-5stems
   docker-3.7-cpu:
     docker:
       - image: docker:17.05.0-ce-git
@@ -167,6 +182,21 @@ jobs:
       - run: docker push researchdeezer/spleeter:3.7-2stems
       - run: docker push researchdeezer/spleeter:3.7-4stems
       - run: docker push researchdeezer/spleeter:3.7-5stems
+  docker-3.7-gpu:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: docker build -t researchdeezer/spleeter:3.7-gpu -f docker/python-3.7-gpu.dockerfile .
+      - run: docker build --build-arg BASETAG=3.7-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:3.7-gpu-2stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=3.7-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:3.7-gpu-4stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=3.7-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:3.7-gpu-5stems -f docker/embedded-model.dockerfile .
+      - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - run: docker push researchdeezer/spleeter:3.7-gpu
+      - run: docker push researchdeezer/spleeter:3.7-gpu-2stems
+      - run: docker push researchdeezer/spleeter:3.7-gpu-4stems
+      - run: docker push researchdeezer/spleeter:3.7-gpu-5stems
 workflows:
   version: 2
   spleeter-release-pipeline:
@@ -225,9 +255,23 @@ workflows:
             branches:
               only:
                 - master
+      - docker-3.6-gpu:
+          requires:
+            - pypi-deploy-gpu
+          filters:
+            branches:
+              only:
+                - master
       - docker-3.7-cpu:
           requires:
             - pypi-deploy
+          filters:
+            branches:
+              only:
+                - master
+      - docker-3.7-gpu:
+          requires:
+            - pypi-deploy-gpu
           filters:
             branches:
               only:

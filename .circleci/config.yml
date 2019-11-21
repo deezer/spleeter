@@ -1,40 +1,207 @@
 version: 2
 jobs:
-  test:
+  # =======================================================================================
+  # Python 3.6 testing.
+  # =======================================================================================
+  test-3.6:
+    docker:
+      - image: python:3.6
+    working_directory: ~/spleeter
+    steps:
+      - checkout
+      - restore_cache:
+          key: models-{{ checksum "spleeter/model/__init__.py" }}
+      - run:
+          name: install ffmpeg
+          command: apt-get update && apt-get install -y ffmpeg
+      - run:
+          name: install python dependencies
+          command: pip install -r requirements.txt && pip install pytest pytest-xdist
+      - run:
+          name: run tests
+          command: make test
+      - save_cache:
+          key: models-{{ checksum "spleeter/model/__init__.py" }}
+          paths:
+            - "pretrained_models"
+  # =======================================================================================
+  # Python 3.7 testing.
+  # =======================================================================================
+  test-3.7:
     docker:
       - image: python:3.7
     working_directory: ~/spleeter
     steps:
       - checkout
+      - restore_cache:
+          key: models-{{ checksum "spleeter/model/__init__.py" }}
       - run:
           name: install ffmpeg
           command: apt-get update && apt-get install -y ffmpeg
       - run:
-          name: install spleeter
-          command: pip install .
+          name: install python dependencies
+          command: pip install -r requirements.txt && pip install pytest pytest-xdist
       - run:
-          name: test separation
-          command: spleeter separate -i audio_example.mp3 -o .
-  upload:
+          name: run tests
+          command: make test
+      - save_cache:
+          key: models-{{ checksum "spleeter/model/__init__.py" }}
+          paths:
+            - "pretrained_models"
+  # =======================================================================================
+  # Source distribution packaging.
+  # =======================================================================================
+  sdist:
     docker:
       - image: python:3
     steps:
       - checkout
       - run:  
-          name: package
-          command: python setup.py sdist
+          name: package source distribution
+          command: make build
+      - save_cache:
+          key: sdist-{{ .Branch }}-{{ checksum "setup.py" }}
+          paths:
+            - dist
+  # =======================================================================================
+  # PyPi deployment.
+  # =======================================================================================
+  pypi-deploy:
+    docker:
+      - image: python:3
+    steps:
+      - checkout
+      - restore_cache:
+          key: sdist-{{ .Branch }}-{{ checksum "setup.py" }}
       - run:
           name: upload to PyPi
-          command: pip install twine && twine upload dist/*
+          # TODO: Infer destination regarding of branch.
+          #       - master => production PyPi
+          #       - other => testing PyPi
+          command: make deploy
+  # =======================================================================================
+  # Conda distribution.
+  # =======================================================================================
+  conda-forge-deploy:
+    docker:
+      - image: python:3
+    steps:
+      - run:
+          name: install dependencies
+          command: apt-get update && apt-get install -y git openssl hub
+      - run:
+          name: checkout feedstock
+          command: make feedstock
+  # =======================================================================================
+  # Docker build.
+  # =======================================================================================
+  docker-conda-cpu:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - run: docker build -t researchdeezer/spleeter:conda -f docker/cpu/conda.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:conda-2stems -f docker/cpu/conda-2stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:conda-4stems -f docker/cpu/conda-2stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:conda-5stems -f docker/cpu/conda-2stems.dockerfile .
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-2stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-4stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-5stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - run: docker push researchdeezer/spleeter:conda
+      - run: docker push researchdeezer/spleeter:conda-2stems
+      - run: docker push researchdeezer/spleeter:conda-4stems
+      - run: docker push researchdeezer/spleeter:conda-5stems
+  docker-3.6-cpu:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - run: docker build -t researchdeezer/spleeter:3.6 -f docker/cpu/python-3.6.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:3.6-2stems -f docker/cpu/python-3.6-2stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:3.6-4stems -f docker/cpu/python-3.6-4stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:3.6-5stems -f docker/cpu/python-3.6-5stems.dockerfile .
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6 separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-2stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-4stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-5stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - run: docker push researchdeezer/spleeter:3.6
+      - run: docker push researchdeezer/spleeter:3.6-2stems
+      - run: docker push researchdeezer/spleeter:3.6-4stems
+      - run: docker push researchdeezer/spleeter:3.6-5stems
+  docker-3.7-cpu:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - run: docker build -t spleeter:3.7 -f docker/cpu/python-3.7.dockerfile .
+      - run: docker build -t spleeter:3.7-2stems -f docker/cpu/python-3.7-2stems.dockerfile .
+      - run: docker build -t spleeter:3.7-4stems -f docker/cpu/python-3.7-4stems.dockerfile .
+      - run: docker build -t spleeter:3.7-5stems -f docker/cpu/python-3.7-5stems.dockerfile .
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7 separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-2stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-4stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-5stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - run: docker tags researchdeezer/spleeter:3.7 researchdeezer/spleeter:latest
+      - run: docker push researchdeezer/spleeter:latest
+      - run: docker push researchdeezer/spleeter:3.7
+      - run: docker push researchdeezer/spleeter:3.7-2stems
+      - run: docker push researchdeezer/spleeter:3.7-4stems
+      - run: docker push researchdeezer/spleeter:3.7-5stems
 workflows:
   version: 2
-  test-and-deploy:
+  spleeter-release-pipeline:
     jobs:
-      - test
-      - upload:
+      - test-3.6
+      - test-3.7
+      - sdist:
+          requires:
+            - test-3.6
+            - test-3.7
+      - pypi-deploy:
           filters:
             branches:
               only:
                 - master
           requires:
-            - test
+            - sdist
+      - conda-forge-deploy:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - pypi-deploy
+      - hold:
+          type: approval
+          requires:
+            - pypi-deploy
+            - conda-forge-deploy
+          filters:
+            branches:
+              only:
+                - master
+      - docker-conda-cpu:
+          requires:
+            - hold
+          filters:
+            branches:
+              only:
+                - master
+      - docker-3.6-cpu:
+          requires:
+            - hold
+          filters:
+            branches:
+              only:
+                - master
+      - docker-3.7-cpu:
+          requires:
+            - hold
+          filters:
+            branches:
+              only:
+                - master

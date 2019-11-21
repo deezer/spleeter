@@ -2,15 +2,16 @@
 # coding: utf8
 
 """
-    Module for building data preprocessing pipeline using the tensorflow data
-    API.
-    Data preprocessing such as audio loading, spectrogram computation, cropping,
-    feature caching or data augmentation is done using a tensorflow dataset object
-    that output a tuple (input_, output) where:
-    - input_ is a dictionary with a single key that contains the (batched) mix
-    spectrogram of audio samples
-    - output is a dictionary of spectrogram of the isolated tracks (ground truth)
+    Module for building data preprocessing pipeline using the tensorflow
+    data API. Data preprocessing such as audio loading, spectrogram
+    computation, cropping, feature caching or data augmentation is done
+    using a tensorflow dataset object that output a tuple (input_, output)
+    where:
 
+    -   input is a dictionary with a single key that contains the (batched)
+        mix spectrogram of audio samples
+    -   output is a dictionary of spectrogram of the isolated tracks
+        (ground truth)
 """
 
 import time
@@ -23,10 +24,10 @@ import numpy as np
 import tensorflow as tf
 # pylint: enable=import-error
 
-from .utils.audio.convertor import (
+from .audio.convertor import (
     db_uint_spectrogram_to_gain,
     spectrogram_to_db_uint)
-from .utils.audio.spectrogram import (
+from .audio.spectrogram import (
     compute_spectrogram_tf,
     random_pitch_shift,
     random_time_stretch)
@@ -40,15 +41,6 @@ from .utils.tensor import (
 __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
-
-# Default datasets path parameter to use.
-DEFAULT_DATASETS_PATH = join(
-    'audio_database',
-    'separated_sources',
-    'experiments',
-    'karaoke_vocal_extraction',
-    'tensorflow_experiment'
-)
 
 # Default audio parameters to use.
 DEFAULT_AUDIO_PARAMS = {

@@ -1,5 +1,6 @@
-FROM deezer/spleeter:3.6
+FROM researchdeezer/spleeter:3.6
 
 RUN mkdir -p /model/2stems \
     && wget -O /tmp/2stems.tar.gz https://github.com/deezer/spleeter/releases/download/v1.4.0/2stems.tar.gz \
-    && tar -xvzf /tmp/2stems.tar.gz -C /model/2stems/
+    && tar -xvzf /tmp/2stems.tar.gz -C /model/2stems/ \
+    && touch /model/5stems/.probe

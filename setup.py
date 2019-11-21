@@ -14,7 +14,7 @@ __license__ = 'MIT License'
 
 # Default project values.
 project_name = 'spleeter'
-project_version = '1.4.3'
+project_version = '1.4.4'
 device_target = 'cpu'
 tensorflow_dependency = 'tensorflow'
 tensorflow_version = '1.14.0'
@@ -51,13 +51,13 @@ setup(
     license='MIT License',
     packages=[
         'spleeter',
+        'spleeter.audio',
         'spleeter.commands',
         'spleeter.model',
         'spleeter.model.functions',
         'spleeter.model.provider',
         'spleeter.resources',
         'spleeter.utils',
-        'spleeter.utils.audio',
     ],
     package_data={'spleeter.resources': ['*.json']},
     python_requires='>=3.6, <3.8',

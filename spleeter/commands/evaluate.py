@@ -44,7 +44,6 @@ __license__ = 'MIT License'
 
 _SPLIT = 'test'
 _MIXTURE = 'mixture.wav'
-_NAMING = 'directory'
 _AUDIO_DIRECTORY = 'audio'
 _METRICS_DIRECTORY = 'metrics'
 _INSTRUMENTS = ('vocals', 'drums', 'bass', 'other')
@@ -71,7 +70,6 @@ def _separate_evaluation_dataset(arguments, musdb_root_directory, params):
             audio_filenames=mixtures,
             audio_codec='wav',
             output_path=join(audio_output_directory, _SPLIT),
-            output_naming=_NAMING,
             max_duration=600.,
             MWF=arguments.MWF,
             verbose=arguments.verbose),

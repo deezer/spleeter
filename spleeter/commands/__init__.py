@@ -13,67 +13,77 @@ __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
-# -i opt specification.
+# -i opt specification (separate).
 OPT_INPUT = {
-    'dest': 'audio_filenames',
+    'dest': 'inputs',
     'nargs': '+',
     'help': 'List of input audio filenames',
     'required': True
 }
 
-# -o opt specification.
+# -o opt specification (evaluate and separate).
 OPT_OUTPUT = {
     'dest': 'output_path',
     'default': join(gettempdir(), 'separated_audio'),
     'help': 'Path of the output directory to write audio files in'
 }
 
-# -p opt specification.
+# -f opt specification (separate).
+OPT_FORMAT = {
+    'dest': 'filename_format',
+    'default': '{filename}/{instrument}.{codec}',
+    'help': (
+        'Template string that will be formatted to generated'
+        'output filename. Such template should be Python formattable'
+        'string, and could use {filename}, {instrument}, and {codec}'
+        'variables.'
+    )
+}
+
+# -p opt specification (train, evaluate and separate).
 OPT_PARAMS = {
-    'dest': 'params_filename',
+    'dest': 'configuration',
     'default': 'spleeter:2stems',
     'type': str,
     'action': 'store',
     'help': 'JSON filename that contains params'
 }
 
-# -n opt specification.
-OPT_OUTPUT_NAMING = {
-    'dest': 'output_naming',
-    'default': 'filename',
-    'choices': ('directory', 'filename'),
-    'help': (
-        'Choice for naming the output base path: '
-        '"filename" (use the input filename, i.e '
-        '/path/to/audio/mix.wav will be separated to '
-        '<output_path>/mix/<instument1>.wav, '
-        '<output_path>/mix/<instument2>.wav...) or '
-        '"directory" (use the name of the input last level'
-        ' directory, for instance /path/to/audio/mix.wav '
-        'will be separated to <output_path>/audio/<instument1>.wav'
-        ', <output_path>/audio/<instument2>.wav)')
+# -s opt specification (separate).
+OPT_OFFSET = {
+    'dest': 'offset',
+    'type': float,
+    'default': 0.,
+    'help': 'Set the starting offset to separate audio from.'
 }
 
 # -d opt specification (separate).
 OPT_DURATION = {
-    'dest': 'max_duration',
+    'dest': 'duration',
     'type': float,
     'default': 600.,
     'help': (
         'Set a maximum duration for processing audio '
-        '(only separate max_duration first seconds of '
+        '(only separate offset + duration first seconds of '
         'the input file)')
 }
 
-# -c opt specification.
+# -c opt specification (separate).
 OPT_CODEC = {
-    'dest': 'audio_codec',
+    'dest': 'codec',
     'choices': ('wav', 'mp3', 'ogg', 'm4a', 'wma', 'flac'),
     'default': 'wav',
     'help': 'Audio codec to be used for the separated output'
 }
 
-# -m opt specification.
+# -b opt specification (separate).
+OPT_BITRATE = {
+    'dest': 'bitrate',
+    'default': '128k',
+    'help': 'Audio bitrate to be used for the separated output'
+}
+
+# -m opt specification (evaluate and separate).
 OPT_MWF = {
     'dest': 'MWF',
     'action': 'store_const',
@@ -82,7 +92,7 @@ OPT_MWF = {
     'help': 'Whether to use multichannel Wiener filtering for separation',
 }
 
-# --mus_dir opt specification.
+# --mus_dir opt specification (evaluate).
 OPT_MUSDB = {
     'dest': 'mus_dir',
     'type': str,
@@ -98,14 +108,14 @@ OPT_DATA = {
     'help': 'Path of the folder containing audio data for training'
 }
 
-# -a opt specification.
+# -a opt specification (train, evaluate and separate).
 OPT_ADAPTER = {
     'dest': 'audio_adapter',
     'type': str,
     'help': 'Name of the audio adapter to use for audio I/O'
 }
 
-# -a opt specification.
+# -a opt specification (train, evaluate and separate).
 OPT_VERBOSE = {
     'action': 'store_true',
     'help': 'Shows verbose logs'
@@ -158,11 +168,13 @@ def _create_separate_parser(parser_factory):
     """
     parser = parser_factory('separate', help='Separate audio files')
     _add_common_options(parser)
-    parser.add_argument('-i', '--audio_filenames', **OPT_INPUT)
+    parser.add_argument('-i', '--inputs', **OPT_INPUT)
     parser.add_argument('-o', '--output_path', **OPT_OUTPUT)
-    parser.add_argument('-n', '--output_naming', **OPT_OUTPUT_NAMING)
-    parser.add_argument('-d', '--max_duration', **OPT_DURATION)
-    parser.add_argument('-c', '--audio_codec', **OPT_CODEC)
+    parser.add_argument('-f', '--filename_format', **OPT_FORMAT)
+    parser.add_argument('-d', '--duration', **OPT_DURATION)
+    parser.add_argument('-s', '--offset', **OPT_OFFSET)
+    parser.add_argument('-c', '--codec', **OPT_CODEC)
+    parser.add_argument('-b', '--birate', **OPT_BITRATE)
     parser.add_argument('-m', '--mwf', **OPT_MWF)
     return parser
 

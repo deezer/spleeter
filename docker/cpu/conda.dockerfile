@@ -1,12 +1,9 @@
 FROM continuumio/miniconda3:4.7.10
 
-RUN conda install -y ipython \
-    && conda install -y tensorflow==1.14.0 \
-    && conda install -y -c conda-forge ffmpeg \
-    && conda install -y -c conda-forge libsndfile \
-    && conda install -y -c anaconda pandas==0.25.1 \
+RUN conda install -y -c conda-forge musdb
+# RUN conda install -y -c conda-forge museval
+RUN conda install -y -c conda-forge spleeter=1.4.4
 RUN mkdir -p /model
 ENV MODEL_PATH /model
-RUN pip install spleeter
 
 ENTRYPOINT ["spleeter"]

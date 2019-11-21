@@ -110,3 +110,4 @@ __pycache__
 pretrained_models
 docs/build
 .vscode
+spleeter-feedstock/

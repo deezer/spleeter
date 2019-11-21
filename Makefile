@@ -5,7 +5,7 @@
 # @licence MIT Licence
 # =======================================================
 
-FFEDSTOCK = spleeter-feedstock
+FEEDSTOCK = spleeter-feedstock
 FEEDSTOCK_REPOSITORY = https://github.com/deezer/$(FEEDSTOCK)
 FEEDSTOCK_RECIPE = $(FEEDSTOCK)/recipe/spleeter/meta.yaml
 

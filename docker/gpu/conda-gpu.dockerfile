@@ -1,12 +1,21 @@
-FROM continuumio/miniconda3:4.7.10
+FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
 
-RUN conda install -y ipython \
-    && conda install -y tensorflow-gpu==1.14.0 \
-    && conda install -y -c conda-forge ffmpeg \
-    && conda install -y -c conda-forge libsndfile \
-    && conda install -y -c anaconda pandas==0.25.1 \
-RUN mkdir -p /model
-ENV MODEL_PATH /model
-RUN pip install spleeter
+RUN apt-get update --fix-missing && \
+    apt-get install -y wget bzip2 ca-certificates curl git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-4.6.14-Linux-x86_64.sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
+    rm ~/miniconda.sh && \
+    /opt/conda/bin/conda clean -tipsy && \
+    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
+    echo "conda activate base" >> ~/.bashrc
+
+RUN conda install -y tensorflow-gpu==1.14.0
+RUN conda install -y -c conda-forge musdb
+# RUN conda install -y -c conda-forge museval
+# Note: switch to spleeter GPU once published.
+RUN conda install -y -c conda-forge spleeter
 
 ENTRYPOINT ["spleeter"]

@@ -74,10 +74,10 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t researchdeezer/spleeter:conda -f docker/cpu/conda.dockerfile .
-      - run: docker build -t researchdeezer/spleeter:conda-2stems -f docker/cpu/conda-2stems.dockerfile .
-      - run: docker build -t researchdeezer/spleeter:conda-4stems -f docker/cpu/conda-2stems.dockerfile .
-      - run: docker build -t researchdeezer/spleeter:conda-5stems -f docker/cpu/conda-2stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:conda -f docker/conda.dockerfile .
+      - run: docker build --build-arg BASETAG=conda --build-arg MODEL=2stems -t researchdeezer/spleeter:conda-2stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=conda --build-arg MODEL=4stems -t researchdeezer/spleeter:conda-4stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=conda --build-arg MODEL=5stems -t researchdeezer/spleeter:conda-5stems -f docker/embedded-model.dockerfile .
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-2stems separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-4stems separate -i /runtime/audio_example.mp3 -o /tmp
@@ -93,10 +93,10 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t researchdeezer/spleeter:conda-gpu -f docker/cpu/conda.dockerfile .
-      - run: docker build -t researchdeezer/spleeter:conda-gpu-2stems -f docker/cpu/conda-2stems.dockerfile .
-      - run: docker build -t researchdeezer/spleeter:conda-gpu-4stems -f docker/cpu/conda-2stems.dockerfile .
-      - run: docker build -t researchdeezer/spleeter:conda-gpu-5stems -f docker/cpu/conda-2stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:conda-gpu -f docker/conda-gpu.dockerfile .
+      - run: docker build --build-arg BASETAG=conda-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:conda-gpu-2stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=conda-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:conda-gpu-4stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=conda-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:conda-gpu-5stems -f docker/embedded-model.dockerfile .
       - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - run: docker push researchdeezer/spleeter:conda-gpu
       - run: docker push researchdeezer/spleeter:conda-gpu-2stems
@@ -108,10 +108,10 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t researchdeezer/spleeter:3.6 -f docker/cpu/python-3.6.dockerfile .
-      - run: docker build -t researchdeezer/spleeter:3.6-2stems -f docker/cpu/python-3.6-2stems.dockerfile .
-      - run: docker build -t researchdeezer/spleeter:3.6-4stems -f docker/cpu/python-3.6-4stems.dockerfile .
-      - run: docker build -t researchdeezer/spleeter:3.6-5stems -f docker/cpu/python-3.6-5stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:3.6 -f docker/python-3.6.dockerfile .
+      - run: docker build --build-arg BASETAG=3.6 --build-arg MODEL=2stems -t researchdeezer/spleeter:3.6-2stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=3.6 --build-arg MODEL=4stems -t researchdeezer/spleeter:3.6-4stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=3.6 --build-arg MODEL=5stems -t researchdeezer/spleeter:3.6-5stems -f docker/embedded-model.dockerfile .
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6 separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-2stems separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-4stems separate -i /runtime/audio_example.mp3 -o /tmp
@@ -127,10 +127,10 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t spleeter:3.7 -f docker/cpu/python-3.7.dockerfile .
-      - run: docker build -t spleeter:3.7-2stems -f docker/cpu/python-3.7-2stems.dockerfile .
-      - run: docker build -t spleeter:3.7-4stems -f docker/cpu/python-3.7-4stems.dockerfile .
-      - run: docker build -t spleeter:3.7-5stems -f docker/cpu/python-3.7-5stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:3.7 -f docker/python-3.7.dockerfile .
+      - run: docker build --build-arg BASETAG=3.7 --build-arg MODEL=2stems -t researchdeezer/spleeter:3.7-2stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=3.7 --build-arg MODEL=4stems -t researchdeezer/spleeter:3.7-4stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASETAG=3.7 --build-arg MODEL=5stems -t researchdeezer/spleeter:3.7-5stems -f docker/embedded-model.dockerfile .
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7 separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-2stems separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-4stems separate -i /runtime/audio_example.mp3 -o /tmp

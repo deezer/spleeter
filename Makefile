@@ -35,6 +35,6 @@ feedstock: build
 	git push -q https://$$FEEDSTOCK_TOKEN@github.com/deezer/$(FEEDSTOCK)
 	hub pull-request -m "Update spleeter version to $(VERSION)"
 
-deploy: pip-dependencies
+deploy:
 	pip install twine
 	twine upload dist/*

@@ -96,6 +96,20 @@ jobs:
       - run: docker push researchdeezer/spleeter:conda-2stems
       - run: docker push researchdeezer/spleeter:conda-4stems
       - run: docker push researchdeezer/spleeter:conda-5stems
+  docker-conda-gpu:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - run: docker build -t researchdeezer/spleeter:conda-gpu -f docker/cpu/conda.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:conda-gpu-2stems -f docker/cpu/conda-2stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:conda-gpu-4stems -f docker/cpu/conda-2stems.dockerfile .
+      - run: docker build -t researchdeezer/spleeter:conda-gpu-5stems -f docker/cpu/conda-2stems.dockerfile .
+      - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - run: docker push researchdeezer/spleeter:conda-gpu
+      - run: docker push researchdeezer/spleeter:conda-gpu-2stems
+      - run: docker push researchdeezer/spleeter:conda-gpu-4stems
+      - run: docker push researchdeezer/spleeter:conda-gpu-5stems
   docker-3.6-cpu:
     docker:
       - image: docker:17.05.0-ce-git
@@ -174,16 +188,23 @@ workflows:
             branches:
               only:
                 - master
-      - docker-3.6-cpu:
+      - docker-conda-gpu:
           requires:
             - hold
           filters:
             branches:
               only:
                 - master
+      - docker-3.6-cpu:
+          requires:
+            - pypi-deploy
+          filters:
+            branches:
+              only:
+                - master
       - docker-3.7-cpu:
           requires:
-            - hold
+            - pypi-deploy
           filters:
             branches:
               only:

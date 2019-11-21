@@ -194,7 +194,7 @@ workflows:
               only:
                 - master
           requires:
-            - sdist
+            - sdist-gpu
       - conda-forge-validation:
           type: approval
           requires:

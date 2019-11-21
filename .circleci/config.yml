@@ -11,15 +11,9 @@ jobs:
       - checkout
       - restore_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
-      - run:
-          name: install ffmpeg
-          command: apt-get update && apt-get install -y ffmpeg
-      - run:
-          name: install python dependencies
-          command: pip install -r requirements.txt && pip install pytest pytest-xdist
-      - run:
-          name: run tests
-          command: make test
+      - run: apt-get update && apt-get install -y ffmpeg
+      - run: pip install -r requirements.txt && pip install pytest pytest-xdist
+      - run: make test
       - save_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
           paths:
@@ -35,15 +29,9 @@ jobs:
       - checkout
       - restore_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
-      - run:
-          name: install ffmpeg
-          command: apt-get update && apt-get install -y ffmpeg
-      - run:
-          name: install python dependencies
-          command: pip install -r requirements.txt && pip install pytest pytest-xdist
-      - run:
-          name: run tests
-          command: make test
+      - run: apt-get update && apt-get install -y ffmpeg
+      - run: pip install -r requirements.txt && pip install pytest pytest-xdist
+      - run: make test
       - save_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
           paths:
@@ -56,9 +44,7 @@ jobs:
       - image: python:3
     steps:
       - checkout
-      - run:  
-          name: package source distribution
-          command: make build
+      - run: make build
       - save_cache:
           key: sdist-{{ .Branch }}-{{ checksum "setup.py" }}
           paths:
@@ -86,12 +72,9 @@ jobs:
     docker:
       - image: python:3
     steps:
-      - run:
-          name: install dependencies
-          command: apt-get update && apt-get install -y git openssl hub
-      - run:
-          name: checkout feedstock
-          command: make feedstock
+      - checkout
+      - run: apt-get update && apt-get install -y git openssl hub
+      - run: make feedstock
   # =======================================================================================
   # Docker build.
   # =======================================================================================

@@ -18,7 +18,7 @@ import json
 from functools import partial
 from multiprocessing import Pool
 from pathlib import Path
-from os.path import basename, join
+from os.path import basename, join, splitext
 
 from . import SpleeterError
 from .audio.adapter import get_default_audio_adapter
@@ -121,7 +121,7 @@ class Separator(object):
             duration=duration,
             sample_rate=self._sample_rate)
         sources = self.separate(waveform)
-        filename = basename(audio_descriptor)
+        filename = splitext(basename(audio_descriptor))
         generated = []
         for instrument, data in sources.items():
             path = join(destination, filename_format.format(

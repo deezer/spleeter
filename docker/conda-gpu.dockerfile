@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
+FROM nvidia/cuda:9.0-cudnn7-runtime-ubuntu16.04
 
 RUN apt-get update --fix-missing \
     && apt-get install -y wget bzip2 ca-certificates curl git \
@@ -13,8 +13,7 @@ RUN apt-get update --fix-missing \
     && echo "conda activate base" >> ~/.bashrc \
     && ln -s /opt/conda/bin/conda /usr/bin/conda
 
-RUN conda install -y cudatoolkit=9.0 \
-    && conda install -y tensorflow-gpu==1.14.0 \
+RUN conda install -y tensorflow-gpu==1.14.0 \
     && conda install -y -c conda-forge musdb
 # RUN conda install -y -c conda-forge museval
 # Note: switch to spleeter GPU once published.

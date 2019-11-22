@@ -94,7 +94,8 @@ class Separator(object):
             self, audio_descriptor, destination,
             audio_adapter=get_default_audio_adapter(),
             offset=0, duration=600., codec='wav', bitrate='128k',
-            filename_format='{filename}/{instrument}.{codec}', synchronous=True):
+            filename_format='{filename}/{instrument}.{codec}',
+            synchronous=True):
         """ Performs source separation and export result to file using
         given audio adapter.
 

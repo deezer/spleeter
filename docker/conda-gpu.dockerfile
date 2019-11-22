@@ -13,8 +13,11 @@ RUN apt-get update --fix-missing \
     && echo "conda activate base" >> ~/.bashrc \
     && ln -s /opt/conda/bin/conda /usr/bin/conda
 
+COPY audio_example.mp3 .
+
 RUN conda install -y -c conda-forge musdb
 # RUN conda install -y -c conda-forge museval
 RUN conda install -y -c conda-forge spleeter-gpu=1.4.5
+
 
 ENTRYPOINT ["spleeter"]

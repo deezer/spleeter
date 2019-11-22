@@ -13,10 +13,8 @@ RUN apt-get update --fix-missing \
     && echo "conda activate base" >> ~/.bashrc \
     && ln -s /opt/conda/bin/conda /usr/bin/conda
 
-RUN conda install -y tensorflow-gpu==1.14.0 \
-    && conda install -y -c conda-forge musdb
+RUN conda install -y -c conda-forge musdb
 # RUN conda install -y -c conda-forge museval
-# Note: switch to spleeter GPU once published.
-RUN conda install -y -c conda-forge spleeter=1.4.4
+RUN conda install -y -c conda-forge spleeter-gpu=1.4.5
 
 ENTRYPOINT ["spleeter"]

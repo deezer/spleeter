@@ -48,7 +48,7 @@ RUN apt-get update \
 # Spleeter installation.
 RUN apt-get update && apt-get install -y ffmpeg libsndfile1
 RUN pip install musdb museval
-RUN pip install spleeter-gpu==1.4.4
+RUN pip install spleeter-gpu==1.4.5
 RUN mkdir -p /model
 ENV MODEL_PATH /model
 ENTRYPOINT ["spleeter"]

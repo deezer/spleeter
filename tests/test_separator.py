@@ -9,7 +9,7 @@ __license__ = 'MIT License'
 
 import filecmp
 
-from os.path import splitext, exists, join
+from os.path import splitext, basename, exists, join
 from tempfile import TemporaryDirectory
 
 import pytest
@@ -19,7 +19,7 @@ from spleeter.audio.adapter import get_default_audio_adapter
 from spleeter.separator import Separator
 
 TEST_AUDIO_DESCRIPTOR = 'audio_example.mp3'
-TEST_AUDIO_BASENAME = splitext(TEST_AUDIO_DESCRIPTOR)
+TEST_AUDIO_BASENAME = splitext(basename(TEST_AUDIO_DESCRIPTOR))[0]
 TEST_CONFIGURATIONS = [
     ('spleeter:2stems', ('vocals', 'accompaniment')),
     ('spleeter:4stems', ('vocals', 'drums', 'bass', 'other')),

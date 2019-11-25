@@ -121,7 +121,7 @@ class Separator(object):
             duration=duration,
             sample_rate=self._sample_rate)
         sources = self.separate(waveform)
-        filename = splitext(basename(audio_descriptor))
+        filename = splitext(basename(audio_descriptor))[0]
         generated = []
         for instrument, data in sources.items():
             path = join(destination, filename_format.format(

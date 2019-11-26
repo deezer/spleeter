@@ -74,7 +74,7 @@ def _separate_evaluation_dataset(arguments, musdb_root_directory, params):
             codec='wav',
             duration=600.,
             offset=0.,
-            birate='128k',
+            bitrate='128k',
             MWF=arguments.MWF,
             verbose=arguments.verbose),
         params)

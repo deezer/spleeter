@@ -69,6 +69,7 @@ def _separate_evaluation_dataset(arguments, musdb_root_directory, params):
             audio_adapter=arguments.audio_adapter,
             audio_filenames=mixtures,
             audio_codec='wav',
+            configuration=arguments.configuration,
             output_path=join(audio_output_directory, _SPLIT),
             max_duration=600.,
             MWF=arguments.MWF,

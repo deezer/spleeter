@@ -67,11 +67,14 @@ def _separate_evaluation_dataset(arguments, musdb_root_directory, params):
     separate_entrypoint(
         Namespace(
             audio_adapter=arguments.audio_adapter,
-            audio_filenames=mixtures,
-            audio_codec='wav',
             configuration=arguments.configuration,
+            inputs=mixtures,
             output_path=join(audio_output_directory, _SPLIT),
-            max_duration=600.,
+            filename_format='{filename}/{instrument}.{codec}',
+            codec='wav',
+            duration=600.,
+            offset=0.,
+            birate='128k',
             MWF=arguments.MWF,
             verbose=arguments.verbose),
         params)

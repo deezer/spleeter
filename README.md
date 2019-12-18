@@ -36,6 +36,10 @@ spleeter separate -i spleeter/audio_example.mp3 -p spleeter:2stems -o output
 You should get two separated audio files (`vocals.wav` and `accompaniment.wav`)
 in the `output/audio_example` folder.
 
+### Windows users 
+
+   It appears that sometimes the shortcut command `spleeter` does not work properly on windows. This is a known issue that we will hopefully fix soon. In the meantime replace `spleeter separate` by `python -m spleeter separate` in the above line and it should work.
+
 For a more detailed documentation, please check the [repository wiki](https://github.com/deezer/spleeter/wiki)
 
 Want to try it out but don't want to install anything ? we've setup a [Google Colab](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb)

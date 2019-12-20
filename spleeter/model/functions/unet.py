@@ -2,8 +2,10 @@
 # coding: utf8
 
 """
-This module contains building functions for U-net source separation source
-separation models. Each instrument is modeled by a single U-netconvolutional
+This module contains building functions for U-net source
+separation models in a similar way as in A. Jansson et al. "Singing
+voice separation with deep u-net convolutional networks", ISMIR 2017.
+Each instrument is modeled by a single U-net convolutional
 / deconvolutional network that take a mix spectrogram as input and the
 estimated sound spectrogram as output.
 """

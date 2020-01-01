@@ -34,6 +34,15 @@ def _to_ffmpeg_time(n):
     return '%d:%02d:%09.6f' % (h, m, s)
 
 
+def _to_ffmpeg_codec(codec):
+    ffmpeg_codecs = {
+        'm4a': 'aac',
+        'ogg': 'libvorbis',
+        'wma': 'wmav2',
+    }
+    return ffmpeg_codecs.get(codec) or codec
+
+
 class FFMPEGProcessAudioAdapter(AudioAdapter):
     """ An AudioAdapter implementation that use FFMPEG binary through
     subprocess in order to perform I/O operation for audio processing.
@@ -112,7 +121,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         if bitrate:
             output_kwargs['audio_bitrate'] = bitrate
         if codec is not None and codec != 'wav':
-            output_kwargs['codec'] = codec
+            output_kwargs['codec'] = _to_ffmpeg_codec(codec)
         process = (
             ffmpeg
             .input('pipe:', format='f32le', **input_kwargs)

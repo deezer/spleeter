@@ -6,6 +6,6 @@ COPY audio_example.mp3 .
 
 RUN conda install -y -c conda-forge musdb
 # RUN conda install -y -c conda-forge museval
-RUN conda install -y -c conda-forge spleeter=1.4.5
+RUN conda install -y -c conda-forge spleeter=1.4.9
 
 ENTRYPOINT ["spleeter"]

@@ -52,6 +52,6 @@ COPY audio_example.mp3 .
 # Spleeter installation.
 RUN apt-get update && apt-get install -y ffmpeg libsndfile1
 RUN pip install musdb museval
-RUN pip install spleeter-gpu==1.4.5
+RUN pip install spleeter-gpu==1.4.9
 
 ENTRYPOINT ["spleeter"]

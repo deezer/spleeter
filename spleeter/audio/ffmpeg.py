@@ -112,9 +112,9 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         :param bitrate: (Optional) Bitrate of the written audio file.
         :raise IOError: If any error occurs while using FFMPEG to write data.
         """
-        directory = os.path.split(path)[0]
+        directory = os.path.dirname(path)
         if not os.path.exists(directory):
-            os.makedirs(directory)
+            raise SpleeterError(f'output directory does not exists: {directory}')
         get_logger().debug('Writing file %s', path)
         input_kwargs = {'ar': sample_rate, 'ac': data.shape[1]}
         output_kwargs = {'ar': sample_rate, 'strict': '-2'}
@@ -127,11 +127,11 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             .input('pipe:', format='f32le', **input_kwargs)
             .output(path, **output_kwargs)
             .overwrite_output()
-            .run_async(pipe_stdin=True, quiet=True))
+            .run_async(pipe_stdin=True, pipe_stderr=True, quiet=True))
         try:
             process.stdin.write(data.astype('<f4').tobytes())
             process.stdin.close()
             process.wait()
         except IOError:
             raise SpleeterError(f'FFMPEG error: {process.stderr.read()}')
-        get_logger().info('File %s written', path)
+        get_logger().info('File %s written succesfully', path)

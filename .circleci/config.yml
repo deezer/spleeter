@@ -103,8 +103,8 @@ jobs:
       - run: docker build --build-arg BASETAG=conda --build-arg MODEL=5stems -t researchdeezer/spleeter:conda-5stems -f docker/embedded-model.dockerfile .
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-2stems separate -i /runtime/audio_example.mp3 -o /tmp
-      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-4stems separate -i /runtime/audio_example.mp3 -o /tmp
-      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-5stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-4stems separate -i /runtime/audio_example.mp3 -p spleeter:4stems -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-5stems separate -i /runtime/audio_example.mp3 -p spleeter:5stems -o /tmp
       - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - run: docker push researchdeezer/spleeter:conda
       - run: docker push researchdeezer/spleeter:conda-2stems
@@ -139,8 +139,8 @@ jobs:
       - run: docker build --build-arg BASETAG=3.6 --build-arg MODEL=5stems -t researchdeezer/spleeter:3.6-5stems -f docker/embedded-model.dockerfile .
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6 separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-2stems separate -i /runtime/audio_example.mp3 -o /tmp
-      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-4stems separate -i /runtime/audio_example.mp3 -o /tmp
-      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-5stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-4stems separate -i /runtime/audio_example.mp3 -p spleeter:4stems -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-5stems separate -i /runtime/audio_example.mp3 -p spleeter:5stems -o /tmp
       - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - run: docker push researchdeezer/spleeter:3.6
       - run: docker push researchdeezer/spleeter:3.6-2stems
@@ -173,8 +173,8 @@ jobs:
       - run: docker build --build-arg BASETAG=3.7 --build-arg MODEL=5stems -t researchdeezer/spleeter:3.7-5stems -f docker/embedded-model.dockerfile .
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7 separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-2stems separate -i /runtime/audio_example.mp3 -o /tmp
-      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-4stems separate -i /runtime/audio_example.mp3 -o /tmp
-      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-5stems separate -i /runtime/audio_example.mp3 -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-4stems separate -i /runtime/audio_example.mp3 -p spleeter:4stems -o /tmp
+      - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-5stems separate -i /runtime/audio_example.mp3 -p spleeter:5stems -o /tmp
       - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - run: docker tag researchdeezer/spleeter:3.7 researchdeezer/spleeter:latest
       - run: docker push researchdeezer/spleeter:latest

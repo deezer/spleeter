@@ -74,7 +74,7 @@ def test_filename_format(configuration, instruments):
                 'export/{}/{}.wav'.format(TEST_AUDIO_BASENAME, instrument)))
 
 
-def test_filename_confilct():
+def test_filename_conflict():
     """ Test error handling with static pattern. """
     separator = Separator(TEST_CONFIGURATIONS[0][0])
     with TemporaryDirectory() as directory:

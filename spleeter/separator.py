@@ -128,6 +128,9 @@ class Separator(object):
                 filename=filename,
                 instrument=instrument,
                 codec=codec))
+            directory = os.path.dirname(path)
+            if not os.path.exists(directory):
+                os.makedirs(directory)
             if path in generated:
                 raise SpleeterError((
                     f'Separated source path conflict : {path},'

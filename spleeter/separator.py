@@ -35,7 +35,7 @@ __license__ = 'MIT License'
 class Separator(object):
     """ A wrapper class for performing separation. """
 
-    def __init__(self, params_descriptor, MWF=False):
+    def __init__(self, params_descriptor, MWF=False, multiprocess=True):
         """ Default constructor.
 
         :param params_descriptor: Descriptor for TF params to be used.
@@ -45,7 +45,7 @@ class Separator(object):
         self._sample_rate = self._params['sample_rate']
         self._MWF = MWF
         self._predictor = None
-        self._pool = Pool()
+        self._pool = Pool() if multiprocess else None
         self._tasks = []
 
     def _get_predictor(self):
@@ -136,12 +136,15 @@ class Separator(object):
                     f'Separated source path conflict : {path},'
                     'please check your filename format'))
             generated.append(path)
-            task = self._pool.apply_async(audio_adapter.save, (
-                path,
-                data,
-                self._sample_rate,
-                codec,
-                bitrate))
-            self._tasks.append(task)
-        if synchronous:
+            if self._pool:
+                task = self._pool.apply_async(audio_adapter.save, (
+                    path,
+                    data,
+                    self._sample_rate,
+                    codec,
+                    bitrate))
+                self._tasks.append(task)
+            else:
+                audio_adapter.save(path, data, self._sample_rate, codec, bitrate)
+        if synchronous and self._pool:
             self.join()

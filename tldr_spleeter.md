@@ -13,4 +13,4 @@
 
 - Vocals / drums / bass / piano / other separation (5 stems)
 
-`spleeter separate -i spleeter/audio_example.mp3 -p spleeter:4stems -o output`
+`spleeter separate -i spleeter/audio_example.mp3 -p spleeter:5stems -o output`

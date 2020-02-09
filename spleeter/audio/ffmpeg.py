@@ -134,4 +134,4 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             process.wait()
         except IOError:
             raise SpleeterError(f'FFMPEG error: {process.stderr.read()}')
-        get_logger().info('File %s written succesfully', path)
+        get_logger().info('File %s written successfully', path)

@@ -174,7 +174,7 @@ def _create_separate_parser(parser_factory):
     parser.add_argument('-d', '--duration', **OPT_DURATION)
     parser.add_argument('-s', '--offset', **OPT_OFFSET)
     parser.add_argument('-c', '--codec', **OPT_CODEC)
-    parser.add_argument('-b', '--birate', **OPT_BITRATE)
+    parser.add_argument('-b', '--bitrate', **OPT_BITRATE)
     parser.add_argument('-m', '--mwf', **OPT_MWF)
     return parser
 

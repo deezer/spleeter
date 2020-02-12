@@ -50,7 +50,7 @@ class EstimatorSpecBuilder(object):
     * In predict mode:      it takes as input and outputs waveform. The whole
                             separation process is then done in this function
                             for performance reason: it makes it possible to run
-                            the whole spearation process (including STFT and
+                            the whole separation process (including STFT and
                             inverse STFT) on GPU.
 
     :Example:

@@ -35,6 +35,7 @@ def entrypoint(arguments, params):
             filename,
             arguments.output_path,
             audio_adapter=audio_adapter,
+            chunk_duration=arguments.chunk_duration,
             offset=arguments.offset,
             duration=arguments.duration,
             codec=arguments.codec,

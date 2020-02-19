@@ -106,7 +106,7 @@ class EstimatorSpecBuilder(object):
         self._frame_length = params['frame_length']
         self._frame_step = params['frame_step']
 
-    def _build_output_dict(self):
+    def _build_output_dict(self, input_tensor=None):
         """ Created a batch_sizexTxFxn_channels input tensor containing
         mix magnitude spectrogram, then an output dict from it according
         to the selected model in internal parameters.
@@ -114,7 +114,8 @@ class EstimatorSpecBuilder(object):
         :returns: Build output dict.
         :raise ValueError: If required model_type is not supported.
         """
-        input_tensor = self._features[f'{self._mix_name}_spectrogram']
+        if input_tensor is None:
+            input_tensor = self._features[f'{self._mix_name}_spectrogram']
         model = self._params.get('model', None)
         if model is not None:
             model_type = model.get('type', self.DEFAULT_MODEL)
@@ -194,6 +195,12 @@ class EstimatorSpecBuilder(object):
         self._features[f'{self._mix_name}_spectrogram'] = tf.abs(
             pad_and_partition(stft_feature, self._T))[:, :, :self._F, :]
 
+    def get_stft_feature(self):
+        return self._features[f'{self._mix_name}_stft']
+
+    def get_spectrogram_feature(self):
+        return self._features[f'{self._mix_name}_spectrogram']
+
     def _inverse_stft(self, stft):
         """ Inverse and reshape the given STFT
 
@@ -269,26 +276,18 @@ class EstimatorSpecBuilder(object):
         extension = tf.tile(extension_row, [1, 1, n_extra_row, 1])
         return tf.concat([mask, extension], axis=2)
 
-    def _build_manual_output_waveform(self, output_dict):
-        """ Perform ratio mask separation
-
-        :param output_dict: dictionary of estimated spectrogram (key: instrument
-            name, value: estimated spectrogram of the instrument)
-        :returns: dictionary of separated waveforms (key: instrument name,
-            value: estimated waveform of the instrument)
-        """
+    def _build_masks(self, output_dict):
         separation_exponent = self._params['separation_exponent']
         output_sum = tf.reduce_sum(
             [e ** separation_exponent for e in output_dict.values()],
             axis=0
         ) + self.EPSILON
-        output_waveform = {}
+        out = {}
         for instrument in self._instruments:
             output = output_dict[f'{instrument}_spectrogram']
             # Compute mask with the model.
-            instrument_mask = (
-                output ** separation_exponent
-                + (self.EPSILON / len(output_dict))) / output_sum
+            instrument_mask = (output ** separation_exponent
+                                      + (self.EPSILON / len(output_dict))) / output_sum
             # Extend mask;
             instrument_mask = self._extend_mask(instrument_mask)
             # Stack back mask.
@@ -300,10 +299,31 @@ class EstimatorSpecBuilder(object):
             # Remove padded part (for mask having the same size as STFT);
             stft_feature = self._features[f'{self._mix_name}_stft']
             instrument_mask = instrument_mask[
-                :tf.shape(stft_feature)[0], ...]
-            # Compute masked STFT and normalize it.
-            output_waveform[instrument] = self._inverse_stft(
-                tf.cast(instrument_mask, dtype=tf.complex64) * stft_feature)
+                              :tf.shape(stft_feature)[0], ...]
+            out[instrument] = instrument_mask
+        return out
+
+    def _build_masked_stft(self, mask_dict, input_stft=None):
+        if input_stft is None:
+            input_stft = self._features[f'{self._mix_name}_stft']
+        out = {}
+        for instrument, mask in mask_dict.items():
+            out[instrument] = tf.cast(mask, dtype=tf.complex64) * input_stft
+        return out
+
+    def _build_manual_output_waveform(self, output_dict):
+        """ Perform ratio mask separation
+
+        :param output_dict: dictionary of estimated spectrogram (key: instrument
+            name, value: estimated spectrogram of the instrument)
+        :returns: dictionary of separated waveforms (key: instrument name,
+            value: estimated waveform of the instrument)
+        """
+
+        output_waveform = {}
+        masked_stft = self._build_masked_stft(self._build_masks(output_dict))
+        for instrument, stft_data in masked_stft.items():
+            output_waveform[instrument] = self._inverse_stft(stft_data)
         return output_waveform
 
     def _build_output_waveform(self, output_dict):

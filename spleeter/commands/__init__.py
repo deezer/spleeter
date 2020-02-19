@@ -4,7 +4,7 @@
 """ This modules provides spleeter command as well as CLI parsing methods. """
 
 import json
-
+import logging
 from argparse import ArgumentParser
 from tempfile import gettempdir
 from os.path import exists, join
@@ -12,6 +12,9 @@ from os.path import exists, join
 __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
+
+logging.basicConfig()
+
 
 # -i opt specification (separate).
 OPT_INPUT = {

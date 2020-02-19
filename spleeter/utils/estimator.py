@@ -20,20 +20,30 @@ from ..model.provider import get_default_model_provider
 DEFAULT_EXPORT_DIRECTORY = join(gettempdir(), 'serving')
 
 
+
+def get_default_model_dir(model_dir):
+    """
+    Transforms a string like 'spleeter:2stems' into an actual path.
+    :param model_dir:
+    :return:
+    """
+    model_provider = get_default_model_provider()
+    return model_provider.get(model_dir)
+
 def create_estimator(params, MWF):
     """
         Initialize tensorflow estimator that will perform separation
 
         Params:
-        - params: a dictionnary of parameters for building the model
+        - params: a dictionary of parameters for building the model
 
         Returns:
             a tensorflow estimator
     """
     # Load model.
-    model_directory = params['model_dir']
-    model_provider = get_default_model_provider()
-    params['model_dir'] = model_provider.get(model_directory)
+
+
+    params['model_dir'] = get_default_model_dir(params['model_dir'])
     params['MWF'] = MWF
     # Setup config
     session_config = tf.compat.v1.ConfigProto()
@@ -49,6 +59,14 @@ def create_estimator(params, MWF):
     return estimator
 
 
+def get_input_dict_placeholders(params):
+    shape = (None, params['n_channels'])
+    features = {
+        'waveform': tf.compat.v1.placeholder(tf.float32, shape=shape, name="waveform"),
+        'audio_id': tf.compat.v1.placeholder(tf.string, name="audio_id")}
+    return features
+
+
 def to_predictor(estimator, directory=DEFAULT_EXPORT_DIRECTORY):
     """ Exports given estimator as predictor into the given directory
     and returns associated tf.predictor instance.
@@ -57,10 +75,7 @@ def to_predictor(estimator, directory=DEFAULT_EXPORT_DIRECTORY):
     :param directory: (Optional) path to write exported model into.
     """
     def receiver():
-        shape = (None, estimator.params['n_channels'])
-        features = {
-            'waveform': tf.compat.v1.placeholder(tf.float32, shape=shape),
-            'audio_id': tf.compat.v1.placeholder(tf.string)}
+        features = get_input_dict_placeholders(estimator.params)
         return tf.estimator.export.ServingInputReceiver(features, features)
 
     estimator.export_saved_model(directory, receiver)

@@ -68,6 +68,18 @@ OPT_DURATION = {
         'the input file)')
 }
 
+# -w opt specification (separate)
+OPT_CHUNKED = {
+    'dest': 'chunk_duration',
+    'type': float,
+    'default': -1,
+    'help': 'Maximum duration of the segments that are fed to'
+            ' the network. Use this parameter to limit '
+            'memory usage. Use -1 to process the whole signal'
+            ' in one pass.'
+}
+
+
 # -c opt specification (separate).
 OPT_CODEC = {
     'dest': 'codec',
@@ -176,6 +188,7 @@ def _create_separate_parser(parser_factory):
     parser.add_argument('-c', '--codec', **OPT_CODEC)
     parser.add_argument('-b', '--birate', **OPT_BITRATE)
     parser.add_argument('-m', '--mwf', **OPT_MWF)
+    parser.add_argument('-w', '--chunk', **OPT_CHUNKED)
     return parser
 
 

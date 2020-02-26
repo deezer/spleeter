@@ -98,30 +98,6 @@ class Separator(object):
         prediction.pop('audio_id')
         return prediction
 
-    def get_valid_chunk_size(self, sample_rate: int, chunk_max_duration: float) -> int:
-        """
-        Given a sample rate, and a maximal duration that a chunk can represent, return the maximum chunk
-        size in samples. The chunk size must be a non-zero multiple of T (temporal dimension of the input spectrogram)
-        times F (number of frequency bins in the input spectrogram). If no such value exist, we return T*F.
-
-        :param sample_rate:         sample rate of the pcm data
-        :param chunk_max_duration:  maximal duration in seconds of a chunk
-        :return: highest non-zero chunk size of duration less than chunk_max_duration or minimal valid chunk size.
-        """
-        assert chunk_max_duration > 0
-        chunk_size = chunk_max_duration * sample_rate
-        min_sample_size = self._params["T"] * self._params["F"]
-        if chunk_size < min_sample_size:
-            min_duration = min_sample_size / sample_rate
-            logger.warning("chunk_duration must be at least {:.2f} seconds. Ignoring parameter".format(min_duration))
-            chunk_size = min_sample_size
-        return min_sample_size*int(chunk_size/min_sample_size)
-
-    def get_batch_size_for_chunk_size(self, chunk_size):
-        d = self._params["T"] * self._params["F"]
-        assert chunk_size % d == 0
-        return chunk_size//d
-
     def stft(self, waveform, inverse=False):
         N = self._params["frame_length"]
         H = self._params["frame_step"]

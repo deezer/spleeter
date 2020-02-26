@@ -72,14 +72,13 @@ OPT_DURATION = {
 }
 
 # -w opt specification (separate)
-OPT_CHUNKED = {
-    'dest': 'chunk_duration',
-    'type': float,
-    'default': -1,
-    'help': 'Maximum duration of the segments that are fed to'
-            ' the network. Use this parameter to limit '
-            'memory usage. Use -1 to process the whole signal'
-            ' in one pass.'
+OPT_STFT_BACKEND = {
+    'dest': 'stft_backend',
+    'type': str,
+    'choices' : ["tensorflow", "librosa", "auto"],
+    'default': "auto",
+    'help': 'Who should be in charge of computing the stfts. Librosa is faster than tensorflow on CPU and uses'
+            ' less memory. "auto" will use tensorflow when GPU acceleration is available and librosa when not.'
 }
 
 
@@ -191,7 +190,7 @@ def _create_separate_parser(parser_factory):
     parser.add_argument('-c', '--codec', **OPT_CODEC)
     parser.add_argument('-b', '--birate', **OPT_BITRATE)
     parser.add_argument('-m', '--mwf', **OPT_MWF)
-    parser.add_argument('-w', '--chunk', **OPT_CHUNKED)
+    parser.add_argument('-B', '--stft-backend', **OPT_STFT_BACKEND)
     return parser
 
 

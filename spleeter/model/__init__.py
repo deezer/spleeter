@@ -105,7 +105,7 @@ class InputProviderFactory(object):
     @staticmethod
     def get(params):
         stft_backend = params["stft_backend"]
-        assert stft_backend in ("tensorflow", "librosa")
+        assert stft_backend in ("tensorflow", "librosa"), "Unexpected backend {}".format(stft_backend)
         if stft_backend == "tensorflow":
             return WaveformInputProvider(params)
         else:

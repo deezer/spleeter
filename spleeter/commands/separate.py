@@ -11,8 +11,6 @@
         -i /path/to/audio1.wav /path/to/audio2.mp3
 """
 
-import tensorflow as tf
-
 from ..audio.adapter import get_audio_adapter
 from ..separator import Separator
 
@@ -20,11 +18,6 @@ __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
-
-def get_backend(backend):
-    if backend == "auto":
-        return "tensorflow" if tf.test.is_gpu_available() else "librosa"
-    return backend
 
 
 def entrypoint(arguments, params):
@@ -38,7 +31,7 @@ def entrypoint(arguments, params):
     separator = Separator(
         arguments.configuration,
         MWF=arguments.MWF,
-        stft_backend=get_backend(arguments.stft_backend))
+        stft_backend=arguments.stft_backend)
     for filename in arguments.inputs:
         separator.separate_to_file(
             filename,

@@ -320,6 +320,12 @@ class EstimatorSpecBuilder(object):
             self._build_masks()
         return self._masks
 
+    @property
+    def masked_stfts(self):
+        if not hasattr(self, "_masked_stfts"):
+            self._build_masked_stfts()
+        return self._masked_stfts
+
     def _inverse_stft(self, stft, time_crop=None):
         """ Inverse and reshape the given STFT
 
@@ -397,6 +403,10 @@ class EstimatorSpecBuilder(object):
         return tf.concat([mask, extension], axis=2)
 
     def _build_masks(self):
+        """
+        Compute masks from the output spectrograms of the model.
+        :return:
+        """
         output_dict = self.model_outputs
         stft_feature = self.stft_feature
         separation_exponent = self._params['separation_exponent']
@@ -425,12 +435,12 @@ class EstimatorSpecBuilder(object):
             out[instrument] = instrument_mask
         self._masks = out
 
-    def _build_masked_stft(self):
+    def _build_masked_stfts(self):
         input_stft = self.stft_feature
         out = {}
         for instrument, mask in self.masks.items():
             out[instrument] = tf.cast(mask, dtype=tf.complex64) * input_stft
-        return out
+        self._masked_stfts = out
 
     def _build_manual_output_waveform(self, masked_stft):
         """ Perform ratio mask separation
@@ -461,11 +471,10 @@ class EstimatorSpecBuilder(object):
         return output_waveform
 
     def _build_outputs(self):
-        masked_stft = self._build_masked_stft()
         if self.include_stft_computations():
-            self._outputs = self._build_output_waveform(masked_stft)
+            self._outputs = self._build_output_waveform(self.masked_stfts)
         else:
-            self._outputs = masked_stft
+            self._outputs = self.masked_stfts
 
         if 'audio_id' in self._features:
             self._outputs['audio_id'] = self._features['audio_id']

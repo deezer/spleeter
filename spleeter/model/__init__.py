@@ -18,7 +18,6 @@ __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
 
-
 placeholder = tf.compat.v1.placeholder
 
 
@@ -326,14 +325,14 @@ class EstimatorSpecBuilder(object):
             self._build_masked_stfts()
         return self._masked_stfts
 
-    def _inverse_stft(self, stft, time_crop=None):
+    def _inverse_stft(self, stft_t, time_crop=None):
         """ Inverse and reshape the given STFT
 
-        :param stft: input STFT
+        :param stft_t: input STFT
         :returns: inverse STFT (waveform)
         """
         inversed = inverse_stft(
-            tf.transpose(stft, perm=[2, 0, 1]),
+            tf.transpose(stft_t, perm=[2, 0, 1]),
             self._frame_length,
             self._frame_step,
             window_fn=lambda frame_length, dtype: (
@@ -419,7 +418,7 @@ class EstimatorSpecBuilder(object):
             output = output_dict[f'{instrument}_spectrogram']
             # Compute mask with the model.
             instrument_mask = (output ** separation_exponent
-                                      + (self.EPSILON / len(output_dict))) / output_sum
+                               + (self.EPSILON / len(output_dict))) / output_sum
             # Extend mask;
             instrument_mask = self._extend_mask(instrument_mask)
             # Stack back mask.

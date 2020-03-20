@@ -16,7 +16,7 @@ __license__ = 'MIT License'
 project_name = 'spleeter'
 project_version = '1.5.0'
 tensorflow_dependency = 'tensorflow'
-tensorflow_version = '1.15.0'
+tensorflow_version = '1.15'
 here = path.abspath(path.dirname(__file__))
 readme_path = path.join(here, 'README.md')
 with open(readme_path, 'r') as stream:

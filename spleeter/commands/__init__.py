@@ -4,7 +4,7 @@
 """ This modules provides spleeter command as well as CLI parsing methods. """
 
 import json
-
+import logging
 from argparse import ArgumentParser
 from tempfile import gettempdir
 from os.path import exists, join
@@ -12,6 +12,8 @@ from os.path import exists, join
 __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
+
+
 
 # -i opt specification (separate).
 OPT_INPUT = {
@@ -67,6 +69,17 @@ OPT_DURATION = {
         '(only separate offset + duration first seconds of '
         'the input file)')
 }
+
+# -w opt specification (separate)
+OPT_STFT_BACKEND = {
+    'dest': 'stft_backend',
+    'type': str,
+    'choices' : ["tensorflow", "librosa", "auto"],
+    'default': "auto",
+    'help': 'Who should be in charge of computing the stfts. Librosa is faster than tensorflow on CPU and uses'
+            ' less memory. "auto" will use tensorflow when GPU acceleration is available and librosa when not.'
+}
+
 
 # -c opt specification (separate).
 OPT_CODEC = {
@@ -176,6 +189,7 @@ def _create_separate_parser(parser_factory):
     parser.add_argument('-c', '--codec', **OPT_CODEC)
     parser.add_argument('-b', '--birate', **OPT_BITRATE)
     parser.add_argument('-m', '--mwf', **OPT_MWF)
+    parser.add_argument('-B', '--stft-backend', **OPT_STFT_BACKEND)
     return parser
 
 

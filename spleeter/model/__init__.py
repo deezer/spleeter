@@ -18,6 +18,9 @@ __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
 
+placeholder = tf.compat.v1.placeholder
+
+
 def get_model_function(model_type):
     """
         Get tensorflow function of the model to be applied to the input tensor.
@@ -41,6 +44,74 @@ def get_model_function(model_type):
     return model_function
 
 
+class InputProvider(object):
+
+    def __init__(self, params):
+        self.params = params
+
+    def get_input_dict_placeholders(self):
+        raise NotImplementedError()
+
+    @property
+    def input_names(self):
+        raise NotImplementedError()
+
+    def get_feed_dict(self, features, *args):
+        raise NotImplementedError()
+
+
+class WaveformInputProvider(InputProvider):
+
+    @property
+    def input_names(self):
+        return ["audio_id", "waveform"]
+
+    def get_input_dict_placeholders(self):
+        shape = (None, self.params['n_channels'])
+        features = {
+            'waveform': placeholder(tf.float32, shape=shape, name="waveform"),
+            'audio_id': placeholder(tf.string, name="audio_id")}
+        return features
+
+    def get_feed_dict(self, features, waveform, audio_id):
+        return {features["audio_id"]: audio_id, features["waveform"]: waveform}
+
+
+class SpectralInputProvider(InputProvider):
+
+    def __init__(self, params):
+        super().__init__(params)
+        self.stft_input_name = "{}_stft".format(self.params["mix_name"])
+
+    @property
+    def input_names(self):
+        return ["audio_id", self.stft_input_name]
+
+    def get_input_dict_placeholders(self):
+        features = {
+            self.stft_input_name: placeholder(tf.complex64,
+                                              shape=(None, self.params["frame_length"]//2+1,
+                                                     self.params['n_channels']),
+                                              name=self.stft_input_name),
+            'audio_id': placeholder(tf.string, name="audio_id")}
+        return features
+
+    def get_feed_dict(self, features, stft, audio_id):
+        return {features["audio_id"]: audio_id, features[self.stft_input_name]: stft}
+
+
+class InputProviderFactory(object):
+
+    @staticmethod
+    def get(params):
+        stft_backend = params["stft_backend"]
+        assert stft_backend in ("tensorflow", "librosa"), "Unexpected backend {}".format(stft_backend)
+        if stft_backend == "tensorflow":
+            return WaveformInputProvider(params)
+        else:
+            return SpectralInputProvider(params)
+
+
 class EstimatorSpecBuilder(object):
     """ A builder class that allows to builds a multitrack unet model
     estimator. The built model estimator has a different behaviour when
@@ -57,9 +128,9 @@ class EstimatorSpecBuilder(object):
 
     >>> from spleeter.model import EstimatorSpecBuilder
     >>> builder = EstimatorSpecBuilder()
-    >>> builder.build_prediction_model()
+    >>> builder.build_predict_model()
     >>> builder.build_evaluation_model()
-    >>> builder.build_training_model()
+    >>> builder.build_train_model()
 
     >>> from spleeter.model import model_fn
     >>> estimator = tf.estimator.Estimator(model_fn=model_fn, ...)
@@ -94,6 +165,7 @@ class EstimatorSpecBuilder(object):
         :param features: The input features for the estimator.
         :param params: Some hyperparameters as a dictionary.
         """
+
         self._features = features
         self._params = params
         # Get instrument name.
@@ -106,7 +178,10 @@ class EstimatorSpecBuilder(object):
         self._frame_length = params['frame_length']
         self._frame_step = params['frame_step']
 
-    def _build_output_dict(self):
+    def include_stft_computations(self):
+        return self._params["stft_backend"] == "tensorflow"
+
+    def _build_model_outputs(self):
         """ Created a batch_sizexTxFxn_channels input tensor containing
         mix magnitude spectrogram, then an output dict from it according
         to the selected model in internal parameters.
@@ -114,7 +189,8 @@ class EstimatorSpecBuilder(object):
         :returns: Build output dict.
         :raise ValueError: If required model_type is not supported.
         """
-        input_tensor = self._features[f'{self._mix_name}_spectrogram']
+
+        input_tensor = self.spectrogram_feature
         model = self._params.get('model', None)
         if model is not None:
             model_type = model.get('type', self.DEFAULT_MODEL)
@@ -124,12 +200,12 @@ class EstimatorSpecBuilder(object):
             apply_model = get_model_function(model_type)
         except ModuleNotFoundError:
             raise ValueError(f'No model function {model_type} found')
-        return apply_model(
+        self._model_outputs = apply_model(
             input_tensor,
             self._instruments,
             self._params['model']['params'])
 
-    def _build_loss(self, output_dict, labels):
+    def _build_loss(self, labels):
         """ Construct tensorflow loss and metrics
 
         :param output_dict: dictionary of network outputs (key: instrument
@@ -138,6 +214,7 @@ class EstimatorSpecBuilder(object):
             name, value: ground truth spectrogram of the instrument)
         :returns: tensorflow (loss, metrics) tuple.
         """
+        output_dict = self.model_outputs
         loss_type = self._params.get('loss_type', self.L1_MASK)
         if loss_type == self.L1_MASK:
             losses = {
@@ -177,51 +254,106 @@ class EstimatorSpecBuilder(object):
             return tf.compat.v1.train.GradientDescentOptimizer(rate)
         return tf.compat.v1.train.AdamOptimizer(rate)
 
+    @property
+    def instruments(self):
+        return self._instruments
+
+    @property
+    def stft_name(self):
+        return f'{self._mix_name}_stft'
+
+    @property
+    def spectrogram_name(self):
+        return f'{self._mix_name}_spectrogram'
+
     def _build_stft_feature(self):
         """ Compute STFT of waveform and slice the STFT in segment
          with the right length to feed the network.
         """
-        stft_feature = tf.transpose(
-            stft(
-                tf.transpose(self._features['waveform']),
-                self._frame_length,
-                self._frame_step,
-                window_fn=lambda frame_length, dtype: (
-                    hann_window(frame_length, periodic=True, dtype=dtype)),
-                pad_end=True),
-            perm=[1, 2, 0])
-        self._features[f'{self._mix_name}_stft'] = stft_feature
-        self._features[f'{self._mix_name}_spectrogram'] = tf.abs(
-            pad_and_partition(stft_feature, self._T))[:, :, :self._F, :]
 
-    def _inverse_stft(self, stft):
+        stft_name = self.stft_name
+        spec_name = self.spectrogram_name
+
+        if stft_name not in self._features:
+            stft_feature = tf.transpose(
+                stft(
+                    tf.transpose(self._features['waveform']),
+                    self._frame_length,
+                    self._frame_step,
+                    window_fn=lambda frame_length, dtype: (
+                        hann_window(frame_length, periodic=True, dtype=dtype)),
+                    pad_end=True),
+                perm=[1, 2, 0])
+            self._features[f'{self._mix_name}_stft'] = stft_feature
+        if spec_name not in self._features:
+            self._features[spec_name] = tf.abs(
+                pad_and_partition(self._features[stft_name], self._T))[:, :, :self._F, :]
+
+    @property
+    def model_outputs(self):
+        if not hasattr(self, "_model_outputs"):
+            self._build_model_outputs()
+        return self._model_outputs
+
+    @property
+    def outputs(self):
+        if not hasattr(self, "_outputs"):
+            self._build_outputs()
+        return self._outputs
+
+    @property
+    def stft_feature(self):
+        if self.stft_name not in self._features:
+            self._build_stft_feature()
+        return self._features[self.stft_name]
+
+    @property
+    def spectrogram_feature(self):
+        if self.spectrogram_name not in self._features:
+            self._build_stft_feature()
+        return self._features[self.spectrogram_name]
+
+    @property
+    def masks(self):
+        if not hasattr(self, "_masks"):
+            self._build_masks()
+        return self._masks
+
+    @property
+    def masked_stfts(self):
+        if not hasattr(self, "_masked_stfts"):
+            self._build_masked_stfts()
+        return self._masked_stfts
+
+    def _inverse_stft(self, stft_t, time_crop=None):
         """ Inverse and reshape the given STFT
 
-        :param stft: input STFT
+        :param stft_t: input STFT
         :returns: inverse STFT (waveform)
         """
         inversed = inverse_stft(
-            tf.transpose(stft, perm=[2, 0, 1]),
+            tf.transpose(stft_t, perm=[2, 0, 1]),
             self._frame_length,
             self._frame_step,
             window_fn=lambda frame_length, dtype: (
                 hann_window(frame_length, periodic=True, dtype=dtype))
         ) * self.WINDOW_COMPENSATION_FACTOR
         reshaped = tf.transpose(inversed)
-        return reshaped[:tf.shape(self._features['waveform'])[0], :]
+        if time_crop is None:
+            time_crop = tf.shape(self._features['waveform'])[0]
+        return reshaped[:time_crop, :]
 
-    def _build_mwf_output_waveform(self, output_dict):
+    def _build_mwf_output_waveform(self):
         """ Perform separation with multichannel Wiener Filtering using Norbert.
         Note: multichannel Wiener Filtering is not coded in Tensorflow and thus
         may be quite slow.
 
-        :param output_dict: dictionary of estimated spectrogram (key: instrument
-            name, value: estimated spectrogram of the instrument)
         :returns: dictionary of separated waveforms (key: instrument name,
             value: estimated waveform of the instrument)
         """
         import norbert  # pylint: disable=import-error
-        x = self._features[f'{self._mix_name}_stft']
+        output_dict = self.model_outputs
+        x = self.stft_feature
         v = tf.stack(
             [
                 pad_and_reshape(
@@ -265,30 +397,28 @@ class EstimatorSpecBuilder(object):
                 mask_shape[-1]))
         else:
             raise ValueError(f'Invalid mask_extension parameter {extension}')
-        n_extra_row = (self._frame_length) // 2 + 1 - self._F
+        n_extra_row = self._frame_length // 2 + 1 - self._F
         extension = tf.tile(extension_row, [1, 1, n_extra_row, 1])
         return tf.concat([mask, extension], axis=2)
 
-    def _build_manual_output_waveform(self, output_dict):
-        """ Perform ratio mask separation
-
-        :param output_dict: dictionary of estimated spectrogram (key: instrument
-            name, value: estimated spectrogram of the instrument)
-        :returns: dictionary of separated waveforms (key: instrument name,
-            value: estimated waveform of the instrument)
+    def _build_masks(self):
         """
+        Compute masks from the output spectrograms of the model.
+        :return:
+        """
+        output_dict = self.model_outputs
+        stft_feature = self.stft_feature
         separation_exponent = self._params['separation_exponent']
         output_sum = tf.reduce_sum(
             [e ** separation_exponent for e in output_dict.values()],
             axis=0
         ) + self.EPSILON
-        output_waveform = {}
+        out = {}
         for instrument in self._instruments:
             output = output_dict[f'{instrument}_spectrogram']
             # Compute mask with the model.
-            instrument_mask = (
-                output ** separation_exponent
-                + (self.EPSILON / len(output_dict))) / output_sum
+            instrument_mask = (output ** separation_exponent
+                               + (self.EPSILON / len(output_dict))) / output_sum
             # Extend mask;
             instrument_mask = self._extend_mask(instrument_mask)
             # Stack back mask.
@@ -298,29 +428,55 @@ class EstimatorSpecBuilder(object):
                 axis=0)
             instrument_mask = tf.reshape(instrument_mask, new_shape)
             # Remove padded part (for mask having the same size as STFT);
-            stft_feature = self._features[f'{self._mix_name}_stft']
+
             instrument_mask = instrument_mask[
-                :tf.shape(stft_feature)[0], ...]
-            # Compute masked STFT and normalize it.
-            output_waveform[instrument] = self._inverse_stft(
-                tf.cast(instrument_mask, dtype=tf.complex64) * stft_feature)
+                              :tf.shape(stft_feature)[0], ...]
+            out[instrument] = instrument_mask
+        self._masks = out
+
+    def _build_masked_stfts(self):
+        input_stft = self.stft_feature
+        out = {}
+        for instrument, mask in self.masks.items():
+            out[instrument] = tf.cast(mask, dtype=tf.complex64) * input_stft
+        self._masked_stfts = out
+
+    def _build_manual_output_waveform(self, masked_stft):
+        """ Perform ratio mask separation
+
+        :param output_dict: dictionary of estimated spectrogram (key: instrument
+            name, value: estimated spectrogram of the instrument)
+        :returns: dictionary of separated waveforms (key: instrument name,
+            value: estimated waveform of the instrument)
+        """
+
+        output_waveform = {}
+        for instrument, stft_data in masked_stft.items():
+            output_waveform[instrument] = self._inverse_stft(stft_data)
         return output_waveform
 
-    def _build_output_waveform(self, output_dict):
+    def _build_output_waveform(self, masked_stft):
         """ Build output waveform from given output dict in order to be used in
         prediction context. Regarding of the configuration building method will
         be using MWF.
 
-        :param output_dict: Output dict to build output waveform from.
         :returns: Built output waveform.
         """
+
         if self._params.get('MWF', False):
-            output_waveform = self._build_mwf_output_waveform(output_dict)
+            output_waveform = self._build_mwf_output_waveform()
         else:
-            output_waveform = self._build_manual_output_waveform(output_dict)
-        if 'audio_id' in self._features:
-            output_waveform['audio_id'] = self._features['audio_id']
+            output_waveform = self._build_manual_output_waveform(masked_stft)
         return output_waveform
+
+    def _build_outputs(self):
+        if self.include_stft_computations():
+            self._outputs = self._build_output_waveform(self.masked_stfts)
+        else:
+            self._outputs = self.masked_stfts
+
+        if 'audio_id' in self._features:
+            self._outputs['audio_id'] = self._features['audio_id']
 
     def build_predict_model(self):
         """ Builder interface for creating model instance that aims to perform
@@ -330,12 +486,10 @@ class EstimatorSpecBuilder(object):
 
         :returns: An estimator for performing prediction.
         """
-        self._build_stft_feature()
-        output_dict = self._build_output_dict()
-        output_waveform = self._build_output_waveform(output_dict)
+
         return tf.estimator.EstimatorSpec(
             tf.estimator.ModeKeys.PREDICT,
-            predictions=output_waveform)
+            predictions=self.outputs)
 
     def build_evaluation_model(self, labels):
         """ Builder interface for creating model instance that aims to perform
@@ -346,8 +500,7 @@ class EstimatorSpecBuilder(object):
         :param labels: Model labels.
         :returns: An estimator for performing model evaluation.
         """
-        output_dict = self._build_output_dict()
-        loss, metrics = self._build_loss(output_dict, labels)
+        loss, metrics = self._build_loss(labels)
         return tf.estimator.EstimatorSpec(
             tf.estimator.ModeKeys.EVAL,
             loss=loss,
@@ -362,8 +515,7 @@ class EstimatorSpecBuilder(object):
         :param labels: Model labels.
         :returns: An estimator for performing model training.
         """
-        output_dict = self._build_output_dict()
-        loss, metrics = self._build_loss(output_dict, labels)
+        loss, metrics = self._build_loss(labels)
         optimizer = self._build_optimizer()
         train_operation = optimizer.minimize(
                 loss=loss,

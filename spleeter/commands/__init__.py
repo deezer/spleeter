@@ -13,7 +13,6 @@ __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
-logging.basicConfig()
 
 
 # -i opt specification (separate).

@@ -29,7 +29,7 @@ Ready to dig into it ? In a few lines you can install **Spleeter** using [Conda]
 ```bash
 # install using conda
 conda install -c conda-forge spleeter
-# download an example audio file
+# download an example audio file (if you don't have wget, use another tool for downloading)
 wget https://github.com/deezer/spleeter/raw/master/audio_example.mp3
 # separate the example audio into two components
 spleeter separate -i audio_example.mp3 -p spleeter:2stems -o output

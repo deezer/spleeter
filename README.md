@@ -31,7 +31,7 @@ Ready to dig into it ? In a few lines you can install **Spleeter** using [Conda]
 conda install -c conda-forge spleeter
 # download an example audio file
 wget https://github.com/deezer/spleeter/raw/master/audio_example.mp3
-# separate the example audio in two components
+# separate the example audio into two components
 spleeter separate -i audio_example.mp3 -p spleeter:2stems -o output
 ```
 

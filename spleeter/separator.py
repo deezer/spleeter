@@ -201,10 +201,9 @@ class Separator(object):
                                     descriptor would be a file path.
         :param destination:         Target directory to write output to.
         :param audio_adapter:       (Optional) Audio adapter to use for I/O.
-        :param chunk_duration:      (Optional) Maximum signal duration that is processed
-                                               in one pass. Default: all signal.
         :param offset:              (Optional) Offset of loaded song.
-        :param duration:            (Optional) Duration of loaded song.
+        :param duration:            (Optional) Duration of loaded song (default:
+                                    600s).
         :param codec:               (Optional) Export codec.
         :param bitrate:             (Optional) Export bitrate.
         :param filename_format:     (Optional) Filename format.
@@ -216,11 +215,36 @@ class Separator(object):
             duration=duration,
             sample_rate=self._sample_rate)
         sources = self.separate(waveform, audio_descriptor)
-        self._save_to_file(sources, audio_descriptor, destination, filename_format, codec,
-                          audio_adapter, bitrate, synchronous)
+        self.save_to_file(  sources, audio_descriptor, destination,
+                            filename_format, codec, audio_adapter,
+                            bitrate, synchronous)
 
-    def _save_to_file(self, sources, audio_descriptor, destination, filename_format, codec,
-                     audio_adapter, bitrate, synchronous):
+    def save_to_file(
+            self, sources, audio_descriptor, destination,
+            filename_format='{filename}/{instrument}.{codec}',
+            codec='wav', audio_adapter=get_default_audio_adapter(),
+            bitrate='128k', synchronous=True):
+        """ export dictionary of sources to files.
+
+        :param sources:             Dictionary of sources to be exported. The
+                                    keys are the name of the instruments, and
+                                    the values are Nx2 numpy arrays containing
+                                    the corresponding intrument waveform, as
+                                    returned by the separate method
+        :param audio_descriptor:    Describe song to separate, used by audio
+                                    adapter to retrieve and load audio data,
+                                    in case of file based audio adapter, such
+                                    descriptor would be a file path.
+        :param destination:         Target directory to write output to.
+        :param filename_format:     (Optional) Filename format.
+        :param codec:               (Optional) Export codec.
+        :param audio_adapter:       (Optional) Audio adapter to use for I/O.
+        :param bitrate:             (Optional) Export bitrate.
+        :param synchronous:         (Optional) True is should by synchronous.
+
+        """
+
+
         filename = splitext(basename(audio_descriptor))[0]
         generated = []
         for instrument, data in sources.items():

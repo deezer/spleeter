@@ -105,7 +105,6 @@ class GithubModelProvider(ModelProvider):
             if compute_file_checksum(archive.name) != self.checksum(name):
                 raise IOError('Downloaded file is corrupted, please retry')
             get_logger().info('Extracting downloaded %s archive', name)
-            tar = tarfile.open(name=archive.name)
-            tar.extractall(path=path)
-            tar.close()
+            with tarfile.open(name=archive.name) as tar:
+                tar.extractall(path=path)
         get_logger().info('%s model file(s) extracted', name)

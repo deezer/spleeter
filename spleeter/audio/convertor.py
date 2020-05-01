@@ -24,7 +24,7 @@ def to_n_channels(waveform, n_channels):
     :returns: Reshaped waveform.
     """
     return tf.cond(
-        tf.shape(waveform)[1] >= n_channels,
+        pred=tf.shape(input=waveform)[1] >= n_channels,
         true_fn=lambda: waveform[:, :n_channels],
         false_fn=lambda: tf.tile(waveform, [1, n_channels])[:, :n_channels]
     )
@@ -71,7 +71,7 @@ def spectrogram_to_db_uint(spectrogram, db_range=100., **kwargs):
     :returns: Encoded decibel spectrogram as uint8 tensor.
     """
     db_spectrogram = gain_to_db(spectrogram)
-    max_db_spectrogram = tf.reduce_max(db_spectrogram)
+    max_db_spectrogram = tf.reduce_max(input_tensor=db_spectrogram)
     db_spectrogram = tf.maximum(db_spectrogram, max_db_spectrogram - db_range)
     return from_float32_to_uint8(db_spectrogram, **kwargs)
 

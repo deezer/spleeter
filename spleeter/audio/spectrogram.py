@@ -35,8 +35,8 @@ def compute_spectrogram_tf(
                 (T x F x n_channels) tensor.
     """
     stft_tensor = tf.transpose(
-        stft(
-            tf.transpose(waveform),
+        a=stft(
+            tf.transpose(a=waveform),
             frame_length,
             frame_step,
             window_fn=lambda f, dtype: hann_window(
@@ -59,15 +59,14 @@ def time_stretch(
     :param mehtod: (Optional) Interpolation method, default to BILINEAR.
     :returns: Time stretched spectrogram as tensor with same shape.
     """
-    T = tf.shape(spectrogram)[0]
+    T = tf.shape(input=spectrogram)[0]
     T_ts = tf.cast(tf.cast(T, tf.float32) * factor, tf.int32)[0]
-    F = tf.shape(spectrogram)[1]
-    ts_spec = tf.image.resize_images(
+    F = tf.shape(input=spectrogram)[1]
+    ts_spec = tf.image.resize(
         spectrogram,
         [T_ts, F],
-        method=method,
-        align_corners=True)
-    return tf.image.resize_image_with_crop_or_pad(ts_spec, T, F)
+        method=method)
+    return tf.image.resize_with_crop_or_pad(ts_spec, T, F)
 
 
 def random_time_stretch(spectrogram, factor_min=0.9, factor_max=1.1, **kwargs):
@@ -80,7 +79,7 @@ def random_time_stretch(spectrogram, factor_min=0.9, factor_max=1.1, **kwargs):
     :param factor_max: (Optional) Max time stretch factor, default to 1.1.
     :returns: Randomly time stretched spectrogram as tensor with same shape.
     """
-    factor = tf.random_uniform(
+    factor = tf.random.uniform(
         shape=(1,),
         seed=0) * (factor_max - factor_min) + factor_min
     return time_stretch(spectrogram, factor=factor, **kwargs)
@@ -99,16 +98,15 @@ def pitch_shift(
     :returns: Pitch shifted spectrogram (same shape as spectrogram).
     """
     factor = 2 ** (semitone_shift / 12.)
-    T = tf.shape(spectrogram)[0]
-    F = tf.shape(spectrogram)[1]
+    T = tf.shape(input=spectrogram)[0]
+    F = tf.shape(input=spectrogram)[1]
     F_ps = tf.cast(tf.cast(F, tf.float32) * factor, tf.int32)[0]
-    ps_spec = tf.image.resize_images(
+    ps_spec = tf.image.resize(
         spectrogram,
         [T, F_ps],
-        method=method,
-        align_corners=True)
+        method=method)
     paddings = [[0, 0], [0, tf.maximum(0, F - F_ps)], [0, 0]]
-    return tf.pad(ps_spec[:, :F, :], paddings, 'CONSTANT')
+    return tf.pad(tensor=ps_spec[:, :F, :], paddings=paddings, mode='CONSTANT')
 
 
 def random_pitch_shift(spectrogram, shift_min=-1., shift_max=1., **kwargs):
@@ -122,7 +120,7 @@ def random_pitch_shift(spectrogram, shift_min=-1., shift_max=1., **kwargs):
     :param shift_max: (Optional) Max pitch shift in semitone, default to 1.
     :returns: Randomly pitch shifted spectrogram (same shape as spectrogram).
     """
-    semitone_shift = tf.random_uniform(
+    semitone_shift = tf.random.uniform(
         shape=(1,),
         seed=0) * (shift_max - shift_min) + shift_min
     return pitch_shift(spectrogram, semitone_shift=semitone_shift, **kwargs)

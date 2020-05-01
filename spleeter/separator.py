@@ -164,8 +164,8 @@ class Separator(object):
         elif stft.shape[-1] > 2:
             stft = stft[:, :2]
 
-        saver = tf.train.Saver()
-        with tf.Session() as sess:
+        saver = tf.compat.v1.train.Saver()
+        with tf.compat.v1.Session() as sess:
             saver.restore(sess, latest_checkpoint)
             outputs = sess.run(outputs, feed_dict=self._get_input_provider().get_feed_dict(features, stft, audio_id))
             for inst in self._get_builder().instruments:

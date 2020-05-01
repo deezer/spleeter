@@ -43,7 +43,7 @@ def sync_apply(tensor_dict, func, concat_axis=1):
     tensor_list = list(tensor_dict.values())
     concat_tensor = tf.concat(tensor_list, concat_axis)
     processed_concat_tensor = func(concat_tensor)
-    tensor_shape = tf.shape(list(tensor_dict.values())[0])
+    tensor_shape = tf.shape(input=list(tensor_dict.values())[0])
     D = tensor_shape[concat_axis]
     if concat_axis == 0:
         return {
@@ -69,8 +69,8 @@ def from_float32_to_uint8(
     :param max_key:
     :returns:
     """
-    tensor_min = tf.reduce_min(tensor)
-    tensor_max = tf.reduce_max(tensor)
+    tensor_min = tf.reduce_min(input_tensor=tensor)
+    tensor_max = tf.reduce_max(input_tensor=tensor)
     return {
         tensor_key: tf.cast(
             (tensor - tensor_min) / (tensor_max - tensor_min + 1e-16)
@@ -112,16 +112,16 @@ def pad_and_partition(tensor, segment_len):
     :param segment_len:
     :returns:
     """
-    tensor_size = tf.math.floormod(tf.shape(tensor)[0], segment_len)
+    tensor_size = tf.math.floormod(tf.shape(input=tensor)[0], segment_len)
     pad_size = tf.math.floormod(segment_len - tensor_size, segment_len)
     padded = tf.pad(
-        tensor,
-        [[0, pad_size]] + [[0, 0]] * (len(tensor.shape)-1))
-    split = (tf.shape(padded)[0] + segment_len - 1) // segment_len
+        tensor=tensor,
+        paddings=[[0, pad_size]] + [[0, 0]] * (len(tensor.shape)-1))
+    split = (tf.shape(input=padded)[0] + segment_len - 1) // segment_len
     return tf.reshape(
         padded,
         tf.concat(
-            [[split, segment_len], tf.shape(padded)[1:]],
+            [[split, segment_len], tf.shape(input=padded)[1:]],
             axis=0))
 
 
@@ -132,12 +132,12 @@ def pad_and_reshape(instr_spec, frame_length, F):
     :param F:
     :returns:
     """
-    spec_shape = tf.shape(instr_spec)
+    spec_shape = tf.shape(input=instr_spec)
     extension_row = tf.zeros((spec_shape[0], spec_shape[1], 1, spec_shape[-1]))
     n_extra_row = (frame_length) // 2 + 1 - F
     extension = tf.tile(extension_row, [1, 1, n_extra_row, 1])
     extended_spec = tf.concat([instr_spec, extension], axis=2)
-    old_shape = tf.shape(extended_spec)
+    old_shape = tf.shape(input=extended_spec)
     new_shape = tf.concat([
         [old_shape[0] * old_shape[1]],
         old_shape[2:]],
@@ -175,7 +175,7 @@ def check_tensor_shape(tensor_tf, target_shape):
         if target_length:
             result = tf.logical_and(
                 result,
-                tf.equal(tf.constant(target_length), tf.shape(tensor_tf)[i]))
+                tf.equal(tf.constant(target_length), tf.shape(input=tensor_tf)[i]))
     return result
 
 

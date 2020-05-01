@@ -173,7 +173,7 @@ class InstrumentDatasetBuilder(object):
             """ mid_segment_start """
             return tf.cast(
                 tf.maximum(
-                    tf.shape(sample[self._spectrogram_key])[0]
+                    tf.shape(input=sample[self._spectrogram_key])[0]
                     / 2 - self._parent._T / 2, 0),
                 tf.int32)
         return dict(sample, **{
@@ -238,7 +238,7 @@ class DatasetBuilder(object):
 
     def expand_path(self, sample):
         """ Expands audio paths for the given sample. """
-        return dict(sample, **{f'{instrument}_path': tf.string_join(
+        return dict(sample, **{f'{instrument}_path': tf.strings.join(
             (self._audio_path, sample[f'{instrument}_path']), SEPARATOR)
             for instrument in self._instruments})
 
@@ -253,8 +253,8 @@ class DatasetBuilder(object):
     def harmonize_spectrogram(self, sample):
         """ Ensure same size for vocals and mix spectrograms. """
         def _reduce(sample):
-            return tf.reduce_min([
-                tf.shape(sample[f'{instrument}_spectrogram'])[0]
+            return tf.reduce_min(input_tensor=[
+                tf.shape(input=sample[f'{instrument}_spectrogram'])[0]
                 for instrument in self._instruments])
         return dict(sample, **{
             f'{instrument}_spectrogram':
@@ -263,8 +263,8 @@ class DatasetBuilder(object):
 
     def filter_short_segments(self, sample):
         """ Filter out too short segment. """
-        return tf.reduce_any([
-            tf.shape(sample[f'{instrument}_spectrogram'])[0] >= self._T
+        return tf.reduce_any(input_tensor=[
+            tf.shape(input=sample[f'{instrument}_spectrogram'])[0] >= self._T
             for instrument in self._instruments])
 
     def random_time_crop(self, sample):

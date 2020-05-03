@@ -73,7 +73,7 @@ class StempegProcessAudioAdapter(AudioAdapter):
         :raise IOError: If any error occurs while using FFMPEG to write data.
         """
         get_logger().debug('Writing file %s', path)
-        stempeg.write_audio(
+        stempeg.write_streams(
             path=path,
             data=data,
             sample_rate=sample_rate,

@@ -186,8 +186,8 @@ class Separator(object):
     def separate_to_file(
             self, audio_descriptor, destination,
             audio_adapter=get_default_audio_adapter(),
-            offset=0, duration=600., codec='wav', bitrate='128k',
-            filename_format='{filename}/{instrument}.{codec}',
+            offset=0, duration=600., codec='aac', bitrate=256000,
+            filename_format='{filename}.stems.{codec}',
             synchronous=True):
         """ Performs source separation and export result to file using
         given audio adapter.
@@ -221,9 +221,9 @@ class Separator(object):
 
     def save_to_file(
             self, sources, audio_descriptor, destination,
-            filename_format='{filename}/{instrument}.{codec}',
-            codec='wav', audio_adapter=get_default_audio_adapter(),
-            bitrate='128k', synchronous=True):
+            filename_format='{filename}.stems.{codec}',
+            codec='aac', audio_adapter=get_default_audio_adapter(),
+            bitrate='256000', synchronous=True):
         """ export dictionary of sources to files.
 
         :param sources:             Dictionary of sources to be exported. The
@@ -244,31 +244,17 @@ class Separator(object):
 
         """
 
-
         filename = splitext(basename(audio_descriptor))[0]
-        generated = []
-        for instrument, data in sources.items():
-            path = join(destination, filename_format.format(
-                filename=filename,
-                instrument=instrument,
-                codec=codec))
-            directory = os.path.dirname(path)
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-            if path in generated:
-                raise SpleeterError((
-                    f'Separated source path conflict : {path},'
-                    'please check your filename format'))
-            generated.append(path)
-            if self._pool:
-                task = self._pool.apply_async(audio_adapter.save, (
-                    path,
-                    data,
-                    self._sample_rate,
-                    codec,
-                    bitrate))
-                self._tasks.append(task)
-            else:
-                audio_adapter.save(path, data, self._sample_rate, codec, bitrate)
-        if synchronous and self._pool:
-            self.join()
+        audio_adapter.save(
+            path=join(
+                destination,
+                filename_format.format(
+                    filename=filename,
+                    codec="m4a"
+                )
+            ),
+            data=sources,
+            sample_rate=self._sample_rate,
+            bitrate=bitrate,
+            codec="aac"
+        )

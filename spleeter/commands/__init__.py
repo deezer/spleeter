@@ -33,7 +33,7 @@ OPT_OUTPUT = {
 # -f opt specification (separate).
 OPT_FORMAT = {
     'dest': 'filename_format',
-    'default': '{filename}/{instrument}.{codec}',
+    'default': '{filename}.stems.{codec}',
     'help': (
         'Template string that will be formatted to generated'
         'output filename. Such template should be Python formattable'
@@ -85,7 +85,7 @@ OPT_STFT_BACKEND = {
 OPT_CODEC = {
     'dest': 'codec',
     'choices': ('wav', 'mp3', 'ogg', 'm4a', 'wma', 'flac'),
-    'default': 'wav',
+    'default': 'm4a',
     'help': 'Audio codec to be used for the separated output'
 }
 

@@ -6,3 +6,4 @@ tensorflow==1.15.2
 ffmpeg-python
 norbert==0.2.1
 librosa==0.7.2
+git+https://github.com/faroit/stempeg.git@add_new_ffmpegprocess#egg=stempeg

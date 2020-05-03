@@ -21,7 +21,7 @@ from spleeter import SpleeterError
 from spleeter.audio.adapter import AudioAdapter
 from spleeter.audio.adapter import get_default_audio_adapter
 from spleeter.audio.adapter import get_audio_adapter
-from spleeter.audio.ffmpeg import FFMPEGProcessAudioAdapter
+from spleeter.audio.ffmpeg import StempegProcessAudioAdapter
 
 TEST_AUDIO_DESCRIPTOR = 'audio_example.mp3'
 TEST_OFFSET = 0
@@ -47,7 +47,7 @@ def audio_data(adapter):
 
 def test_default_adapter(adapter):
     """ Test adapter as default adapter. """
-    assert isinstance(adapter, FFMPEGProcessAudioAdapter)
+    assert isinstance(adapter, StempegProcessAudioAdapter)
     assert adapter is AudioAdapter.DEFAULT
 
 

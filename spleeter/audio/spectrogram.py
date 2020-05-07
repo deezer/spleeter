@@ -44,7 +44,7 @@ def compute_spectrogram_tf(
                 periodic=True,
                 dtype=waveform.dtype) ** window_exponent),
         perm=[1, 2, 0])
-    return np.abs(stft_tensor) ** spec_exponent
+    return tf.abs(stft_tensor) ** spec_exponent
 
 
 def time_stretch(

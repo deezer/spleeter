@@ -20,6 +20,7 @@ as well as directly in your own development pipeline as a [Python library](https
 with [pip](https://github.com/deezer/spleeter/wiki/1.-Installation#using-pip) or be used with
 [Docker](https://github.com/deezer/spleeter/wiki/2.-Getting-started#using-docker-image).
 
+
 ## Quick start
 
 Want to try it out but don't want to install anything ? We have setup a [Google Colab](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb).
@@ -77,6 +78,10 @@ The code of **Spleeter** is MIT-licensed.
 ## Disclaimer
 
 If you plan to use Spleeter on copyrighted material, make sure you get proper authorization from right owners beforehand.
+
+### Forks and related projects
+
+As is commonly the case with open-source projects, there are multiple forks exposing **spleeter** through either a Guided User Interface (GUI) or a standalone free or paying website. Please note that we do not host, maintain or directly support any of these initiatives.
 
 ## Troubleshooting
 

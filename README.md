@@ -94,7 +94,7 @@ As is commonly the case with open-source projects, there are multiple forks expo
 
 ## Contributing
 
-If you would like to participate in the development of **spleeter** your are more than welcome to do so. Don't hesitate to throw us a pull request and we'll do our best to examine it quickly.
+If you would like to participate in the development of **spleeter** you are more than welcome to do so. Don't hesitate to throw us a pull request and we'll do our best to examine it quickly.
 
 ## Note
 

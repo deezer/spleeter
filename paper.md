@@ -66,21 +66,21 @@ We present results for soft masking and for multi-channel Wiener filtering (appl
 |           |Spleeter Mask  |Spleeter MWF   |Open-Unmix |Demucs|
 |-----------|---------------|---------------|-----------|------|
 | Vocals SDR|6.55           |6.86           |6.32       |7.05  |
-| Vocals SIR|15.19          |15.86          |13.33      |      |
-| Vocals SAR|6.44           |6.99           |6.52       |      |
-| Vocals ISR|12.01          |11.95          |11.93      |      |
+| Vocals SIR|15.19          |15.86          |13.33      |13.94 |
+| Vocals SAR|6.44           |6.99           |6.52       |7.00  |
+| Vocals ISR|12.01          |11.95          |11.93      |-     |
 | Bass SDR  |5.10           |5.51           |5.23       |6.70  |
-| Bass SIR  |10.01          |10.30          |10.93      |      |
-| Bass SAR  |5.15           |5.96           |6.34       |      |
-| Bass ISR  |9.18           |9.61           |9.23       |      |
+| Bass SIR  |10.01          |10.30          |10.93      |13.03 |
+| Bass SAR  |5.15           |5.96           |6.34       |6.68  |
+| Bass ISR  |9.18           |9.61           |9.23       |-     |
 | Drums SDR |5.93           |6.71           |5.73       |7.08  |
-| Drums SIR |12.24          |13.67          |11.12      |      |
-| Drums SAR |5.78           |6.54           |6.02       |      |
-| Drums ISR |10.50          |10.69          |10.51      |      |
+| Drums SIR |12.24          |13.67          |11.12      |13.74 |
+| Drums SAR |5.78           |6.54           |6.02       |7.04  |
+| Drums ISR |10.50          |10.69          |10.51      |-     |
 | Other SDR |4.24           |4.55           |4.02       |4.47  |
-| Other SIR |7.86           |8.16           |6.59       |      |
-| Other SAR |4.63           |4.88           |4.74       |      |
-| Other ISR |9.83           |9.87           |9.31       |      |
+| Other SIR |7.86           |8.16           |6.59       |7.11  |
+| Other SAR |4.63           |4.88           |4.74       |5.26  |
+| Other ISR |9.83           |9.87           |9.31       |-     |
 
 
 Spleeter [@spleeter] source code and pre-trained models are available on [github](https://www.github.com/deezer/spleeter) and distributed under a MIT license. This repository  will eventually be used for releasing other models with improved performances or models separating into more than $5$ stems in the future.

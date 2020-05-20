@@ -1,5 +1,5 @@
 ---
-title: 'Spleeter: a fast and state-of-the art music source separation tool with pre-trained models'
+title: 'Spleeter: a fast and state-of-the-art music source separation tool with pre-trained models'
 tags:
   - Python
   - musical signal processing
@@ -31,7 +31,7 @@ We present and release a new tool for music source separation with pre-trained m
 - split music audio files into several stems with a single command line using pre-trained models. A music audio file can be separated into $2$ stems (vocals and accompaniments), $4$ stems (vocals, drums, bass and other) or $5$ stems (vocals, drums, bass, piano and other).
 - train source separation models or fine-tune pre-trained ones with Tensorflow (provided you have a dataset of isolated sources).
 
-The performance of the pre-trained models are very close to the published state of the art and is one of the best performing $4$ stems separation model on the common musdb18 benchmark [@musdb18] to be publicly released. Spleeter is also very fast as it can separate a mix audio file into $4$ stems $100$ times faster than real-time (we note, though, that the model cannot be applied in real-time as it needs buffering) on a single Graphics Processing Unit (GPU) using the pre-trained $4$-stems model.
+The performance of the pre-trained models are very close to the published state-of-the-art and is one of the best performing $4$ stems separation model on the common musdb18 benchmark [@musdb18] to be publicly released. Spleeter is also very fast as it can separate a mix audio file into $4$ stems $100$ times faster than real-time (we note, though, that the model cannot be applied in real-time as it needs buffering) on a single Graphics Processing Unit (GPU) using the pre-trained $4$-stems model.
 
 ## Purpose
 
@@ -59,7 +59,7 @@ As the whole separation pipeline can be run on a GPU and the model is based on a
 
 ## Separation performances
 
-The models compete with the state of the art on the standard musdb18 dataset [@musdb18] while it was not trained, validated or optimized in any way with musdb18 data. We report results in terms of standard source separation metrics [@separation_metrics], namely Signal to Distortion Ratio (SDR), Signal to Artifacts Ratio (SAR), Signal to Interference Ratio (SIR) and source Image to Spatial distortion Ratio (ISR), are presented in the following table compared to Open-Unmix [@Open-Unmix] and Demucs [@demucs] (only SDR are reported for Demucs since other metrics are not available in the paper) which are, to the authors knowledge, the only released system that perform near state-of-the-art performances.
+The models compete with the state-of-the-art on the standard musdb18 dataset [@musdb18] while it was not trained, validated or optimized in any way with musdb18 data. We report results in terms of standard source separation metrics [@separation_metrics], namely Signal to Distortion Ratio (SDR), Signal to Artifacts Ratio (SAR), Signal to Interference Ratio (SIR) and source Image to Spatial distortion Ratio (ISR), are presented in the following table compared to Open-Unmix [@Open-Unmix] and Demucs [@demucs] (only SDR are reported for Demucs since other metrics are not available in the paper) which are, to the authors knowledge, the only released system that perform near state-of-the-art performances.
 We present results for soft masking and for multi-channel Wiener filtering (applied using Norbert [@Norbert]). As can be seen, for most metrics Spleeter is competitive with Open-Unmix and especially on SDR for all instruments, and is almost on par with Demucs.
 
 
@@ -81,7 +81,6 @@ We present results for soft masking and for multi-channel Wiener filtering (appl
 | Other SIR |7.86           |8.16           |6.59       |7.11  |
 | Other SAR |4.63           |4.88           |4.74       |5.26  |
 | Other ISR |9.83           |9.87           |9.31       |-     |
-
 
 Spleeter [@spleeter] source code and pre-trained models are available on [github](https://www.github.com/deezer/spleeter) and distributed under a MIT license. This repository  will eventually be used for releasing other models with improved performances or models separating into more than $5$ stems in the future.
 

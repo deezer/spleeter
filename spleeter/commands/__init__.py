@@ -70,7 +70,7 @@ OPT_DURATION = {
         'the input file)')
 }
 
-# -w opt specification (separate)
+# -B opt specification (separate)
 OPT_STFT_BACKEND = {
     'dest': 'stft_backend',
     'type': str,

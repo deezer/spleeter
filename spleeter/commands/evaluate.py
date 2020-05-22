@@ -70,7 +70,7 @@ def _separate_evaluation_dataset(arguments, musdb_root_directory, params):
             configuration=arguments.configuration,
             inputs=mixtures,
             output_path=join(audio_output_directory, _SPLIT),
-            filename_format='{filename}/{instrument}.{codec}',
+            filename_format='{foldername}/{instrument}.{codec}',
             codec='wav',
             duration=600.,
             offset=0.,

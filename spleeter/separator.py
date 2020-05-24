@@ -130,7 +130,7 @@ class Separator(object):
         out = []
         for c in range(n_channels):
             d = data[:, :, c].T if inverse else data[:, c]
-            s = fstft(d, hop_length=H, window=win, center=False, **win_len_arg)
+            s = fstft(d, hop_length=H, window=win, center=True, **win_len_arg)
             s = np.expand_dims(s.T, 2-inverse)
             out.append(s)
         if len(out) == 1:

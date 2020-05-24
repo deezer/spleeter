@@ -38,11 +38,22 @@ TEST_CONFIGURATIONS = list(itertools.product(TEST_AUDIO_DESCRIPTORS, MODELS, BAC
 
 print("RUNNING TESTS WITH TF VERSION {}".format(tf.__version__))
 
+@pytest.mark.parametrize('test_file', TEST_AUDIO_DESCRIPTORS)
+def test_separator_stft(test_file):
+    adapter = get_default_audio_adapter()
+    waveform, _ = adapter.load(test_file)
+    separator = Separator(MODELS[0], stft_backend="librosa")
+    # Test the stft and inverse stft provides exact reconstruction
+    stft_matrix = separator._stft(waveform)
+    reconstructed = separator._stft(stft_matrix, inverse=True, length= waveform.shape[0])
+    assert waveform.shape == reconstructed.shape
+    assert np.max(np.abs(reconstructed - waveform)) < 1e-6
+
 
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)
 def test_separate(test_file, configuration, backend):
     """ Test separation from raw data. """
-    tf.reset_default_graph()
+    #tf.reset_default_graph()
     instruments = MODEL_TO_INST[configuration]
     adapter = get_default_audio_adapter()
     waveform, _ = adapter.load(test_file)

@@ -73,7 +73,7 @@ If you use **Spleeter** in your work, please cite:
 
 ## License
 
-The code of **Spleeter** is MIT-licensed.
+The code of **Spleeter** is [MIT-licensed](LICENSE).
 
 ## Disclaimer
 
@@ -91,10 +91,9 @@ As is commonly the case with open-source projects, there are multiple forks expo
 
    It appears that sometimes the shortcut command `spleeter` does not work properly on windows. This is a known issue that we will hopefully fix soon. In the meantime replace `spleeter separate` by `python -m spleeter separate` in command line and it should work.
 
-
 ## Contributing
 
-If you would like to participate in the development of **spleeter** your are more than welcome to do so. Don't hesitate to throw us a pull request and we'll do our best to examine it quickly.
+If you would like to participate in the development of **spleeter** your are more than welcome to do so. Don't hesitate to throw us a pull request and we'll do our best to examine it quickly. Please check out our [guidelines](.github/CONTRIBUTING.md) first.
 
 ## Note
 

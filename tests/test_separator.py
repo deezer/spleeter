@@ -53,7 +53,7 @@ def test_separator_stft(test_file):
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)
 def test_separate(test_file, configuration, backend):
     """ Test separation from raw data. """
-    #tf.reset_default_graph()
+    tf.reset_default_graph()
     instruments = MODEL_TO_INST[configuration]
     adapter = get_default_audio_adapter()
     waveform, _ = adapter.load(test_file)

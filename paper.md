@@ -47,7 +47,7 @@ Spleeter contains pre-trained models for:
 
 - vocals/accompaniment separation.
 - $4$ stems separation as in SiSec [@SISEC18]  (vocals, bass, drums and other).
-- $5$ stems separation with an extra piano stem (vocals, bass, drums, piano, and other). It is, to the author's knowledge, the first released model to perform such a separation.
+- $5$ stems separation with an extra piano stem (vocals, bass, drums, piano, and other). It is, to the authors' knowledge, the first released model to perform such a separation.
 
 The pre-trained models are U-nets [@unet2017] and follow similar specifications as in [@deezerICASSP2019]. The U-net is an encoder/decoder Convolutional Neural Network (CNN) architecture with skip connections. We used $12$-layer U-nets ($6$ layers for the encoder and $6$ for the decoder). A U-net is used for estimating a soft mask for each source (stem). Training loss is a $L_1$-norm between masked input mix spectrograms and source-target spectrograms. The models were trained on Deezer's internal datasets (noteworthily the Bean dataset that was used in [@deezerICASSP2019]) using Adam [@Adam]. Training time took approximately a full week on a single GPU. Separation is then done from estimated source spectrograms using soft masking or multi-channel Wiener filtering.
 
@@ -59,7 +59,7 @@ As the whole separation pipeline can be run on a GPU and the model is based on a
 
 ## Separation performances
 
-The models compete with the state-of-the-art on the standard musdb18 dataset [@musdb18] while it was not trained, validated or optimized in any way with musdb18 data. We report results in terms of standard source separation metrics [@separation_metrics], namely Signal to Distortion Ratio (SDR), Signal to Artifacts Ratio (SAR), Signal to Interference Ratio (SIR) and source Image to Spatial distortion Ratio (ISR), are presented in the following table compared to Open-Unmix [@Open-Unmix] and Demucs [@demucs] (only SDR are reported for Demucs since other metrics are not available in the paper) which are, to the author's knowledge, the only released system that performs near state-of-the-art performances.
+The models compete with the state-of-the-art on the standard musdb18 dataset [@musdb18] while it was not trained, validated or optimized in any way with musdb18 data. We report results in terms of standard source separation metrics [@separation_metrics], namely Signal to Distortion Ratio (SDR), Signal to Artifacts Ratio (SAR), Signal to Interference Ratio (SIR) and source Image to Spatial distortion Ratio (ISR), are presented in the following table compared to Open-Unmix [@Open-Unmix] and Demucs [@demucs] (only SDR are reported for Demucs since other metrics are not available in the paper) which are, to the authors' knowledge, the only released system that performs near state-of-the-art performances.
 We present results for soft masking and for multi-channel Wiener filtering (applied using Norbert [@Norbert]). As can be seen, for most metrics Spleeter is competitive with Open-Unmix and especially on SDR for all instruments, and is almost on par with Demucs.
 
 

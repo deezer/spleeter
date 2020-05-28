@@ -1,5 +1,5 @@
 ---
-title: 'Spleeter: a fast and state-of-the-art music source separation tool with pre-trained models'
+title: 'Spleeter: a fast and efficient music source separation tool with pre-trained models'
 tags:
   - Python
   - musical signal processing

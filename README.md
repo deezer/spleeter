@@ -45,7 +45,7 @@ For a detailed documentation, please check the [repository wiki](https://github.
 The following set of commands will clone this repository, create a virtual environment provisioned with the dependencies and run the tests (will take a few minutes):
 
 ```bash
-git clone https://github.com/Deezer/spleeter
+git clone https://github.com/Deezer/spleeter && cd spleeter
 python -m venv spleeterenv && source spleeterenv/bin/activate
 pip install -r requirements.txt && pip install pytest pytest-xdist
 make test

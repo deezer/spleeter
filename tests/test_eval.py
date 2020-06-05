@@ -26,28 +26,28 @@ from spleeter.commands import evaluate
 from spleeter.utils.configuration import load_configuration
 
 res_4stems = {  "vocals": {
-                    "SDR": -0.009,
-                    "SAR": -19.044,
-                    "SIR": -4.072,
-                    "ISR": -0.000
+                    "SDR": -0.007,
+                    "SAR": -19.231,
+                    "SIR": -4.528,
+                    "ISR": 0.000
                 },
                 "drums": {
-                    "SDR": -0.066,
-                    "SAR": -14.294,
-                    "SIR": -4.908,
-                    "ISR": 0.002
+                    "SDR": -0.071,
+                    "SAR": -14.496,
+                    "SIR": -4.987,
+                    "ISR": 0.001
                 },
                 "bass":{
-                    "SDR": -0.000,
-                    "SAR": -6.364,
-                    "SIR": -9.396,
+                    "SDR": -0.001,
+                    "SAR": -12.426,
+                    "SIR": -7.198,
                     "ISR": -0.001
                 },
                 "other":{
-                    "SDR": -1.464,
-                    "SAR": -14.893,
-                    "SIR": -4.762,
-                    "ISR": -0.027
+                    "SDR": -1.453,
+                    "SAR": -14.899,
+                    "SIR": -4.678,
+                    "ISR": -0.015
                 }
             }
 
@@ -58,10 +58,10 @@ def generate_fake_eval_dataset(path):
     fs = 44100
     duration = 3
     n_channels = 2
+    rng = np.random.RandomState(seed=0)
     for song in range(n_songs):
         song_path = join(path, "test", f"song{song}")
         makedirs(song_path, exist_ok=True)
-        rng = np.random.RandomState(seed=0)
         for instr in ["mixture", "vocals", "bass", "drums", "other"]:
             filename = join(song_path, f"{instr}.wav")
             data = rng.rand(duration*fs, n_channels)-0.5

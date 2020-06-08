@@ -47,7 +47,22 @@ def test_separator_stft(test_file):
     stft_matrix = separator._stft(waveform)
     reconstructed = separator._stft(stft_matrix, inverse=True, length= waveform.shape[0])
     assert waveform.shape == reconstructed.shape
-    assert np.max(np.abs(reconstructed - waveform)) < 1e-6
+    assert np.allclose(reconstructed, waveform, atol=1e-2)
+
+    # TODO test inversion of empty signal, to look at why there are glitches in the reconstruction
+
+    # now also test that tensorflow and librosa stft provide same results
+    from spleeter.audio.spectrogram import compute_spectrogram_tf
+    tf_waveform = tf.convert_to_tensor(waveform, tf.float32)
+    spectrogram_tf = compute_spectrogram_tf(tf_waveform,
+        separator._params['frame_length'],
+        separator._params['frame_step'],)
+    with tf.Session() as sess:
+        spectrogram_tf_eval = spectrogram_tf.eval()
+
+    assert stft_matrix.shape == spectrogram_tf_eval.shape
+    print(np.max(np.abs(stft_matrix) - spectrogram_tf_eval))
+    assert np.allclose(np.abs(stft_matrix), spectrogram_tf_eval, atol=1e-2)
 
 
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)

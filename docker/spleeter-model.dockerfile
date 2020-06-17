@@ -1,8 +1,7 @@
-ARG BASETAG
+ARG BASE=researchdeezer/spleeter
+ARG MODEL=2-stems
 
-FROM researchdeezer/spleeter:${BASETAG}
-
-ARG MODEL
+FROM ${BASE}
 
 RUN mkdir -p /model/$MODEL \
     && wget -O /tmp/$MODEL.tar.gz https://github.com/deezer/spleeter/releases/download/v1.4.0/$MODEL.tar.gz \

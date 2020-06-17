@@ -91,16 +91,18 @@ jobs:
   # =======================================================================================
   # Docker build.
   # =======================================================================================
+
   docker-conda-cpu:
     docker:
       - image: docker:17.05.0-ce-git
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t researchdeezer/spleeter:conda -f docker/conda.dockerfile .
-      - run: docker build --build-arg BASETAG=conda --build-arg MODEL=2stems -t researchdeezer/spleeter:conda-2stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=conda --build-arg MODEL=4stems -t researchdeezer/spleeter:conda-4stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=conda --build-arg MODEL=5stems -t researchdeezer/spleeter:conda-5stems -f docker/embedded-model.dockerfile .
+      - run: docker build -t conda -f docker/conda.dockerfile .
+      - run: docker build --build-arg BASE=conda -t researchdeezer/spleeter:conda -f docker/spleeter-conda.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:conda --build-arg MODEL=2stems -t researchdeezer/spleeter:conda-2stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:conda --build-arg MODEL=4stems -t researchdeezer/spleeter:conda-4stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:conda --build-arg MODEL=5stems -t researchdeezer/spleeter:conda-5stems -f docker/spleeter-model.dockerfile .
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-2stems separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:conda-4stems separate -i /runtime/audio_example.mp3 -p spleeter:4stems -o /tmp
@@ -116,10 +118,13 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t researchdeezer/spleeter:conda-gpu -f docker/conda-gpu.dockerfile .
-      - run: docker build --build-arg BASETAG=conda-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:conda-gpu-2stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=conda-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:conda-gpu-4stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=conda-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:conda-gpu-5stems -f docker/embedded-model.dockerfile .
+      - run: docker build -t conda -f docker/conda.dockerfile .
+      - run: docker build --build-arg BASE=conda -t cuda:conda -f docker/cuda-10-0.dockerfile .
+      - run: docker build --build-arg BASE=cuda:conda -t conda-gpu -f docker/conda.dockerfile .
+      - run: docker build --build-arg BASE=conda-gpu -t researchdeezer/spleeter:conda-gpu -f docker/spleeter-conda.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:conda-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:conda-gpu-2stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:conda-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:conda-gpu-4stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:conda-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:conda-gpu-5stems -f docker/spleeter-model.dockerfile .
       - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - run: docker push researchdeezer/spleeter:conda-gpu
       - run: docker push researchdeezer/spleeter:conda-gpu-2stems
@@ -133,10 +138,10 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t researchdeezer/spleeter:3.6 -f docker/python-3.6.dockerfile .
-      - run: docker build --build-arg BASETAG=3.6 --build-arg MODEL=2stems -t researchdeezer/spleeter:3.6-2stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=3.6 --build-arg MODEL=4stems -t researchdeezer/spleeter:3.6-4stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=3.6 --build-arg MODEL=5stems -t researchdeezer/spleeter:3.6-5stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASE=python:3.6 -t researchdeezer/spleeter:3.6 -f docker/spleeter.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.6 --build-arg MODEL=2stems -t researchdeezer/spleeter:3.6-2stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.6 --build-arg MODEL=4stems -t researchdeezer/spleeter:3.6-4stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.6 --build-arg MODEL=5stems -t researchdeezer/spleeter:3.6-5stems -f docker/spleeter-model.dockerfile .
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6 separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-2stems separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.6-4stems separate -i /runtime/audio_example.mp3 -p spleeter:4stems -o /tmp
@@ -152,10 +157,11 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t researchdeezer/spleeter:3.6-gpu -f docker/python-3.6-gpu.dockerfile .
-      - run: docker build --build-arg BASETAG=3.6-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:3.6-gpu-2stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=3.6-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:3.6-gpu-4stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=3.6-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:3.6-gpu-5stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASE=python:3.6 -t cuda:3.6 -f docker/cuda-10-0.dockerfile .
+      - run: docker build --build-arg BASE=cuda:3.6 -t researchdeezer/spleeter:3.6-gpu -f docker/spleeter.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.6-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:3.6-gpu-2stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.6-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:3.6-gpu-4stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.6-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:3.6-gpu-5stems -f docker/spleeter-model.dockerfile .
       - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - run: docker push researchdeezer/spleeter:3.6-gpu
       - run: docker push researchdeezer/spleeter:3.6-gpu-2stems
@@ -167,10 +173,10 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t researchdeezer/spleeter:3.7 -f docker/python-3.7.dockerfile .
-      - run: docker build --build-arg BASETAG=3.7 --build-arg MODEL=2stems -t researchdeezer/spleeter:3.7-2stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=3.7 --build-arg MODEL=4stems -t researchdeezer/spleeter:3.7-4stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=3.7 --build-arg MODEL=5stems -t researchdeezer/spleeter:3.7-5stems -f docker/embedded-model.dockerfile .
+      - run: docker build --build-arg BASE=python:3.7 -t researchdeezer/spleeter:3.7 -f docker/spleeter.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.7 --build-arg MODEL=2stems -t researchdeezer/spleeter:3.7-2stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.7 --build-arg MODEL=4stems -t researchdeezer/spleeter:3.7-4stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.7 --build-arg MODEL=5stems -t researchdeezer/spleeter:3.7-5stems -f docker/spleeter-model.dockerfile .
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7 separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-2stems separate -i /runtime/audio_example.mp3 -o /tmp
       - run: docker run -v $(pwd):/runtime researchdeezer/spleeter:3.7-4stems separate -i /runtime/audio_example.mp3 -p spleeter:4stems -o /tmp
@@ -188,15 +194,17 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t researchdeezer/spleeter:3.7-gpu -f docker/python-3.7-gpu.dockerfile .
-      - run: docker build --build-arg BASETAG=3.7-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:3.7-gpu-2stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=3.7-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:3.7-gpu-4stems -f docker/embedded-model.dockerfile .
-      - run: docker build --build-arg BASETAG=3.7-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:3.7-gpu-5stems -f docker/embedded-model.dockerfile .
+      - run: docker build -t cuda:3.7 -f docker/cuda-10-0.dockerfile .
+      - run: docker build --build-arg BASE=cuda:3.7 -t researchdeezer/spleeter:3.7-gpu -f docker/spleeter.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.7-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:3.7-gpu-2stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.7-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:3.7-gpu-4stems -f docker/spleeter-model.dockerfile .
+      - run: docker build --build-arg BASE=researchdeezer/spleeter:3.7-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:3.7-gpu-5stems -f docker/spleeter-model.dockerfile .
       - run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - run: docker push researchdeezer/spleeter:3.7-gpu
       - run: docker push researchdeezer/spleeter:3.7-gpu-2stems
       - run: docker push researchdeezer/spleeter:3.7-gpu-4stems
       - run: docker push researchdeezer/spleeter:3.7-gpu-5stems
+
 workflows:
   version: 2
   spleeter-release-pipeline:

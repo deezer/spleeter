@@ -57,6 +57,7 @@ setup(
         'requests',
         'setuptools>=41.0.0',
         'librosa==0.7.2',
+        'numba==0.48.0',
         '{}=={}'.format(tensorflow_dependency, tensorflow_version),
     ],
     extras_require={

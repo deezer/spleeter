@@ -122,20 +122,21 @@ class Separator(object):
         assert not (inverse and length is None)
         data = np.asfortranarray(data)
         N = self._params["frame_length"]
-        pad_edges = int(N/2)
         H = self._params["frame_step"]
+        F = int(N/2) + 1
         win = hann(N, sym=False)
         fstft = istft if inverse else stft
-        win_len_arg = {"win_length": None, "length": length +
-                       2*pad_edges} if inverse else {"n_fft": N}
+        win_len_arg = {"win_length": None,
+                       "length": None} if inverse else {"n_fft": N}
         n_channels = data.shape[-1]
         out = []
         for c in range(n_channels):
-            d = data[:, :, c].T if inverse else np.concatenate(
-                (np.zeros(pad_edges,), data[:, c], np.zeros(pad_edges,)))
+            d = np.concatenate((np.zeros((F, 1)), data[:, :, c].T, np.zeros(
+                (F, 1))), axis=1) if inverse else data[:, c]
             s = fstft(d, hop_length=H, window=win, center=False, **win_len_arg)
             if inverse:
-                s = s[pad_edges:-pad_edges]
+                s = s[H:]
+                s = s[:length]
             s = np.expand_dims(s.T, 2-inverse)
             out.append(s)
         if len(out) == 1:

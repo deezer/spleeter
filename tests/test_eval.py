@@ -75,7 +75,5 @@ def test_evaluate(path="FAKE_MUSDB_DIR"):
     params = load_configuration(arguments.configuration)
     metrics = evaluate.entrypoint(arguments, params)
     for instrument, metric in metrics.items():
-        print(instrument), print(metric)
         for m, value in metric.items():
-            print(np.median(value)), print(res_4stems[instrument][m])
             assert np.allclose(np.median(value), res_4stems[instrument][m], atol=1e-3)

@@ -40,7 +40,7 @@ print("RUNNING TESTS WITH TF VERSION {}".format(tf.__version__))
 
 
 @pytest.mark.parametrize('test_file', TEST_AUDIO_DESCRIPTORS)
-def test_separator_stft(test_file):
+def test_separator_backends(test_file):
     adapter = get_default_audio_adapter()
     waveform, _ = adapter.load(test_file)
 

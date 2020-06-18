@@ -74,9 +74,11 @@ def test_separator_backends(test_file):
 
     for instrument in out_lib.keys():
         # test that both outputs are not null
+        print(np.sum(np.abs(out_tf[instrument])))
+        print(np.sum(np.abs(out_lib[instrument])))
         assert np.sum(np.abs(out_tf[instrument])) > 1000
         assert np.sum(np.abs(out_lib[instrument])) > 1000
-        assert np.allclose(out_tf[instrument], out_lib[instrument], atol=0.1)
+        assert np.allclose(out_tf[instrument], out_lib[instrument], atol=0.01)
 
 
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)

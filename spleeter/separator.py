@@ -122,7 +122,7 @@ class Separator(object):
         assert not (inverse and length is None)
         data = np.asfortranarray(data)
         N = self._params["frame_length"]
-        pad_edges = int(N/4)
+        pad_edges = int(N/2)
         H = self._params["frame_step"]
         win = hann(N, sym=False)
         fstft = istft if inverse else stft

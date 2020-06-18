@@ -98,7 +98,8 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build --build-arg BASE=continuumio/miniconda3:4.7.10 -t researchdeezer/spleeter:conda -f docker/spleeter-conda.dockerfile .
+      - run: docker build -t conda -f docker/conda.dockerfile .
+      - run: docker build --build-arg BASE=conda -t researchdeezer/spleeter:conda -f docker/spleeter-conda.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:conda --build-arg MODEL=2stems -t researchdeezer/spleeter:conda-2stems -f docker/spleeter-model.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:conda --build-arg MODEL=4stems -t researchdeezer/spleeter:conda-4stems -f docker/spleeter-model.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:conda --build-arg MODEL=5stems -t researchdeezer/spleeter:conda-5stems -f docker/spleeter-model.dockerfile .
@@ -117,7 +118,8 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build --build-arg BASE=continuumio/miniconda3:4.7.10 -t conda-gpu -f docker/cuda-10-0.dockerfile .
+      - run: docker build -t conda -f docker/conda.dockerfile .
+      - run: docker build --build-arg BASE=conda -t conda-gpu -f docker/cuda-10-0.dockerfile .
       - run: docker build --build-arg BASE=conda-gpu --build-arg SPLEETER_PACKAGE=spleeter-gpu -t researchdeezer/spleeter:conda-gpu -f docker/spleeter-conda.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:conda-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:conda-gpu-2stems -f docker/spleeter-model.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:conda-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:conda-gpu-4stems -f docker/spleeter-model.dockerfile .

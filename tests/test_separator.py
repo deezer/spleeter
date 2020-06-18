@@ -50,7 +50,6 @@ def test_separator_stft(test_file):
     # Test the stft and inverse stft provides exact reconstruction
     stft_matrix = separator_lib._stft(waveform)
     reconstructed = separator_lib._stft(stft_matrix, inverse=True, length= waveform.shape[0])
-    assert waveform.shape == reconstructed.shape
     assert np.allclose(reconstructed, waveform, atol=1e-2)
 
     # # now also test that tensorflow and librosa STFT provide same results
@@ -72,7 +71,7 @@ def test_separator_stft(test_file):
     out_lib = separator_lib._separate_librosa(waveform, test_file)
 
     for instrument in out_lib.keys():
-        # test that signal is not null
+        # test that both outputs are not null
         assert np.sum(np.abs(out_tf[instrument])) > 1000
         assert np.sum(np.abs(out_lib[instrument])) > 1000
         max_diff = np.max(np.abs(out_tf[instrument] - out_lib[instrument]))

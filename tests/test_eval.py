@@ -26,28 +26,28 @@ from spleeter.commands import evaluate
 from spleeter.utils.configuration import load_configuration
 
 res_4stems = {  "vocals": {
-                    "SDR": -0.007,
-                    "SAR": -19.231,
-                    "SIR": -4.528,
+                    "SDR": 0.000,
+                    "SAR": -15.856,
+                    "SIR": -6.861,
                     "ISR": 0.000
                 },
                 "drums": {
-                    "SDR": -0.071,
-                    "SAR": -14.496,
-                    "SIR": -4.987,
+                    "SDR": -0.069,
+                    "SAR": -15.769,
+                    "SIR": -5.049,
                     "ISR": 0.001
                 },
                 "bass":{
-                    "SDR": -0.001,
-                    "SAR": -12.426,
-                    "SIR": -7.198,
-                    "ISR": -0.001
+                    "SDR": -0.000,
+                    "SAR": -10.499,
+                    "SIR": -6.988,
+                    "ISR": -0.000
                 },
                 "other":{
-                    "SDR": -1.453,
-                    "SAR": -14.899,
-                    "SIR": -4.678,
-                    "ISR": -0.015
+                    "SDR": -1.365,
+                    "SAR": -14.591,
+                    "SIR": -4.751,
+                    "ISR": -0.016
                 }
             }
 
@@ -75,5 +75,7 @@ def test_evaluate(path="FAKE_MUSDB_DIR"):
     params = load_configuration(arguments.configuration)
     metrics = evaluate.entrypoint(arguments, params)
     for instrument, metric in metrics.items():
-        for metric, value in metric.items():
-            assert np.allclose(np.median(value), res_4stems[instrument][metric], atol=1e-3)
+        print(instrument), print(metric)
+        for m, value in metric.items():
+            print(np.median(value)), print(res_4stems[instrument][m])
+            assert np.allclose(np.median(value), res_4stems[instrument][m], atol=1e-3)

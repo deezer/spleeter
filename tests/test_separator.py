@@ -73,8 +73,6 @@ def test_separator_backends(test_file):
         # test that both outputs are not null
         assert np.sum(np.abs(out_tf[instrument])) > 1000
         assert np.sum(np.abs(out_lib[instrument])) > 1000
-        max_diff = np.max(np.abs(out_tf[instrument] - out_lib[instrument]))
-        print(f"Max diff on {instrument} is {max_diff}")
         assert np.allclose(out_tf[instrument], out_lib[instrument], atol=0.1)
 
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)

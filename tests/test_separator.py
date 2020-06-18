@@ -38,31 +38,46 @@ TEST_CONFIGURATIONS = list(itertools.product(TEST_AUDIO_DESCRIPTORS, MODELS, BAC
 
 print("RUNNING TESTS WITH TF VERSION {}".format(tf.__version__))
 
+
 @pytest.mark.parametrize('test_file', TEST_AUDIO_DESCRIPTORS)
 def test_separator_stft(test_file):
     adapter = get_default_audio_adapter()
     waveform, _ = adapter.load(test_file)
-    separator = Separator(MODELS[0], stft_backend="librosa")
+
+    separator_lib = Separator("spleeter:2stems", stft_backend="librosa")
+    separator_tf = Separator("spleeter:2stems", stft_backend="tensorflow")
+
     # Test the stft and inverse stft provides exact reconstruction
-    stft_matrix = separator._stft(waveform)
-    reconstructed = separator._stft(stft_matrix, inverse=True, length= waveform.shape[0])
+    stft_matrix = separator_lib._stft(waveform)
+    reconstructed = separator_lib._stft(stft_matrix, inverse=True, length= waveform.shape[0])
     assert waveform.shape == reconstructed.shape
     assert np.allclose(reconstructed, waveform, atol=1e-2)
 
-    # TODO test inversion of empty signal, to look at why there are glitches in the reconstruction
-
-    # now also test that tensorflow and librosa stft provide same results
+    # # now also test that tensorflow and librosa STFT provide same results
     from spleeter.audio.spectrogram import compute_spectrogram_tf
     tf_waveform = tf.convert_to_tensor(waveform, tf.float32)
     spectrogram_tf = compute_spectrogram_tf(tf_waveform,
-        separator._params['frame_length'],
-        separator._params['frame_step'],)
+        separator_tf._params['frame_length'],
+        separator_tf._params['frame_step'],)
     with tf.Session() as sess:
         spectrogram_tf_eval = spectrogram_tf.eval()
 
-    assert stft_matrix.shape == spectrogram_tf_eval.shape
-    print(np.max(np.abs(stft_matrix) - spectrogram_tf_eval))
-    assert np.allclose(np.abs(stft_matrix), spectrogram_tf_eval, atol=1e-2)
+    # check that stfts are equivalent up to the padding in the librosa case
+    assert stft_matrix.shape[0] == spectrogram_tf_eval.shape[0] + 2
+    assert stft_matrix.shape[1:] == spectrogram_tf_eval.shape[1:]
+    assert np.allclose(np.abs(stft_matrix[1:-1]), spectrogram_tf_eval, atol=1e-2)
+
+    # compare both separation, it should be close
+    out_tf = separator_tf._separate_tensorflow(waveform, test_file)
+    out_lib = separator_lib._separate_librosa(waveform, test_file)
+
+    for instrument in out_lib.keys():
+        # test that signal is not null
+        assert np.sum(np.abs(out_tf[instrument])) > 1000
+        assert np.sum(np.abs(out_lib[instrument])) > 1000
+        max_diff = np.max(np.abs(out_tf[instrument] - out_lib[instrument]))
+        print(f"Max diff on {instrument} is {max_diff}")
+        assert np.allclose(out_tf[instrument], out_lib[instrument], atol=0.1)
 
 
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)

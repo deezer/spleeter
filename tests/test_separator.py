@@ -72,13 +72,10 @@ def test_separator_backends(test_file):
     out_lib = separator_lib._separate_librosa(waveform, test_file)
 
     for instrument in out_lib.keys():
-        # test that both outputs are not null
-        print(np.sum(np.abs(out_tf[instrument])))
-        print(np.sum(np.abs(out_lib[instrument])))
-        assert np.sum(np.abs(out_tf[instrument])) > 1000
-        assert np.sum(np.abs(out_lib[instrument])) > 1000
-        print(np.max(out_tf[instrument]- out_lib[instrument]))
+        # test that both outputs are close everywhere
         assert np.allclose(out_tf[instrument], out_lib[instrument], atol=0.025)
+        # it should be even more similar outside edges zones
+        assert np.allclose(out_tf[instrument][4096:-4096,:], out_lib[instrument][4096:-4096,:], atol=0.002)
 
 
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)

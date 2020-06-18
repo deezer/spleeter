@@ -27,27 +27,27 @@ from spleeter.utils.configuration import load_configuration
 
 res_4stems = {  "vocals": {
                     "SDR": 0.000,
-                    "SAR": -15.856,
-                    "SIR": -6.861,
+                    "SAR": -16.212,
+                    "SIR": -4.172,
                     "ISR": 0.000
                 },
                 "drums": {
-                    "SDR": -0.069,
-                    "SAR": -15.769,
-                    "SIR": -5.049,
+                    "SDR": -0.077,
+                    "SAR": -15.739,
+                    "SIR": -5.045,
                     "ISR": 0.001
                 },
                 "bass":{
                     "SDR": -0.000,
-                    "SAR": -10.499,
-                    "SIR": -6.988,
+                    "SAR": -10.665,
+                    "SIR": -5.646,
                     "ISR": -0.000
                 },
                 "other":{
-                    "SDR": -1.365,
-                    "SAR": -14.591,
-                    "SIR": -4.751,
-                    "ISR": -0.016
+                    "SDR": -1.309,
+                    "SAR": -14.573,
+                    "SIR": -4.705,
+                    "ISR": -0.014
                 }
             }
 

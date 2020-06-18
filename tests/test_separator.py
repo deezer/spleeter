@@ -51,7 +51,7 @@ def test_separator_backends(test_file):
     stft_matrix = separator_lib._stft(waveform)
     reconstructed = separator_lib._stft(
         stft_matrix, inverse=True, length=waveform.shape[0])
-    assert np.allclose(reconstructed, waveform, atol=1e-2)
+    assert np.allclose(reconstructed, waveform, atol=3e-2)
 
     # # now also test that tensorflow and librosa STFT provide same results
     from spleeter.audio.spectrogram import compute_spectrogram_tf
@@ -62,11 +62,10 @@ def test_separator_backends(test_file):
     with tf.Session() as sess:
         spectrogram_tf_eval = spectrogram_tf.eval()
 
-    # check that stfts are equivalent up to the padding in the librosa case
-    assert stft_matrix.shape[0] == spectrogram_tf_eval.shape[0] + 2
-    assert stft_matrix.shape[1:] == spectrogram_tf_eval.shape[1:]
+    # check that stfts are equivalent
+    assert stft_matrix.shape == spectrogram_tf_eval.shape
     assert np.allclose(
-        np.abs(stft_matrix[1:-1]), spectrogram_tf_eval, atol=1e-2)
+        np.abs(stft_matrix), spectrogram_tf_eval, atol=1e-2)
 
     # compare both separation, it should be close
     out_tf = separator_tf._separate_tensorflow(waveform, test_file)
@@ -78,7 +77,8 @@ def test_separator_backends(test_file):
         print(np.sum(np.abs(out_lib[instrument])))
         assert np.sum(np.abs(out_tf[instrument])) > 1000
         assert np.sum(np.abs(out_lib[instrument])) > 1000
-        assert np.allclose(out_tf[instrument], out_lib[instrument], atol=0.01)
+        print(np.max(out_tf[instrument]- out_lib[instrument]))
+        assert np.allclose(out_tf[instrument], out_lib[instrument], atol=0.025)
 
 
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)

@@ -119,8 +119,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: docker build -t conda -f docker/conda.dockerfile .
-      - run: docker build --build-arg BASE=conda -t cuda:conda -f docker/cuda-10-0.dockerfile .
-      - run: docker build --build-arg BASE=cuda:conda -t conda-gpu -f docker/conda.dockerfile .
+      - run: docker build --build-arg BASE=conda -t conda-gpu -f docker/cuda-10-0.dockerfile .
       - run: docker build --build-arg BASE=conda-gpu -t researchdeezer/spleeter:conda-gpu -f docker/spleeter-conda.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:conda-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:conda-gpu-2stems -f docker/spleeter-model.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:conda-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:conda-gpu-4stems -f docker/spleeter-model.dockerfile .

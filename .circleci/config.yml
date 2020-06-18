@@ -120,7 +120,7 @@ jobs:
       - setup_remote_docker
       - run: docker build -t conda -f docker/conda.dockerfile .
       - run: docker build --build-arg BASE=conda -t conda-gpu -f docker/cuda-10-0.dockerfile .
-      - run: docker build --build-arg BASE=conda-gpu -t researchdeezer/spleeter:conda-gpu -f docker/spleeter-conda.dockerfile .
+      - run: docker build --build-arg BASE=conda-gpu --build-arg SPLEETER_PACKAGE=spleeter-gpu -t researchdeezer/spleeter:conda-gpu -f docker/spleeter-conda.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:conda-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:conda-gpu-2stems -f docker/spleeter-model.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:conda-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:conda-gpu-4stems -f docker/spleeter-model.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:conda-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:conda-gpu-5stems -f docker/spleeter-model.dockerfile .
@@ -157,7 +157,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: docker build --build-arg BASE=python:3.6 -t cuda:3.6 -f docker/cuda-10-0.dockerfile .
-      - run: docker build --build-arg BASE=cuda:3.6 -t researchdeezer/spleeter:3.6-gpu -f docker/spleeter.dockerfile .
+      - run: docker build --build-arg BASE=cuda:3.6 --build-arg SPLEETER_PACKAGE=spleeter-gpu -t researchdeezer/spleeter:3.6-gpu -f docker/spleeter.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:3.6-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:3.6-gpu-2stems -f docker/spleeter-model.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:3.6-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:3.6-gpu-4stems -f docker/spleeter-model.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:3.6-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:3.6-gpu-5stems -f docker/spleeter-model.dockerfile .
@@ -194,7 +194,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: docker build -t cuda:3.7 -f docker/cuda-10-0.dockerfile .
-      - run: docker build --build-arg BASE=cuda:3.7 -t researchdeezer/spleeter:3.7-gpu -f docker/spleeter.dockerfile .
+      - run: docker build --build-arg BASE=cuda:3.7 --build-arg SPLEETER_PACKAGE=spleeter-gpu -t researchdeezer/spleeter:3.7-gpu -f docker/spleeter.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:3.7-gpu --build-arg MODEL=2stems -t researchdeezer/spleeter:3.7-gpu-2stems -f docker/spleeter-model.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:3.7-gpu --build-arg MODEL=4stems -t researchdeezer/spleeter:3.7-gpu-4stems -f docker/spleeter-model.dockerfile .
       - run: docker build --build-arg BASE=researchdeezer/spleeter:3.7-gpu --build-arg MODEL=5stems -t researchdeezer/spleeter:3.7-gpu-5stems -f docker/spleeter-model.dockerfile .

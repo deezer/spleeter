@@ -38,6 +38,7 @@ TEST_CONFIGURATIONS = list(itertools.product(TEST_AUDIO_DESCRIPTORS, MODELS, BAC
 
 print("RUNNING TESTS WITH TF VERSION {}".format(tf.__version__))
 
+
 @pytest.mark.parametrize('test_file', TEST_AUDIO_DESCRIPTORS)
 def test_separator_backends(test_file):
     adapter = get_default_audio_adapter()
@@ -48,22 +49,24 @@ def test_separator_backends(test_file):
 
     # Test the stft and inverse stft provides exact reconstruction
     stft_matrix = separator_lib._stft(waveform)
-    reconstructed = separator_lib._stft(stft_matrix, inverse=True, length= waveform.shape[0])
+    reconstructed = separator_lib._stft(
+        stft_matrix, inverse=True, length=waveform.shape[0])
     assert np.allclose(reconstructed, waveform, atol=1e-2)
 
     # # now also test that tensorflow and librosa STFT provide same results
     from spleeter.audio.spectrogram import compute_spectrogram_tf
     tf_waveform = tf.convert_to_tensor(waveform, tf.float32)
     spectrogram_tf = compute_spectrogram_tf(tf_waveform,
-        separator_tf._params['frame_length'],
-        separator_tf._params['frame_step'],)
+                                            separator_tf._params['frame_length'],
+                                            separator_tf._params['frame_step'],)
     with tf.Session() as sess:
         spectrogram_tf_eval = spectrogram_tf.eval()
 
     # check that stfts are equivalent up to the padding in the librosa case
     assert stft_matrix.shape[0] == spectrogram_tf_eval.shape[0] + 2
     assert stft_matrix.shape[1:] == spectrogram_tf_eval.shape[1:]
-    assert np.allclose(np.abs(stft_matrix[1:-1]), spectrogram_tf_eval, atol=1e-2)
+    assert np.allclose(
+        np.abs(stft_matrix[1:-1]), spectrogram_tf_eval, atol=1e-2)
 
     # compare both separation, it should be close
     out_tf = separator_tf._separate_tensorflow(waveform, test_file)
@@ -74,6 +77,7 @@ def test_separator_backends(test_file):
         assert np.sum(np.abs(out_tf[instrument])) > 1000
         assert np.sum(np.abs(out_lib[instrument])) > 1000
         assert np.allclose(out_tf[instrument], out_lib[instrument], atol=0.1)
+
 
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)
 def test_separate(test_file, configuration, backend):

@@ -129,8 +129,6 @@ jobs:
       - run: docker push researchdeezer/spleeter:conda-gpu-2stems
       - run: docker push researchdeezer/spleeter:conda-gpu-4stems
       - run: docker push researchdeezer/spleeter:conda-gpu-5stems
-      - run: docker tag researchdeezer/spleeter:conda-gpu researchdeezer/spleeter:gpu
-      - run: docker push researchdeezer/spleeter:gpu
   docker-3.6-cpu:
     docker:
       - image: docker:17.05.0-ce-git
@@ -203,6 +201,8 @@ jobs:
       - run: docker push researchdeezer/spleeter:3.7-gpu-2stems
       - run: docker push researchdeezer/spleeter:3.7-gpu-4stems
       - run: docker push researchdeezer/spleeter:3.7-gpu-5stems
+      - run: docker tag researchdeezer/spleeter:3.7-gpu researchdeezer/spleeter:gpu
+      - run: docker push researchdeezer/spleeter:gpu
 
 workflows:
   version: 2

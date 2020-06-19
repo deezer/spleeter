@@ -10,4 +10,4 @@ RUN mkdir -p /model
 RUN conda install -y -c conda-forge musdb
 RUN conda install -y -c conda-forge ${SPLEETER_PACKAGE}==${SPLEETER_VERSION}
 COPY docker/conda-entrypoint.sh spleeter-entrypoint.sh
-ENTRYPOINT ["spleeter-entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "spleeter-entrypoint.sh"]

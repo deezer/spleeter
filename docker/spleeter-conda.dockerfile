@@ -10,4 +10,5 @@ RUN mkdir -p /model
 RUN conda install -y -c conda-forge musdb
 RUN conda install -y -c conda-forge ${SPLEETER_PACKAGE}==${SPLEETER_VERSION}
 
-ENTRYPOINT ["spleeter"]
+ENTRYPOINT ["/bin/bash"]
+CMD ["-c", "spleeter"]

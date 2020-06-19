@@ -6,7 +6,6 @@ ENV CUDA_PKG_VERSION 10-0=$CUDA_VERSION-1
 ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
 ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
 # Note: differ from original image, picked from old dzr_audio spec.
-ENV NVIDIA_VISIBLE_DEVICES=3
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV NVIDIA_REQUIRE_CUDA "cuda>=10.0 brand=tesla,driver>=384,driver<385 brand=tesla,driver>=410,driver<411"
 ENV NCCL_VERSION 2.4.2

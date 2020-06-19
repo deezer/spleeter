@@ -9,5 +9,6 @@ ENV MODEL_PATH /model
 RUN mkdir -p /model
 RUN conda install -y -c conda-forge musdb
 RUN conda install -y -c conda-forge ${SPLEETER_PACKAGE}==${SPLEETER_VERSION}
-
-ENTRYPOINT "source /root/.bashrc && spleeter"
+RUN echo "source /root/.bashrc; spleeter \"$@\"> /opt/entrypoint.sh"
+COPY conda-entrypoint.sh spleeter-entrypoint.sh
+ENTRYPOINT ["spleeter-entrypoint.sh"]

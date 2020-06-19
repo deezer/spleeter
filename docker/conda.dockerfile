@@ -13,3 +13,4 @@ RUN apt-get update --fix-missing \
     && echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc \
     && echo "conda activate base" >> ~/.bashrc \
     && ln -s /opt/conda/bin/conda /usr/bin/conda
+SHELL ["/bin/bash", "-c"]

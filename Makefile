@@ -8,6 +8,7 @@
 FEEDSTOCK = spleeter-feedstock
 FEEDSTOCK_REPOSITORY = https://github.com/deezer/$(FEEDSTOCK)
 FEEDSTOCK_RECIPE = $(FEEDSTOCK)/recipe/spleeter/meta.yaml
+PYTEST_CMD = pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv
 
 all: clean build test deploy
 
@@ -26,7 +27,8 @@ build-gpu: clean
 	python3 setup.py sdist
 
 test:
-	pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv
+	$(foreach file, $(wildcard tests/test_*.py), $(PYTEST_CMD) $(file);)
+	
 
 deploy:
 	pip install twine

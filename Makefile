@@ -26,7 +26,7 @@ build-gpu: clean
 	python3 setup.py sdist
 
 test:
-	pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv --forked
+	pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv
 
 deploy:
 	pip install twine

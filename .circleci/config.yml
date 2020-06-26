@@ -12,7 +12,7 @@ jobs:
       - restore_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
       - run: apt-get update && apt-get install -y ffmpeg
-      - run: pip install -r requirements.txt && pip install pytest pytest-xdist musdb museval
+      - run: pip install -r requirements.txt && pip install pytest==5.4.3 pytest-xdist==1.32.0 pytest-forked==1.1.3 musdb museval
       - run: make test
       - save_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
@@ -30,7 +30,7 @@ jobs:
       - restore_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}
       - run: apt-get update && apt-get install -y ffmpeg
-      - run: pip install -r requirements.txt && pip install pytest pytest-xdist musdb museval
+      - run: pip install -r requirements.txt && pip install pytest==5.4.3 pytest-xdist==1.32.0 pytest-forked==1.1.3 musdb museval
       - run: make test
       - save_cache:
           key: models-{{ checksum "spleeter/model/__init__.py" }}

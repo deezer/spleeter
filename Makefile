@@ -8,7 +8,7 @@
 FEEDSTOCK = spleeter-feedstock
 FEEDSTOCK_REPOSITORY = https://github.com/deezer/$(FEEDSTOCK)
 FEEDSTOCK_RECIPE = $(FEEDSTOCK)/recipe/spleeter/meta.yaml
-PYTEST_CMD = pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv --forked
+PYTEST_CMD = pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv --boxed -s
 
 all: clean build test deploy
 

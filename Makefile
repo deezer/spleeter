@@ -27,7 +27,7 @@ build-gpu: clean
 	python3 setup.py sdist
 
 test:
-	$(PYTEST_CMD)
+	$(foreach file, $(wildcard tests/test_*.py), $(PYTEST_CMD) $(file);)
 	
 
 deploy:

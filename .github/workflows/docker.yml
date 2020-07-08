@@ -28,7 +28,7 @@ jobs:
         name: Build CUDA base image
         run: |
           docker build \
-            --build-arg BASE=python:${{ matrix.distribution }}
+            --build-arg BASE=python:${{ matrix.distribution }} \
             -t cuda:${{ matrix.distribution }} \
             -f docker/cuda-10-0.dockerfile .
           echo "::set-env name=base::cuda:${{ matrix.distribution }}"

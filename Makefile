@@ -33,8 +33,6 @@ test:
 	$(PYTEST_CMD) tests/test_ffmpeg_adapter.py
 	$(PYTEST_CMD) tests/test_github_model_provider.py
 	$(PYTEST_CMD) --boxed tests/test_separator.py
-	
-	
 
 deploy:
 	pip install twine

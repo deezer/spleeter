@@ -1,0 +1,27 @@
+name: pypi
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - master
+env:
+  TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+  TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+jobs:
+  deploy-cpu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Package sdist
+        run: make build
+      - name: Deploy to pypi
+        run: make deploy
+  deploy-gpu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Package sdist
+        run: make build-gpu
+      - name: Deploy to pypi
+        run: make deploy

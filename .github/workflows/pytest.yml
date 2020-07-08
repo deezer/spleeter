@@ -17,7 +17,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update && sudo apt-get install -y ffmpeg
+          pip install --upgrade pip setuptools
           pip install pytest==5.4.3 pytest-xdist==1.32.0 pytest-forked==1.1.3 musdb museval
-          python setup.py install
+          pip setup.py install --user
       - name: Test with pytest
         run: make test

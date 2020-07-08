@@ -28,7 +28,7 @@ build-gpu: clean
 
 test:
 	#$(foreach file, $(wildcard tests/test_*.py), $(PYTEST_CMD) $(file);)
-	$(PYTEST_CMD) tests/test_eval.py
+	#$(PYTEST_CMD) tests/test_eval.py
 	$(PYTEST_CMD) tests/test_ffmpeg_adapter.py
 	$(PYTEST_CMD) tests/test_github_model_provider.py
 	$(PYTEST_CMD) --boxed tests/test_separator.py

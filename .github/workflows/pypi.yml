@@ -16,15 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Cache sdist packages
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-sdist-packages
+      - uses: actions/cache@v2
         with:
           path: dist
-          key: sdist-${{ matrix.platform }}-${{ hashFiles('setup.py') }}
+          key: sdist-${{ matrix.platform }}-${{ hashFiles('**/setup.py') }}
           restore-keys: |
-            sdist-${{ matrix.platform }}-${{ hashFiles('setup.py') }}
+            sdist-${{ matrix.platform }}-${{ hashFiles('**/setup.py') }}
             sdist-${{ matrix.platform }}
             sdist-
       - if: ${{ matrix.platform }} == 'cpu'

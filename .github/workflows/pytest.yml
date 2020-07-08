@@ -14,15 +14,18 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Cache spleeter models
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-spleeter-model
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - uses: actions/cache@v2
         with:
           path: pretrained_models
-          key: models-${{ hashFiles('spleeter/model/__init__.py') }}
+          key: models-${{ hashFiles('**/setup.py') }}
           restore-keys: |
-            models-${{ hashFiles('spleeter/model/__init__.py') }}
+            models-${{ hashFiles('**/setup.py') }}
             models-
       - name: Install dependencies
         run: |

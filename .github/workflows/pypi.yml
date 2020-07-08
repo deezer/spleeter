@@ -9,19 +9,29 @@ env:
   TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
   TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
 jobs:
-  deploy-cpu:
+  package-and-deploy:
+    strategy:
+      matrix:
+        platform: [cpu, gpu]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Package sdist
+      - name: Cache sdist packages
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-sdist-packages
+        with:
+          path: dist
+          key: sdist-${{ matrix.platform }}-${{ hashFiles('setup.py') }}
+          restore-keys: |
+            sdist-${{ matrix.platform }}-${{ hashFiles('setup.py') }}
+            sdist-${{ matrix.platform }}
+            sdist-
+      - if: ${{ matrix.platform }} == 'cpu'
+        name: Package CPU distribution
         run: make build
-      - name: Deploy to pypi
-        run: make deploy
-  deploy-gpu:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Package sdist
+      - if: ${{ matrix.platform }} == 'gpu'
+        name: Package GPU distribution
         run: make build-gpu
       - name: Deploy to pypi
         run: make deploy

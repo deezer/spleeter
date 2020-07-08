@@ -19,12 +19,12 @@ jobs:
           echo "::set-env name=base::python:${{ matrix.distribution }}"
           echo "::set-env name=tag::${{ matrix.distribution }}"
           echo "::set-env name=file::spleeter"
-      - if: ${{ matrix.distribution }} == 'conda'
+      - if: ${{ matrix.distribution == 'conda' }}
         name: Build Conda base image
         run: |
           docker build -t python:conda -f docker/conda.dockerfile .
           echo "::set-env name=file::spleeter-conda"
-      - if: ${{ matrix.platform }} == 'gpu'
+      - if: ${{ matrix.platform == 'gpu' }}
         name: Build CUDA base image
         run: |
           docker build \
@@ -42,7 +42,7 @@ jobs:
             -t researchdeezer/spleeter:${{ env.tag }} \
             -f docker/${{ env.file }}.dockerfile .
           echo "::set-env name=modelargs::"
-      - if: ${{ matrix.model }} != 'modelless'
+      - if: ${{ matrix.model != 'modelless' }}
         name: Build researchdeezer/spleeter:${{ env.tag }}-${{ matrix.model }} image
         run: |
           docker build \
@@ -66,12 +66,12 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Push researchdeezer/spleeter:${{ env.tag }} image
         run: docker push researchdeezer/spleeter:${{ env.tag }}
-      - if: ${{ env.tag }} == 'spleeter:3.7'
+      - if: ${{ env.tag == 'spleeter:3.7' }}
         name: Push researchdeezer/spleeter:latest image
         run: |
           docker tag researchdeezer/spleeter:3.7 researchdeezer/spleeter:latest
           docker push researchdeezer/spleeter:latest
-      - if: ${{ env.tag }} == 'spleeter:3.7-gpu'
+      - if: ${{ env.tag == 'spleeter:3.7-gpu' }}
         name: Push researchdeezer/spleeter:gpu image
         run: |
           docker tag researchdeezer/spleeter:3.7-gpu researchdeezer/spleeter:gpu

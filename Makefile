@@ -8,7 +8,7 @@
 FEEDSTOCK = spleeter-feedstock
 FEEDSTOCK_REPOSITORY = https://github.com/deezer/$(FEEDSTOCK)
 FEEDSTOCK_RECIPE = $(FEEDSTOCK)/recipe/spleeter/meta.yaml
-PYTEST_CMD = pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv 
+PYTEST_CMD = pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv --forked
 
 all: clean build test deploy
 
@@ -27,12 +27,7 @@ build-gpu: clean
 	python3 setup.py sdist
 
 test:
-	#$(foreach file, $(wildcard tests/test_*.py), $(PYTEST_CMD) $(file);)
-	# deactivate this until we figure out why it fails on the CI container
-	#$(PYTEST_CMD) tests/test_eval.py
-	$(PYTEST_CMD) tests/test_ffmpeg_adapter.py
-	$(PYTEST_CMD) tests/test_github_model_provider.py
-	$(PYTEST_CMD) --boxed tests/test_separator.py
+	$(PYTEST_CMD) tests/
 
 deploy:
 	pip install twine

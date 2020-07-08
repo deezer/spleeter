@@ -3,9 +3,6 @@ on:
   pull_request:
     branches:
       - master
-  push:
-    branches-ignore:
-      - master
 jobs:
   tests:
     runs-on: ubuntu-latest

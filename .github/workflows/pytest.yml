@@ -1,11 +1,11 @@
 name: pytest
 on:
-  push:
-    branches-ignore:
-      - 'master'
   pull_request:
     branches:
-      - 'master'
+      - master
+  push:
+    branches-ignore:
+      - master
 jobs:
   tests:
     runs-on: ubuntu-latest

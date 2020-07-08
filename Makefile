@@ -27,7 +27,7 @@ build-gpu: clean
 	python3 setup.py sdist
 
 test:
-	$(PYTEST_CMD) tests/
+	$(PYTEST_CMD) -n 2 tests/
 
 deploy:
 	pip install twine

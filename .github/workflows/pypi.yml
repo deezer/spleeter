@@ -33,11 +33,11 @@ jobs:
             sdist-
       - name: Install dependencies
         run: pip install --upgrade pip setuptools twine
-      - if: ${{ matrix.platform }} == 'cpu'
-        name: Package CPU distribution
+      - name: Package CPU distribution
+        if: ${{ matrix.platform  == 'cpu' }}
         run: make build
-      - if: ${{ matrix.platform }} == 'gpu'
-        name: Package GPU distribution
+      - name: Package GPU distribution
+        if: ${{ matrix.platform == 'gpu' }}
         run: make build-gpu
       - name: Deploy to pypi
         run: make deploy

@@ -1,9 +1,8 @@
 name: pytest
 on:
   push:
-    branches:
-      - '**'
-      - '!master'
+    branches-ignore:
+      - 'master'
   pull_request:
     branches:
       - 'master'

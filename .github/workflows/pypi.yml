@@ -22,7 +22,7 @@ jobs:
             ${{ runner.os }}-pip-
       - uses: actions/cache@v2
         with:
-          path: dist
+          path: ${{ env.GITHUB_WORKSPACE }}/dist
           key: sdist-${{ matrix.platform }}-${{ hashFiles('**/setup.py') }}
           restore-keys: |
             sdist-${{ matrix.platform }}-${{ hashFiles('**/setup.py') }}

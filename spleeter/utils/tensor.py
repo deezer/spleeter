@@ -103,10 +103,14 @@ def pad_and_partition(tensor, segment_len):
 
     :Example:
 
-    >>> tensor = [[1, 2, 3], [4, 5, 6]]
+    >>> tensor = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     >>> segment_len = 2
     >>> pad_and_partition(tensor, segment_len)
-    [[[1, 2], [4, 5]], [[3, 0], [6, 0]]]
+    [[[1. 2. 3.]
+      [4. 5. 6.]]
+
+     [[7. 8. 9.]
+      [0. 0. 0.]]]
 
     :param tensor:
     :param segment_len:

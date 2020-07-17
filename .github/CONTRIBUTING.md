@@ -14,7 +14,7 @@ Those are the main contributing guidelines for contributing to this project:
 In order to contribute, the safest is to create your [own fork of spleeter](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) first. The following set of commands will clone this new repository, create a virtual environment provisioned with the dependencies and run the tests (will take a few minutes):
 
 ```bash
-git clone https://github.com/<your_name>/spleeter
+git clone https://github.com/<your_name>/spleeter && cd spleeter
 python -m venv spleeterenv && source spleeterenv/bin/activate
 pip install -r requirements.txt && pip install pytest pytest-xdist
 make test

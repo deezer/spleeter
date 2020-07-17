@@ -16,7 +16,7 @@ from os.path import exists
 from .. import resources, SpleeterError
 
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 

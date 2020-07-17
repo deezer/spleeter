@@ -19,7 +19,7 @@ from ..model import model_fn
 from ..model.provider import ModelProvider
 from ..utils.logging import get_logger
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 

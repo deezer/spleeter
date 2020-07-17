@@ -14,7 +14,7 @@
 from ..audio.adapter import get_audio_adapter
 from ..separator import Separator
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 

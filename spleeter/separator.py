@@ -31,7 +31,7 @@ from .utils.estimator import create_estimator, to_predictor, get_default_model_d
 from .model import EstimatorSpecBuilder, InputProviderFactory
 
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 

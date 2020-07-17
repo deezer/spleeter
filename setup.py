@@ -8,7 +8,7 @@ import sys
 from os import path
 from setuptools import setup
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
@@ -33,7 +33,7 @@ setup(
     long_description=readme,
     long_description_content_type='text/markdown',
     author='Deezer Research',
-    author_email='research@deezer.com',
+    author_email='spleeter@deezer.com',
     url='https://github.com/deezer/spleeter',
     license='MIT License',
     packages=[

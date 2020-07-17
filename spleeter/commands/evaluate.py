@@ -38,7 +38,7 @@ except ImportError:
     logger.error('Please install musdb and museval first, abort')
     sys.exit(1)
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 

@@ -71,7 +71,7 @@ def generate_fake_eval_dataset(path):
 def test_evaluate(path="FAKE_MUSDB_DIR"):
     generate_fake_eval_dataset(path)
     p = create_argument_parser()
-    arguments = p.parse_args(["evaluate", "-p", "spleeter:4stems", "--mus_dir", path, '--verbose'])
+    arguments = p.parse_args(["evaluate", "-p", "spleeter:4stems", "--mus_dir", path])
     params = load_configuration(arguments.configuration)
     metrics = evaluate.entrypoint(arguments, params)
     for instrument, metric in metrics.items():

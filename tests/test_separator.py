@@ -42,11 +42,10 @@ print("RUNNING TESTS WITH TF VERSION {}".format(tf.__version__))
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)
 def test_separate(test_file, configuration, backend):
     """ Test separation from raw data. """
-    tf.reset_default_graph()
     instruments = MODEL_TO_INST[configuration]
     adapter = get_default_audio_adapter()
     waveform, _ = adapter.load(test_file)
-    separator = Separator(configuration, stft_backend=backend)
+    separator = Separator(configuration, stft_backend=backend, multiprocess=False)
     prediction = separator.separate(waveform, test_file)
     assert len(prediction) == len(instruments)
     for instrument in instruments:
@@ -58,14 +57,14 @@ def test_separate(test_file, configuration, backend):
         for compared in instruments:
             if instrument != compared:
                 assert not np.allclose(track, prediction[compared])
+    
 
 
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)
 def test_separate_to_file(test_file, configuration, backend):
     """ Test file based separation. """
-    tf.reset_default_graph()
     instruments = MODEL_TO_INST[configuration]
-    separator = Separator(configuration, stft_backend=backend)
+    separator = Separator(configuration, stft_backend=backend, multiprocess=False)
     name = splitext(basename(test_file))[0]
     with TemporaryDirectory() as directory:
         separator.separate_to_file(
@@ -80,9 +79,8 @@ def test_separate_to_file(test_file, configuration, backend):
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)
 def test_filename_format(test_file, configuration, backend):
     """ Test custom filename format. """
-    tf.reset_default_graph()
     instruments = MODEL_TO_INST[configuration]
-    separator = Separator(configuration, stft_backend=backend)
+    separator = Separator(configuration, stft_backend=backend, multiprocess=False)
     name = splitext(basename(test_file))[0]
     with TemporaryDirectory() as directory:
         separator.separate_to_file(
@@ -98,8 +96,7 @@ def test_filename_format(test_file, configuration, backend):
 @pytest.mark.parametrize('test_file, configuration', MODELS_AND_TEST_FILES)
 def test_filename_conflict(test_file, configuration):
     """ Test error handling with static pattern. """
-    tf.reset_default_graph()
-    separator = Separator(configuration)
+    separator = Separator(configuration, multiprocess=False)
     with TemporaryDirectory() as directory:
         with pytest.raises(SpleeterError):
             separator.separate_to_file(

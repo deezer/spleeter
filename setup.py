@@ -14,7 +14,7 @@ __license__ = 'MIT License'
 
 # Default project values.
 project_name = 'spleeter'
-project_version = '1.5.2'
+project_version = '1.5.3'
 tensorflow_dependency = 'tensorflow'
 tensorflow_version = '1.15.2'
 here = path.abspath(path.dirname(__file__))
@@ -57,6 +57,7 @@ setup(
         'requests',
         'setuptools>=41.0.0',
         'librosa==0.7.2',
+        'numba==0.48.0',
         '{}=={}'.format(tensorflow_dependency, tensorflow_version),
     ],
     extras_require={

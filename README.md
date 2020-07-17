@@ -1,6 +1,6 @@
 <img src="https://github.com/deezer/spleeter/raw/master/images/spleeter_logo.png" height="80" />
 
-[![CircleCI](https://circleci.com/gh/deezer/spleeter/tree/master.svg?style=shield)](https://circleci.com/gh/deezer/spleeter/tree/master) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spleeter) [![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) [![Conda](https://img.shields.io/conda/vn/conda-forge/spleeter)](https://anaconda.org/conda-forge/spleeter) [![Docker Pulls](https://img.shields.io/docker/pulls/researchdeezer/spleeter)](https://hub.docker.com/r/researchdeezer/spleeter) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/spleeter/community) [![status](https://joss.theoj.org/papers/259e5efe669945a343bad6eccb89018b/status.svg)](https://joss.theoj.org/papers/259e5efe669945a343bad6eccb89018b)
+[![Github actions](https://github.com/deezer/spleeter/workflows/pytest/badge.svg)](https://github.com/deezer/spleeter/actions) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spleeter) [![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) [![Conda](https://img.shields.io/conda/vn/conda-forge/spleeter)](https://anaconda.org/conda-forge/spleeter) [![Docker Pulls](https://img.shields.io/docker/pulls/researchdeezer/spleeter)](https://hub.docker.com/r/researchdeezer/spleeter) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/spleeter/community) [![status](https://joss.theoj.org/papers/259e5efe669945a343bad6eccb89018b/status.svg)](https://joss.theoj.org/papers/259e5efe669945a343bad6eccb89018b)
 
 ## About
 
@@ -13,7 +13,7 @@ already trained state of the art model for performing various flavour of separat
 * Vocals / drums / bass / other separation ([4 stems](https://github.com/deezer/spleeter/wiki/2.-Getting-started#using-4stems-model))
 * Vocals / drums / bass / piano / other separation ([5 stems](https://github.com/deezer/spleeter/wiki/2.-Getting-started#using-5stems-model))
 
-2 stems and 4 stems models have state of the art performances on the [musdb](https://sigsep.github.io/datasets/musdb.html) dataset. **Spleeter** is also very fast as it can perform separation of audio files to 4 stems 100x faster than real-time when run on a GPU.
+2 stems and 4 stems models have [high performances](https://github.com/deezer/spleeter/wiki/Separation-Performances) on the [musdb](https://sigsep.github.io/datasets/musdb.html) dataset. **Spleeter** is also very fast as it can perform separation of audio files to 4 stems 100x faster than real-time when run on a GPU.
 
 We designed **Spleeter** so you can use it straight from [command line](https://github.com/deezer/spleeter/wiki/2.-Getting-started#usage)
 as well as directly in your own development pipeline as a [Python library](https://github.com/deezer/spleeter/wiki/4.-API-Reference#separator). It can be installed with [Conda](https://github.com/deezer/spleeter/wiki/1.-Installation#using-conda),
@@ -61,19 +61,24 @@ make test
 If you use **Spleeter** in your work, please cite:
 
 ```BibTeX
-@misc{spleeter2019,
-  title={Spleeter: A Fast And State-of-the Art Music Source Separation Tool With Pre-trained Models},
-  author={Romain Hennequin and Anis Khlif and Felix Voituret and Manuel Moussallam},
-  howpublished={Late-Breaking/Demo ISMIR 2019},
-  month={November},
-  note={Deezer Research},
-  year={2019}
+@article{spleeter2020,
+  doi = {10.21105/joss.02154},
+  url = {https://doi.org/10.21105/joss.02154},
+  year = {2020},
+  publisher = {The Open Journal},
+  volume = {5},
+  number = {50},
+  pages = {2154},
+  author = {Romain Hennequin and Anis Khlif and Felix Voituret and Manuel Moussallam},
+  title = {Spleeter: a fast and efficient music source separation tool with pre-trained models},
+  journal = {Journal of Open Source Software},
+  note = {Deezer Research}
 }
 ```
 
 ## License
 
-The code of **Spleeter** is MIT-licensed.
+The code of **Spleeter** is [MIT-licensed](LICENSE).
 
 ## Disclaimer
 
@@ -90,7 +95,6 @@ As is commonly the case with open-source projects, there are multiple forks expo
 ### Windows users
 
    It appears that sometimes the shortcut command `spleeter` does not work properly on windows. This is a known issue that we will hopefully fix soon. In the meantime replace `spleeter separate` by `python -m spleeter separate` in command line and it should work.
-
 
 ## Contributing
 

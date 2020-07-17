@@ -9,6 +9,7 @@
 """
 
 import os
+import shutil
 
 # pylint: disable=import-error
 import ffmpeg
@@ -22,6 +23,16 @@ from ..utils.logging import get_logger
 __email__ = 'research@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
+
+
+def _check_ffmpeg_install():
+    """ Ensure FFMPEG binaries are available.
+
+    :raise SpleeterError: If ffmpeg or ffprobe is not found.
+    """
+    for binary in ('ffmpeg', 'ffprobe'):
+        if shutil.which(binary) is None:
+            raise SpleeterError('{} binary not found'.format(binary))
 
 
 def _to_ffmpeg_time(n):
@@ -66,6 +77,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         :returns: Loaded data a (waveform, sample_rate) tuple.
         :raise SpleeterError: If any error occurs while loading audio.
         """
+        _check_ffmpeg_install()
         if not isinstance(path, str):
             path = path.decode()
         try:
@@ -112,6 +124,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         :param bitrate: (Optional) Bitrate of the written audio file.
         :raise IOError: If any error occurs while using FFMPEG to write data.
         """
+        _check_ffmpeg_install()
         directory = os.path.dirname(path)
         if not os.path.exists(directory):
             raise SpleeterError(f'output directory does not exists: {directory}')

@@ -1,0 +1,78 @@
+name: docker
+on:
+  - workflow_dispatch
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [cpu, gpu]
+        distribution: [3.6, 3.7, conda]
+        model: [modelless, 2stems, 4stems, 5stems]
+      fail-fast: true
+    steps:
+      - uses: actions/checkout@v2
+      # ----------------------------------------------------------------------
+      # Note: base image building and env setup.
+      - name: Setup Python distribution
+        run: |
+          echo "::set-env name=base::python:${{ matrix.distribution }}"
+          echo "::set-env name=tag::${{ matrix.distribution }}"
+          echo "::set-env name=file::spleeter"
+      - if: ${{ matrix.distribution == 'conda' }}
+        name: Build Conda base image
+        run: |
+          docker build -t python:conda -f docker/conda.dockerfile .
+          echo "::set-env name=file::spleeter-conda"
+      - if: ${{ matrix.platform == 'gpu' }}
+        name: Build CUDA base image
+        run: |
+          docker build \
+            --build-arg BASE=python:${{ matrix.distribution }} \
+            -t cuda:${{ matrix.distribution }} \
+            -f docker/cuda-10-0.dockerfile .
+          echo "::set-env name=base::cuda:${{ matrix.distribution }}"
+          echo "::set-env name=tag::${{ matrix.distribution }}-gpu"
+      # ----------------------------------------------------------------------
+      # Note: image building.
+      - name: Build researchdeezer/spleeter:${{ env.tag }} image
+        run: |
+          docker build \
+            --build-arg BASE=${{ env.base }} \
+            -t researchdeezer/spleeter:${{ env.tag }} \
+            -f docker/${{ env.file }}.dockerfile .
+          echo "::set-env name=modelargs::"
+      - if: ${{ matrix.model != 'modelless' }}
+        name: Build researchdeezer/spleeter:${{ env.tag }}-${{ matrix.model }} image
+        run: |
+          docker build \
+            --build-arg BASE=researchdeezer/spleeter:${{ env.tag }} \
+            --build-arg MODEL=${{ matrix.model }} \
+            -t researchdeezer/spleeter:${{ env.tag }}-${{ matrix.model }} \
+            -f docker/spleeter-model.dockerfile .
+          echo "::set-env name=tag::${{ env.tag }}-${{ matrix.model }}"
+          echo "::set-env name=modelarg::-p spleeter:${{ matrix.model }}"          
+      # ----------------------------------------------------------------------
+      # Note: image testing.
+      - name: Test researchdeezer/spleeter:${{ env.tag }} image
+        run: |
+          docker run \
+            -v $(pwd):/runtime \
+            researchdeezer/spleeter:${{ env.tag }} \
+            separate -i /runtime/audio_example.mp3  -o /tmp \${{ env.modelarg }}
+      # ----------------------------------------------------------------------
+      # Note: image deploy.
+      - name: Docker login
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      - name: Push researchdeezer/spleeter:${{ env.tag }} image
+        run: docker push researchdeezer/spleeter:${{ env.tag }}
+      - if: ${{ env.tag == 'spleeter:3.7' }}
+        name: Push researchdeezer/spleeter:latest image
+        run: |
+          docker tag researchdeezer/spleeter:3.7 researchdeezer/spleeter:latest
+          docker push researchdeezer/spleeter:latest
+      - if: ${{ env.tag == 'spleeter:3.7-gpu' }}
+        name: Push researchdeezer/spleeter:gpu image
+        run: |
+          docker tag researchdeezer/spleeter:3.7-gpu researchdeezer/spleeter:gpu
+          docker push researchdeezer/spleeter:gpu

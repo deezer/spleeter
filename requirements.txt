@@ -1,8 +1,0 @@
-importlib_resources; python_version<'3.7'
-requests
-setuptools>=41.0.0
-pandas==0.25.1
-tensorflow==1.15.2
-ffmpeg-python
-norbert==0.2.1
-librosa==0.7.2

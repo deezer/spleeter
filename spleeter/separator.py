@@ -17,7 +17,7 @@ import logging
 
 from time import time
 from multiprocessing import Pool
-from os.path import basename, join, splitext
+from os.path import basename, join, splitext, dirname
 import numpy as np
 import tensorflow as tf
 from librosa.core import stft, istft
@@ -204,7 +204,7 @@ class Separator(object):
         given audio adapter.
 
         Filename format should be a Python formattable string that could use
-        following parameters : {instrument}, {filename} and {codec}.
+        following parameters : {instrument}, {filename}, {foldername} and {codec}.
 
         :param audio_descriptor:    Describe song to separate, used by audio
                                     adapter to retrieve and load audio data,
@@ -255,14 +255,16 @@ class Separator(object):
 
         """
 
-
+        foldername = basename(dirname(audio_descriptor))
         filename = splitext(basename(audio_descriptor))[0]
         generated = []
         for instrument, data in sources.items():
             path = join(destination, filename_format.format(
                 filename=filename,
                 instrument=instrument,
-                codec=codec))
+                foldername=foldername,
+                codec=codec,
+                ))
             directory = os.path.dirname(path)
             if not os.path.exists(directory):
                 os.makedirs(directory)

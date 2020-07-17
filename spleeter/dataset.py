@@ -238,7 +238,7 @@ class DatasetBuilder(object):
 
     def expand_path(self, sample):
         """ Expands audio paths for the given sample. """
-        return dict(sample, **{f'{instrument}_path': tf.string_join(
+        return dict(sample, **{f'{instrument}_path': tf.strings.join(
             (self._audio_path, sample[f'{instrument}_path']), SEPARATOR)
             for instrument in self._instruments})
 

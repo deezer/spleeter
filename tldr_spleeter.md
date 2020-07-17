@@ -5,12 +5,12 @@
 
 - Vocals (singing voice) / accompaniment separation (2 stems):
 
-`spleeter separate -i path/to/audio_file.mp3 -p spleeter:2stems -o path/to/output/dir`
+`spleeter separate -i path/to/audio_example.mp3 -p spleeter:2stems -o path/to/output/dir`
 
 - Vocals / drums / bass / other separation (4 stems)
 
-`spleeter separate -i path/to/audio_file.mp3 -p spleeter:4stems -o path/to/output/dir`
+`spleeter separate -i path/to/audio_example.mp3 -p spleeter:4stems -o path/to/output/dir`
 
 - Vocals / drums / bass / piano / other separation (5 stems)
 
-`spleeter separate -i path/to/audio_file.mp3 -p spleeter:5stems -o path/to/output/dir`
+`spleeter separate -i path/to/audio_example.mp3 -p spleeter:5stems -o path/to/output/dir`

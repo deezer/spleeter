@@ -3,7 +3,7 @@
 
 """ Unit testing for Separator class. """
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
@@ -71,7 +71,7 @@ def generate_fake_eval_dataset(path):
 def test_evaluate(path="FAKE_MUSDB_DIR"):
     generate_fake_eval_dataset(path)
     p = create_argument_parser()
-    arguments = p.parse_args(["evaluate", "-p", "spleeter:4stems", "--mus_dir", path])
+    arguments = p.parse_args(["evaluate", "-p", "spleeter:4stems", "--mus_dir", path, '--verbose'])
     params = load_configuration(arguments.configuration)
     metrics = evaluate.entrypoint(arguments, params)
     for instrument, metric in metrics.items():

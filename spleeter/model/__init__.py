@@ -13,7 +13,7 @@ from tensorflow.contrib.signal import stft, inverse_stft, hann_window
 
 from ..utils.tensor import pad_and_partition, pad_and_reshape
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 

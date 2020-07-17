@@ -38,7 +38,7 @@ except ImportError:
     logger.error('Please install musdb and museval first, abort')
     sys.exit(1)
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
@@ -148,11 +148,16 @@ def entrypoint(arguments, params):
     if not exists(musdb_root_directory):
         raise IOError(f'musdb directory {musdb_root_directory} not found')
     # Separate musdb sources.
+    verbose = arguments.verbose
+    if verbose:
+        print("Separating audio files")
     audio_output_directory = _separate_evaluation_dataset(
         arguments,
         musdb_root_directory,
         params)
     # Compute metrics with musdb.
+    if verbose:
+        print("Compute Metrics with musdb")
     metrics_output_directory = _compute_musdb_metrics(
         arguments,
         musdb_root_directory,

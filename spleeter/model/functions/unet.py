@@ -32,7 +32,7 @@ from tensorflow.compat.v1.keras.initializers import he_uniform
 
 from . import apply
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 

@@ -1,7 +1,7 @@
 # =======================================================
 # Library lifecycle management.
 #
-# @author Deezer Research <research@deezer.com>
+# @author Deezer Research <spleeter@deezer.com>
 # @licence MIT Licence
 # =======================================================
 

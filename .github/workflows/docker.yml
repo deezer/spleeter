@@ -19,6 +19,7 @@ jobs:
           echo "::set-env name=base::python:${{ matrix.distribution }}"
           echo "::set-env name=tag::${{ matrix.distribution }}"
           echo "::set-env name=file::spleeter"
+          echo "::set-env name=package::spleeter"
       - if: ${{ matrix.distribution == 'conda' }}
         name: Build Conda base image
         run: |
@@ -29,17 +30,18 @@ jobs:
         run: |
           docker build \
             --build-arg BASE=python:${{ matrix.distribution }} \
-            --build-arg SPLEETER_PACKAGE=spleeter-gpu \
             -t cuda:${{ matrix.distribution }} \
             -f docker/cuda-10-0.dockerfile .
           echo "::set-env name=base::cuda:${{ matrix.distribution }}"
           echo "::set-env name=tag::${{ matrix.distribution }}-gpu"
+          echo "::set-env name=package::spleeter-gpu"
       # ----------------------------------------------------------------------
       # Note: image building.
       - name: Build researchdeezer/spleeter:${{ env.tag }} image
         run: |
           docker build \
             --build-arg BASE=${{ env.base }} \
+            --build-arg SPLEETER_PACKAGE=${{ env.package }} \
             -t researchdeezer/spleeter:${{ env.tag }} \
             -f docker/${{ env.file }}.dockerfile .
           echo "::set-env name=modelargs::"

@@ -30,29 +30,29 @@ TEST_CONFIGURATIONS = {el:el for el in BACKENDS}
 
 res_4stems = {
                 "librosa": {
-                    "vocals": {
-                        "SDR": -0.007,
-                        "SAR": -19.231,
-                        "SIR": -4.528,
+                     "vocals": {
+                        "SDR": 0.000,
+                        "SAR": -16.212,
+                        "SIR": -4.172,
                         "ISR": 0.000
                     },
                     "drums": {
-                        "SDR": -0.071,
-                        "SAR": -14.496,
-                        "SIR": -4.987,
+                        "SDR": -0.077,
+                        "SAR": -15.739,
+                        "SIR": -5.045,
                         "ISR": 0.001
                     },
                     "bass":{
-                        "SDR": -0.001,
-                        "SAR": -12.426,
-                        "SIR": -7.198,
-                        "ISR": -0.001
+                        "SDR": -0.000,
+                        "SAR": -10.665,
+                        "SIR": -5.646,
+                        "ISR": -0.000
                     },
                     "other":{
-                        "SDR": -1.453,
-                        "SAR": -14.899,
-                        "SIR": -4.678,
-                        "ISR": -0.015
+                        "SDR": -1.309,
+                        "SAR": -14.573,
+                        "SIR": -4.705,
+                        "ISR": -0.014
                     }
                 },
                 "tensorflow": {

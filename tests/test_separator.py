@@ -39,6 +39,29 @@ TEST_CONFIGURATIONS = list(itertools.product(TEST_AUDIO_DESCRIPTORS, MODELS, BAC
 print("RUNNING TESTS WITH TF VERSION {}".format(tf.__version__))
 
 
+@pytest.mark.parametrize('test_file', TEST_AUDIO_DESCRIPTORS)
+def test_separator_backends(test_file):
+    adapter = get_default_audio_adapter()
+    waveform, _ = adapter.load(test_file)
+
+    separator_lib = Separator("spleeter:2stems", stft_backend="librosa")
+    separator_tf = Separator("spleeter:2stems", stft_backend="tensorflow")
+
+    # Test the stft and inverse stft provides exact reconstruction
+    stft_matrix = separator_lib._stft(waveform)
+    reconstructed = separator_lib._stft(
+        stft_matrix, inverse=True, length=waveform.shape[0])
+    assert np.allclose(reconstructed, waveform, atol=3e-2)
+
+    # compare both separation, it should be close
+    out_tf = separator_tf._separate_tensorflow(waveform, test_file)
+    out_lib = separator_lib._separate_librosa(waveform, test_file)
+
+    for instrument in out_lib.keys():
+        # test that both outputs are close everywhere
+        assert np.allclose(out_tf[instrument], out_lib[instrument], atol=1e-5)
+
+
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)
 def test_separate(test_file, configuration, backend):
     """ Test separation from raw data. """

@@ -275,9 +275,16 @@ class EstimatorSpecBuilder(object):
         spec_name = self.spectrogram_name
 
         if stft_name not in self._features:
+            # pad input with a frame of zeros
+            waveform =  tf.concat([
+                            tf.zeros((self._frame_length, self._n_channels)),
+                            self._features['waveform']
+                            ],
+                            0
+                        )
             stft_feature = tf.transpose(
                 stft(
-                    tf.transpose(self._features['waveform']),
+                    tf.transpose(waveform),
                     self._frame_length,
                     self._frame_step,
                     window_fn=lambda frame_length, dtype: (
@@ -341,7 +348,7 @@ class EstimatorSpecBuilder(object):
         reshaped = tf.transpose(inversed)
         if time_crop is None:
             time_crop = tf.shape(self._features['waveform'])[0]
-        return reshaped[:time_crop, :]
+        return reshaped[self._frame_length:self._frame_length+time_crop, :]
 
     def _build_mwf_output_waveform(self):
         """ Perform separation with multichannel Wiener Filtering using Norbert.

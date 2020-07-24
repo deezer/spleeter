@@ -77,7 +77,7 @@ def _separate_evaluation_dataset(arguments, musdb_root_directory, params):
             bitrate='128k',
             MWF=arguments.MWF,
             verbose=arguments.verbose,
-            stft_backend="auto"),
+            stft_backend=arguments.stft_backend),
         params)
     return audio_output_directory
 

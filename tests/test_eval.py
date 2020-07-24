@@ -29,57 +29,29 @@ BACKENDS = ["tensorflow", "librosa"]
 TEST_CONFIGURATIONS = {el:el for el in BACKENDS}
 
 res_4stems = {
-                "librosa": {
-                     "vocals": {
-                        "SDR": 0.000,
-                        "SAR": -16.212,
-                        "SIR": -4.172,
-                        "ISR": 0.000
-                    },
-                    "drums": {
-                        "SDR": -0.077,
-                        "SAR": -15.739,
-                        "SIR": -5.045,
-                        "ISR": 0.001
-                    },
-                    "bass":{
-                        "SDR": -0.000,
-                        "SAR": -10.665,
-                        "SIR": -5.646,
-                        "ISR": -0.000
-                    },
-                    "other":{
-                        "SDR": -1.309,
-                        "SAR": -14.573,
-                        "SIR": -4.705,
-                        "ISR": -0.014
-                    }
+                "vocals": {
+                    "SDR": 3.25e-05,
+                    "SAR": -11.153575,
+                    "SIR": -1.3849,
+                    "ISR": 2.75e-05
                 },
-                "tensorflow": {
-                    "vocals": {
-                        "SDR": 3.25e-05,
-                        "SAR": -11.153575,
-                        "SIR": -1.3849,
-                        "ISR": 2.75e-05
-                    },
-                    "drums": {
-                        "SDR": -0.079505,
-                        "SAR": -15.7073575,
-                        "SIR": -4.972755,
-                        "ISR": 0.0013575
-                    },
-                    "bass":{
-                        "SDR": 2.5e-06,
-                        "SAR": -10.3520575,
-                        "SIR": -4.272325,
-                        "ISR": 2.5e-06
-                    },
-                    "other":{
-                        "SDR": -1.359175,
-                        "SAR": -14.7076775,
-                        "SIR": -4.761505,
-                        "ISR": -0.01528
-                    }
+                "drums": {
+                    "SDR": -0.079505,
+                    "SAR": -15.7073575,
+                    "SIR": -4.972755,
+                    "ISR": 0.0013575
+                },
+                "bass":{
+                    "SDR": 2.5e-06,
+                    "SAR": -10.3520575,
+                    "SIR": -4.272325,
+                    "ISR": 2.5e-06
+                },
+                "other":{
+                    "SDR": -1.359175,
+                    "SAR": -14.7076775,
+                    "SIR": -4.761505,
+                    "ISR": -0.01528
                 }
             }
 
@@ -109,4 +81,4 @@ def test_evaluate(backend):
         metrics = evaluate.entrypoint(arguments, params)
         for instrument, metric in metrics.items():
             for m, value in metric.items():
-                assert np.allclose(np.median(value), res_4stems[backend][instrument][m], atol=1e-3)
+                assert np.allclose(np.median(value), res_4stems[instrument][m], atol=1e-3)

@@ -53,29 +53,13 @@ def test_separator_backends(test_file):
         stft_matrix, inverse=True, length=waveform.shape[0])
     assert np.allclose(reconstructed, waveform, atol=3e-2)
 
-    # # now also test that tensorflow and librosa STFT provide same results
-    from spleeter.audio.spectrogram import compute_spectrogram_tf
-    tf_waveform = tf.convert_to_tensor(waveform, tf.float32)
-    spectrogram_tf = compute_spectrogram_tf(tf_waveform,
-                                            separator_tf._params['frame_length'],
-                                            separator_tf._params['frame_step'],)
-    with tf.Session() as sess:
-        spectrogram_tf_eval = spectrogram_tf.eval()
-
-    # check that stfts are equivalent
-    assert stft_matrix.shape == spectrogram_tf_eval.shape
-    assert np.allclose(
-        np.abs(stft_matrix), spectrogram_tf_eval, atol=1e-2)
-
     # compare both separation, it should be close
     out_tf = separator_tf._separate_tensorflow(waveform, test_file)
     out_lib = separator_lib._separate_librosa(waveform, test_file)
 
     for instrument in out_lib.keys():
         # test that both outputs are close everywhere
-        assert np.allclose(out_tf[instrument], out_lib[instrument], atol=0.025)
-        # it should be even more similar outside edges zones
-        assert np.allclose(out_tf[instrument][4096:-4096,:], out_lib[instrument][4096:-4096,:], atol=0.002)
+        assert np.allclose(out_tf[instrument], out_lib[instrument], atol=1e-5)
 
 
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)

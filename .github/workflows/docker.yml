@@ -29,6 +29,7 @@ jobs:
         run: |
           docker build \
             --build-arg BASE=python:${{ matrix.distribution }} \
+            --build-arg SPLEETER_PACKAGE=spleeter-gpu \
             -t cuda:${{ matrix.distribution }} \
             -f docker/cuda-10-0.dockerfile .
           echo "::set-env name=base::cuda:${{ matrix.distribution }}"

@@ -47,7 +47,7 @@ The following set of commands will clone this repository, create a virtual envir
 ```bash
 git clone https://github.com/Deezer/spleeter && cd spleeter
 python -m venv spleeterenv && source spleeterenv/bin/activate
-pip install -r requirements.txt && pip install pytest pytest-xdist
+pip install . && pip install pytest pytest-xdist
 make test
 ```
 

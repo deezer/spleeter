@@ -37,45 +37,45 @@ jobs:
           echo "::set-env name=package::spleeter-gpu"
       # ----------------------------------------------------------------------
       # Note: image building.
-      - name: Build researchdeezer/spleeter:${{ env.tag }} image
+      - name: Build deezer/spleeter:${{ env.tag }} image
         run: |
           docker build \
             --build-arg BASE=${{ env.base }} \
             --build-arg SPLEETER_PACKAGE=${{ env.package }} \
-            -t researchdeezer/spleeter:${{ env.tag }} \
+            -t deezer/spleeter:${{ env.tag }} \
             -f docker/${{ env.file }}.dockerfile .
           echo "::set-env name=modelargs::"
       - if: ${{ matrix.model != 'modelless' }}
-        name: Build researchdeezer/spleeter:${{ env.tag }}-${{ matrix.model }} image
+        name: Build deezer/spleeter:${{ env.tag }}-${{ matrix.model }} image
         run: |
           docker build \
-            --build-arg BASE=researchdeezer/spleeter:${{ env.tag }} \
+            --build-arg BASE=deezer/spleeter:${{ env.tag }} \
             --build-arg MODEL=${{ matrix.model }} \
-            -t researchdeezer/spleeter:${{ env.tag }}-${{ matrix.model }} \
+            -t deezer/spleeter:${{ env.tag }}-${{ matrix.model }} \
             -f docker/spleeter-model.dockerfile .
           echo "::set-env name=tag::${{ env.tag }}-${{ matrix.model }}"
           echo "::set-env name=modelarg::-p spleeter:${{ matrix.model }}"          
       # ----------------------------------------------------------------------
       # Note: image testing.
-      - name: Test researchdeezer/spleeter:${{ env.tag }} image
+      - name: Test deezer/spleeter:${{ env.tag }} image
         run: |
           docker run \
             -v $(pwd):/runtime \
-            researchdeezer/spleeter:${{ env.tag }} \
+            deezer/spleeter:${{ env.tag }} \
             separate -i /runtime/audio_example.mp3  -o /tmp \${{ env.modelarg }}
       # ----------------------------------------------------------------------
       # Note: image deploy.
       - name: Docker login
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-      - name: Push researchdeezer/spleeter:${{ env.tag }} image
-        run: docker push researchdeezer/spleeter:${{ env.tag }}
+      - name: Push deezer/spleeter:${{ env.tag }} image
+        run: docker push deezer/spleeter:${{ env.tag }}
       - if: ${{ env.tag == 'spleeter:3.7' }}
-        name: Push researchdeezer/spleeter:latest image
+        name: Push deezer/spleeter:latest image
         run: |
-          docker tag researchdeezer/spleeter:3.7 researchdeezer/spleeter:latest
-          docker push researchdeezer/spleeter:latest
+          docker tag deezer/spleeter:3.7 deezer/spleeter:latest
+          docker push deezer/spleeter:latest
       - if: ${{ env.tag == 'spleeter:3.7-gpu' }}
-        name: Push researchdeezer/spleeter:gpu image
+        name: Push deezer/spleeter:gpu image
         run: |
-          docker tag researchdeezer/spleeter:3.7-gpu researchdeezer/spleeter:gpu
-          docker push researchdeezer/spleeter:gpu
+          docker tag deezer/spleeter:3.7-gpu deezer/spleeter:gpu
+          docker push deezer/spleeter:gpu

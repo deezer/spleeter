@@ -38,7 +38,7 @@ except ImportError:
     logger.error('Please install musdb and museval first, abort')
     sys.exit(1)
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
@@ -77,7 +77,7 @@ def _separate_evaluation_dataset(arguments, musdb_root_directory, params):
             bitrate='128k',
             MWF=arguments.MWF,
             verbose=arguments.verbose,
-            stft_backend="auto"),
+            stft_backend=arguments.stft_backend),
         params)
     return audio_output_directory
 

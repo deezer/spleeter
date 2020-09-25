@@ -1,0 +1,43 @@
+name: pypi
+on:
+  push:
+    branches:
+      - master
+env:
+  TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+  TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+jobs:
+  package-and-deploy:
+    strategy:
+      matrix:
+        platform: [cpu, gpu]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.GITHUB_WORKSPACE }}/dist
+          key: sdist-${{ matrix.platform }}-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            sdist-${{ matrix.platform }}-${{ hashFiles('**/setup.py') }}
+            sdist-${{ matrix.platform }}
+            sdist-
+      - name: Install dependencies
+        run: pip install --upgrade pip setuptools twine
+      - if: ${{ matrix.platform  == 'cpu' }}
+        name: Package CPU distribution
+        run: make build
+      - if: ${{ matrix.platform == 'gpu' }}
+        name: Package GPU distribution)
+        run: make build-gpu
+      - name: Deploy to pypi
+        run: make deploy

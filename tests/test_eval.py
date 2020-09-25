@@ -3,7 +3,7 @@
 
 """ Unit testing for Separator class. """
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
@@ -25,32 +25,35 @@ from spleeter.commands import evaluate
 
 from spleeter.utils.configuration import load_configuration
 
-res_4stems = {  "vocals": {
-                    "SDR": -0.007,
-                    "SAR": -19.231,
-                    "SIR": -4.528,
-                    "ISR": 0.000
+BACKENDS = ["tensorflow", "librosa"]
+TEST_CONFIGURATIONS = {el:el for el in BACKENDS}
+
+res_4stems = {
+                "vocals": {
+                    "SDR": 3.25e-05,
+                    "SAR": -11.153575,
+                    "SIR": -1.3849,
+                    "ISR": 2.75e-05
                 },
                 "drums": {
-                    "SDR": -0.071,
-                    "SAR": -14.496,
-                    "SIR": -4.987,
-                    "ISR": 0.001
+                    "SDR": -0.079505,
+                    "SAR": -15.7073575,
+                    "SIR": -4.972755,
+                    "ISR": 0.0013575
                 },
                 "bass":{
-                    "SDR": -0.001,
-                    "SAR": -12.426,
-                    "SIR": -7.198,
-                    "ISR": -0.001
+                    "SDR": 2.5e-06,
+                    "SAR": -10.3520575,
+                    "SIR": -4.272325,
+                    "ISR": 2.5e-06
                 },
                 "other":{
-                    "SDR": -1.453,
-                    "SAR": -14.899,
-                    "SIR": -4.678,
-                    "ISR": -0.015
+                    "SDR": -1.359175,
+                    "SAR": -14.7076775,
+                    "SIR": -4.761505,
+                    "ISR": -0.01528
                 }
             }
-
 
 def generate_fake_eval_dataset(path):
     """
@@ -71,26 +74,15 @@ def generate_fake_eval_dataset(path):
             aa.save(filename, data, fs)
 
 
-def test_evaluate():
-    """
-        test evaluate command
-    """
 
-    with TemporaryDirectory() as path:
-
-        # generate fake dataset
-        generate_fake_eval_dataset(path)
-
-        # set up arguments of command
+@pytest.mark.parametrize('backend', TEST_CONFIGURATIONS)
+def test_evaluate(backend):
+    with TemporaryDirectory() as directory:
+        generate_fake_eval_dataset(directory)
         p = create_argument_parser()
-        arguments = p.parse_args(["evaluate", "-p", "spleeter:4stems", "--mus_dir", path])
+        arguments = p.parse_args(["evaluate", "-p", "spleeter:4stems", "--mus_dir", directory, "-B", backend])
         params = load_configuration(arguments.configuration)
-
-        # run evaluation
         metrics = evaluate.entrypoint(arguments, params)
-
-        # assert that the metric as not changed compared to reference value
-        # (Note that this fails with tensorflow backend)
         for instrument, metric in metrics.items():
-            for metric, value in metric.items():
-                assert np.allclose(np.median(value), res_4stems[instrument][metric], atol=1e-3)
+            for m, value in metric.items():
+                assert np.allclose(np.median(value), res_4stems[instrument][m], atol=1e-3)

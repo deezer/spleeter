@@ -3,7 +3,7 @@
 
 """ Unit testing for Separator class. """
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
@@ -39,13 +39,36 @@ TEST_CONFIGURATIONS = list(itertools.product(TEST_AUDIO_DESCRIPTORS, MODELS, BAC
 print("RUNNING TESTS WITH TF VERSION {}".format(tf.__version__))
 
 
+@pytest.mark.parametrize('test_file', TEST_AUDIO_DESCRIPTORS)
+def test_separator_backends(test_file):
+    adapter = get_default_audio_adapter()
+    waveform, _ = adapter.load(test_file)
+
+    separator_lib = Separator("spleeter:2stems", stft_backend="librosa")
+    separator_tf = Separator("spleeter:2stems", stft_backend="tensorflow")
+
+    # Test the stft and inverse stft provides exact reconstruction
+    stft_matrix = separator_lib._stft(waveform)
+    reconstructed = separator_lib._stft(
+        stft_matrix, inverse=True, length=waveform.shape[0])
+    assert np.allclose(reconstructed, waveform, atol=3e-2)
+
+    # compare both separation, it should be close
+    out_tf = separator_tf._separate_tensorflow(waveform, test_file)
+    out_lib = separator_lib._separate_librosa(waveform, test_file)
+
+    for instrument in out_lib.keys():
+        # test that both outputs are close everywhere
+        assert np.allclose(out_tf[instrument], out_lib[instrument], atol=1e-5)
+
+
 @pytest.mark.parametrize('test_file, configuration, backend', TEST_CONFIGURATIONS)
 def test_separate(test_file, configuration, backend):
     """ Test separation from raw data. """
     instruments = MODEL_TO_INST[configuration]
     adapter = get_default_audio_adapter()
     waveform, _ = adapter.load(test_file)
-    separator = Separator(configuration, stft_backend=backend)
+    separator = Separator(configuration, stft_backend=backend, multiprocess=False)
     prediction = separator.separate(waveform, test_file)
     assert len(prediction) == len(instruments)
     for instrument in instruments:
@@ -63,7 +86,7 @@ def test_separate(test_file, configuration, backend):
 def test_separate_to_file(test_file, configuration, backend):
     """ Test file based separation. """
     instruments = MODEL_TO_INST[configuration]
-    separator = Separator(configuration, stft_backend=backend)
+    separator = Separator(configuration, stft_backend=backend, multiprocess=False)
     name = splitext(basename(test_file))[0]
     with TemporaryDirectory() as directory:
         separator.separate_to_file(
@@ -79,7 +102,7 @@ def test_separate_to_file(test_file, configuration, backend):
 def test_filename_format(test_file, configuration, backend):
     """ Test custom filename format. """
     instruments = MODEL_TO_INST[configuration]
-    separator = Separator(configuration, stft_backend=backend)
+    separator = Separator(configuration, stft_backend=backend, multiprocess=False)
     name = splitext(basename(test_file))[0]
     with TemporaryDirectory() as directory:
         separator.separate_to_file(
@@ -95,7 +118,7 @@ def test_filename_format(test_file, configuration, backend):
 @pytest.mark.parametrize('test_file, configuration', MODELS_AND_TEST_FILES)
 def test_filename_conflict(test_file, configuration):
     """ Test error handling with static pattern. """
-    separator = Separator(configuration)
+    separator = Separator(configuration, multiprocess=False)
     with TemporaryDirectory() as directory:
         with pytest.raises(SpleeterError):
             separator.separate_to_file(

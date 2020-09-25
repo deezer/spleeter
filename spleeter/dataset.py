@@ -38,7 +38,7 @@ from .utils.tensor import (
     set_tensor_shape,
     sync_apply)
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 

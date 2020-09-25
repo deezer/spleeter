@@ -1,7 +1,7 @@
 # =======================================================
 # Library lifecycle management.
 #
-# @author Deezer Research <research@deezer.com>
+# @author Deezer Research <spleeter@deezer.com>
 # @licence MIT Licence
 # =======================================================
 
@@ -27,8 +27,7 @@ build-gpu: clean
 	python3 setup.py sdist
 
 test:
-	$(PYTEST_CMD)
-	
+	$(PYTEST_CMD) tests/
 
 deploy:
 	pip install twine

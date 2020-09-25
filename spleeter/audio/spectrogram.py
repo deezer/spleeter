@@ -10,7 +10,7 @@ import tensorflow as tf
 from tensorflow.signal import stft, hann_window
 # pylint: enable=import-error
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 

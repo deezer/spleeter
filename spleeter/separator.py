@@ -31,7 +31,7 @@ from .utils.estimator import create_estimator, get_default_model_dir
 from .model import EstimatorSpecBuilder, InputProviderFactory
 
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
@@ -163,14 +163,18 @@ class Separator(object):
         data = np.asfortranarray(data)
         N = self._params["frame_length"]
         H = self._params["frame_step"]
+        
         win = hann(N, sym=False)
         fstft = istft if inverse else stft
-        win_len_arg = {"win_length": None, "length": length} if inverse else {"n_fft": N}
+        win_len_arg = {"win_length": None,
+                       "length": None} if inverse else {"n_fft": N}
         n_channels = data.shape[-1]
         out = []
         for c in range(n_channels):
-            d = data[:, :, c].T if inverse else data[:, c]
+            d = np.concatenate((np.zeros((N, )), data[:, c], np.zeros((N, )))) if not inverse else data[:, :, c].T
             s = fstft(d, hop_length=H, window=win, center=False, **win_len_arg)
+            if inverse:
+                s = s[N:N+length]
             s = np.expand_dims(s.T, 2-inverse)
             out.append(s)
         if len(out) == 1:

@@ -1,5 +1,12 @@
 # Changelog History
 
+## 1.5.4
+
+First release, July 24th 2020
+
+Add some padding of the input waveform to avoid separation artefacts on the edges due to unstabilities in the inverse fourier transforms.
+Also add tests to ensure both librosa and tensorflow backends have same outputs.
+
 ## 1.5.2
 
 First released, May 15th 2020

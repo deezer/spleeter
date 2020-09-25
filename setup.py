@@ -14,9 +14,9 @@ __license__ = 'MIT License'
 
 # Default project values.
 project_name = 'spleeter'
-project_version = '1.5.3'
+project_version = '2.0'
 tensorflow_dependency = 'tensorflow'
-tensorflow_version = '2.2.0'
+tensorflow_version = '2.3.0'
 here = path.abspath(path.dirname(__file__))
 readme_path = path.join(here, 'README.md')
 with open(readme_path, 'r') as stream:
@@ -47,17 +47,16 @@ setup(
         'spleeter.utils',
     ],
     package_data={'spleeter.resources': ['*.json']},
-    python_requires='>=3.6, <3.8',
+    python_requires='>=3.6, <3.9',
     include_package_data=True,
     install_requires=[
         'ffmpeg-python',
         'importlib_resources ; python_version<"3.7"',
         'norbert==0.2.1',
-        'pandas==0.25.1',
+        'pandas==1.1.2',
         'requests',
         'setuptools>=41.0.0',
-        'librosa==0.7.2',
-        'numba==0.48.0',
+        'librosa==0.8.0',
         '{}=={}'.format(tensorflow_dependency, tensorflow_version),
     ],
     extras_require={

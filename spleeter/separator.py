@@ -69,7 +69,7 @@ def get_backend(backend):
     # print("USING TENSORFLOW BACKEND !!!!!!")
     # return "tensorflow"
     if backend == "auto":
-        return "tensorflow" if tf.test.is_gpu_available() else "librosa"
+        return "tensorflow" if len(tf.config.list_physical_devices('GPU')) else "librosa"
     return backend
 
 

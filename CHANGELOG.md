@@ -1,5 +1,11 @@
 # Changelog History
 
+## 2.0
+
+First release, October 9th 2020
+
+Tensorflow-2 compatible version, allowing uses in python 3.8.
+
 ## 1.5.4
 
 First release, July 24th 2020

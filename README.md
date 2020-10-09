@@ -4,7 +4,7 @@
 
 ## About
 
-**Spleeter** is the [Deezer](https://www.deezer.com/) source separation library with pretrained models
+**Spleeter** is [Deezer](https://www.deezer.com/) source separation library with pretrained models
 written in [Python](https://www.python.org/) and uses [Tensorflow](https://tensorflow.org/). It makes it easy
 to train source separation model (assuming you have a dataset of isolated sources), and provides
 already trained state of the art model for performing various flavour of separation :
@@ -20,10 +20,23 @@ as well as directly in your own development pipeline as a [Python library](https
 with [pip](https://github.com/deezer/spleeter/wiki/1.-Installation#using-pip) or be used with
 [Docker](https://github.com/deezer/spleeter/wiki/2.-Getting-started#using-docker-image).
 
+### Projects and Softwares using **Spleeter**
+
+Since it's been released, there are multiple forks exposing **Spleeter** through either a Guided User Interface (GUI) or a standalone free or paying website. Please note that we do not host, maintain or directly support any of these initiatives.
+
+That being said, many cool projects have been built on top of ours. Notably the porting to the *Ableton Live* ecosystem through the [Spleeter 4 Max](https://github.com/diracdeltas/spleeter4max#spleeter-for-max) project.
+
+**Spleeter** pre-trained models have also been used by professionnal audio softwares. Here's a non-exhaustive list:
+
+* [iZotope](https://www.izotope.com/en/shop/rx-8-standard.html) in its *Music Rebalance* feature within **RX 8**
+* [SpectralLayers](https://new.steinberg.net/spectralayers/) in its *Unmix* feature in **SpectralLayers 7**
+* [Acon Digital](https://acondigital.com/products/acoustica-audio-editor/) within **Acoustica 7**
+* [VirtualDJ](https://www.virtualdj.com/stems/) in their stem isolation feature
+* [Algoriddim](https://www.algoriddim.com/apps) in their **NeuralMix** and **djayPRO** app suite
 
 ## Quick start
 
-Want to try it out but don't want to install anything ? We have setup a [Google Colab](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb).
+Want to try it out but don't want to install anything ? We have set up a [Google Colab](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb).
 
 Ready to dig into it ? In a few lines you can install **Spleeter** using [Conda](https://github.com/deezer/spleeter/wiki/1.-Installation#using-conda) and separate the vocal and accompaniment parts from an example audio file:
 
@@ -40,7 +53,7 @@ You should get two separated audio files (`vocals.wav` and `accompaniment.wav`) 
 
 For a detailed documentation, please check the [repository wiki](https://github.com/deezer/spleeter/wiki)
 
-## Development and testing
+## Development and Testing
 
 The following set of commands will clone this repository, create a virtual environment provisioned with the dependencies and run the tests (will take a few minutes):
 
@@ -82,15 +95,11 @@ The code of **Spleeter** is [MIT-licensed](LICENSE).
 
 ## Disclaimer
 
-If you plan to use Spleeter on copyrighted material, make sure you get proper authorization from right owners beforehand.
-
-### Forks and related projects
-
-As is commonly the case with open-source projects, there are multiple forks exposing **spleeter** through either a Guided User Interface (GUI) or a standalone free or paying website. Please note that we do not host, maintain or directly support any of these initiatives.
+If you plan to use **Spleeter** on copyrighted material, make sure you get proper authorization from right owners beforehand.
 
 ## Troubleshooting
 
-**spleeter** is a complex piece of software and although we continously try to improve and test it you may encounter unexpected issues running it. If that's the case please check the [FAQ page](https://github.com/deezer/spleeter/wiki/5.-FAQ) first as well as the list of [currently open issues](https://github.com/deezer/spleeter/issues)
+**Spleeter** is a complex piece of software and although we continously try to improve and test it you may encounter unexpected issues running it. If that's the case please check the [FAQ page](https://github.com/deezer/spleeter/wiki/5.-FAQ) first as well as the list of [currently open issues](https://github.com/deezer/spleeter/issues)
 
 ### Windows users
 
@@ -98,7 +107,7 @@ As is commonly the case with open-source projects, there are multiple forks expo
 
 ## Contributing
 
-If you would like to participate in the development of **spleeter** you are more than welcome to do so. Don't hesitate to throw us a pull request and we'll do our best to examine it quickly. Please check out our [guidelines](.github/CONTRIBUTING.md) first.
+If you would like to participate in the development of **Spleeter** you are more than welcome to do so. Don't hesitate to throw us a pull request and we'll do our best to examine it quickly. Please check out our [guidelines](.github/CONTRIBUTING.md) first.
 
 ## Note
 

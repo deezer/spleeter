@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         platform: [cpu, gpu]
-        distribution: [3.6, 3.7, conda]
+        distribution: [3.6, 3.7, 3.8, conda]
         model: [modelless, 2stems, 4stems, 5stems]
       fail-fast: true
     steps:
@@ -69,13 +69,13 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Push deezer/spleeter:${{ env.tag }} image
         run: docker push deezer/spleeter:${{ env.tag }}
-      - if: ${{ env.tag == 'spleeter:3.7' }}
+      - if: ${{ env.tag == 'spleeter:3.8' }}
         name: Push deezer/spleeter:latest image
         run: |
-          docker tag deezer/spleeter:3.7 deezer/spleeter:latest
+          docker tag deezer/spleeter:3.8 deezer/spleeter:latest
           docker push deezer/spleeter:latest
-      - if: ${{ env.tag == 'spleeter:3.7-gpu' }}
+      - if: ${{ env.tag == 'spleeter:3.8-gpu' }}
         name: Push deezer/spleeter:gpu image
         run: |
-          docker tag deezer/spleeter:3.7-gpu deezer/spleeter:gpu
+          docker tag deezer/spleeter:3.8-gpu deezer/spleeter:gpu
           docker push deezer/spleeter:gpu

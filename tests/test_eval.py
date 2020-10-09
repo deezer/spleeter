@@ -56,6 +56,9 @@ res_4stems = {
             }
 
 def generate_fake_eval_dataset(path):
+    """
+        generate fake evaluation dataset
+    """
     aa = get_default_audio_adapter()
     n_songs = 2
     fs = 44100
@@ -69,6 +72,7 @@ def generate_fake_eval_dataset(path):
             filename = join(song_path, f"{instr}.wav")
             data = rng.rand(duration*fs, n_channels)-0.5
             aa.save(filename, data, fs)
+
 
 
 @pytest.mark.parametrize('backend', TEST_CONFIGURATIONS)

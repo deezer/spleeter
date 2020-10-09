@@ -8,7 +8,7 @@ import importlib
 # pylint: disable=import-error
 import tensorflow as tf
 
-from tensorflow.contrib.signal import stft, inverse_stft, hann_window
+from tensorflow.signal import stft, inverse_stft, hann_window
 # pylint: enable=import-error
 
 from ..utils.tensor import pad_and_partition, pad_and_reshape

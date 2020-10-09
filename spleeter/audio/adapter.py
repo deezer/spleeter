@@ -13,7 +13,7 @@ from os.path import exists
 import numpy as np
 import tensorflow as tf
 
-from tensorflow.contrib.signal import stft, hann_window
+from tensorflow.signal import stft, hann_window
 # pylint: enable=import-error
 
 from .. import SpleeterError

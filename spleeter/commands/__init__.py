@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 from tempfile import gettempdir
 from os.path import exists, join
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
@@ -170,6 +170,7 @@ def _create_evaluate_parser(parser_factory):
     parser.add_argument('-o', '--output_path', **OPT_OUTPUT)
     parser.add_argument('--mus_dir', **OPT_MUSDB)
     parser.add_argument('-m', '--mwf', **OPT_MWF)
+    parser.add_argument('-B', '--stft-backend', **OPT_STFT_BACKEND)
     return parser
 
 

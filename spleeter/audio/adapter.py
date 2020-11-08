@@ -13,13 +13,13 @@ from os.path import exists
 import numpy as np
 import tensorflow as tf
 
-from tensorflow.contrib.signal import stft, hann_window
+from tensorflow.signal import stft, hann_window
 # pylint: enable=import-error
 
 from .. import SpleeterError
 from ..utils.logging import get_logger
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 

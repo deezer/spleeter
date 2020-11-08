@@ -1,13 +1,14 @@
 # =======================================================
 # Library lifecycle management.
 #
-# @author Deezer Research <research@deezer.com>
+# @author Deezer Research <spleeter@deezer.com>
 # @licence MIT Licence
 # =======================================================
 
 FEEDSTOCK = spleeter-feedstock
 FEEDSTOCK_REPOSITORY = https://github.com/deezer/$(FEEDSTOCK)
 FEEDSTOCK_RECIPE = $(FEEDSTOCK)/recipe/spleeter/meta.yaml
+PYTEST_CMD = pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv --forked
 
 all: clean build test deploy
 
@@ -26,7 +27,7 @@ build-gpu: clean
 	python3 setup.py sdist
 
 test:
-	pytest -W ignore::FutureWarning -W ignore::DeprecationWarning -vv --forked
+	$(PYTEST_CMD) tests/
 
 deploy:
 	pip install twine

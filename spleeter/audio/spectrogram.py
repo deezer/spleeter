@@ -7,10 +7,10 @@
 import numpy as np
 import tensorflow as tf
 
-from tensorflow.contrib.signal import stft, hann_window
+from tensorflow.signal import stft, hann_window
 # pylint: enable=import-error
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
@@ -44,7 +44,7 @@ def compute_spectrogram_tf(
                 periodic=True,
                 dtype=waveform.dtype) ** window_exponent),
         perm=[1, 2, 0])
-    return np.abs(stft_tensor) ** spec_exponent
+    return tf.abs(stft_tensor) ** spec_exponent
 
 
 def time_stretch(

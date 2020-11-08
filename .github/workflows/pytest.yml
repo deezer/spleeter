@@ -1,0 +1,41 @@
+name: pytest
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/cache@v2
+        id: spleeter-pip-cache
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - uses: actions/cache@v2
+        env:
+          model-release: 1
+        id: spleeter-model-cache
+        with:
+          path: ${{ env.GITHUB_WORKSPACE }}/pretrained_models
+          key: models-${{ env.model-release }}
+          restore-keys: |
+            models-${{ env.model-release }}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          pip install --upgrade pip setuptools
+          pip install pytest==5.4.3 pytest-xdist==1.32.0 pytest-forked==1.1.3 musdb museval
+          python setup.py install
+      - name: Test with pytest
+        run: make test

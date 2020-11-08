@@ -10,7 +10,7 @@ import tensorflow as tf
 
 from ..utils.tensor import from_float32_to_uint8, from_uint8_to_float32
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 

@@ -9,6 +9,7 @@
 """
 
 import os
+import shutil
 
 # pylint: disable=import-error
 import stempeg
@@ -19,12 +20,41 @@ from .adapter import AudioAdapter
 from .. import SpleeterError
 from ..utils.logging import get_logger
 
-__email__ = 'research@deezer.com'
+__email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
 
-class StempegProcessAudioAdapter(AudioAdapter):
+def _check_ffmpeg_install():
+    """ Ensure FFMPEG binaries are available.
+
+    :raise SpleeterError: If ffmpeg or ffprobe is not found.
+    """
+    for binary in ('ffmpeg', 'ffprobe'):
+        if shutil.which(binary) is None:
+            raise SpleeterError('{} binary not found'.format(binary))
+
+
+def _to_ffmpeg_time(n):
+    """ Format number of seconds to time expected by FFMPEG.
+    :param n: Time in seconds to format.
+    :returns: Formatted time in FFMPEG format.
+    """
+    m, s = divmod(n, 60)
+    h, m = divmod(m, 60)
+    return '%d:%02d:%09.6f' % (h, m, s)
+
+
+def _to_ffmpeg_codec(codec):
+    ffmpeg_codecs = {
+        'm4a': 'aac',
+        'ogg': 'libvorbis',
+        'wma': 'wmav2',
+    }
+    return ffmpeg_codecs.get(codec) or codec
+
+
+class FFMPEGProcessAudioAdapter(AudioAdapter):
     """ An AudioAdapter implementation that use FFMPEG binary through
     subprocess in order to perform I/O operation for audio processing.
 
@@ -72,6 +102,10 @@ class StempegProcessAudioAdapter(AudioAdapter):
         :param bitrate: (Optional) Bitrate of the written audio file.
         :raise IOError: If any error occurs while using FFMPEG to write data.
         """
+        _check_ffmpeg_install()
+        directory = os.path.dirname(path)
+        if not os.path.exists(directory):
+            raise SpleeterError(f'output directory does not exists: {directory}')
         get_logger().debug('Writing file %s', path)
         stempeg.write_streams(
             path=path,

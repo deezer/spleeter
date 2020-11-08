@@ -54,7 +54,7 @@ def _to_ffmpeg_codec(codec):
     return ffmpeg_codecs.get(codec) or codec
 
 
-class FFMPEGProcessAudioAdapter(AudioAdapter):
+class StempegProcessAudioAdapter(AudioAdapter):
     """ An AudioAdapter implementation that use FFMPEG binary through
     subprocess in order to perform I/O operation for audio processing.
 
@@ -77,26 +77,26 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         :returns: Loaded data a (waveform, sample_rate) tuple.
         :raise SpleeterError: If any error occurs while loading audio.
         """
-        waveform, sample_rate = stempeg.read_streams(
-            path=path,
+        waveform, sample_rate = stempeg.read_stems(
+            path,
             start=offset,
             duration=duration,
             stem_id=None,
             dtype=dtype,
             info=None,
-            sample_rate=sample_rate,
-            stems_from_multichannel=False
+            sample_rate=sample_rate
         )
         return (waveform, sample_rate)
 
     def save(
-            self, path, data, sample_rate,
+            self, path, data, instruments, sample_rate,
             codec=None, bitrate=None):
         """ Write waveform data to the file denoted by the given path
         using FFMPEG process.
 
         :param path: Path of the audio file to save data in.
         :param data: Waveform data to write.
+        :param instruments: Instrument labels.
         :param sample_rate: Sample rate to write file in.
         :param codec: (Optional) Writing codec to use.
         :param bitrate: (Optional) Bitrate of the written audio file.
@@ -107,11 +107,15 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         if not os.path.exists(directory):
             raise SpleeterError(f'output directory does not exists: {directory}')
         get_logger().debug('Writing file %s', path)
-        stempeg.write_streams(
-            path=path,
+        stempeg.write_stems(
+            path,
             data=data,
             sample_rate=sample_rate,
-            codec=codec,
-            bitrate=bitrate
+            writer=stempeg.FilesWriter(
+                codec=codec,
+                bitrate=bitrate,
+                multiprocess=True,
+                stem_names=instruments
+            )
         )
         get_logger().info('File %s written succesfully', path)

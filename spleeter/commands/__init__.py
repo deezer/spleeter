@@ -33,11 +33,11 @@ OPT_OUTPUT = {
 # -f opt specification (separate).
 OPT_FORMAT = {
     'dest': 'filename_format',
-    'default': '{filename}.stems.{codec}',
+    'default': '{filename}/*.{container}',
     'help': (
         'Template string that will be formatted to generated'
         'output filename. Such template should be Python formattable'
-        'string, and could use {filename}, {instrument}, and {codec}'
+        'string, and could use {filename} and {container}'
         'variables.'
     )
 }
@@ -80,10 +80,17 @@ OPT_STFT_BACKEND = {
             ' less memory. "auto" will use tensorflow when GPU acceleration is available and librosa when not.'
 }
 
-
 # -c opt specification (separate).
 OPT_CODEC = {
     'dest': 'codec',
+    'choices': ('pcm_f32le', 'mp3', 'vorbis', 'aac', 'flac'),
+    'default': 'aac',
+    'help': 'Audio codec to be used for the separated output'
+}
+
+# -c opt specification (separate).
+OPT_CONTAINER = {
+    'dest': 'container',
     'choices': ('wav', 'mp3', 'ogg', 'm4a', 'wma', 'flac'),
     'default': 'm4a',
     'help': 'Audio codec to be used for the separated output'
@@ -188,6 +195,7 @@ def _create_separate_parser(parser_factory):
     parser.add_argument('-d', '--duration', **OPT_DURATION)
     parser.add_argument('-s', '--offset', **OPT_OFFSET)
     parser.add_argument('-c', '--codec', **OPT_CODEC)
+    parser.add_argument('-e', '--container', **OPT_CONTAINER)
     parser.add_argument('-b', '--birate', **OPT_BITRATE)
     parser.add_argument('-m', '--mwf', **OPT_MWF)
     parser.add_argument('-B', '--stft-backend', **OPT_STFT_BACKEND)

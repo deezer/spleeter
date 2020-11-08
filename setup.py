@@ -57,6 +57,7 @@ setup(
         'requests',
         'setuptools>=41.0.0',
         'librosa==0.8.0',
+        'stempeg @ git+https://github.com/faroit/stempeg.git@add_new_ffmpegprocess#egg=stempeg'
         '{}=={}'.format(tensorflow_dependency, tensorflow_version),
     ],
     extras_require={

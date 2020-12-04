@@ -3,16 +3,10 @@
 
 """ Utility functions for creating estimator. """
 
-from pathlib import Path
-from os.path import join
-
-# pylint: disable=import-error
-import tensorflow as tf
-
+import tensorflow as tf  # pylint: disable=import-error
 
 from ..model import model_fn
 from ..model.provider import get_default_model_provider
-
 
 
 def get_default_model_dir(model_dir):
@@ -23,6 +17,7 @@ def get_default_model_dir(model_dir):
     """
     model_provider = get_default_model_provider()
     return model_provider.get(model_dir)
+
 
 def create_estimator(params, MWF):
     """
@@ -35,8 +30,6 @@ def create_estimator(params, MWF):
             a tensorflow estimator
     """
     # Load model.
-
-
     params['model_dir'] = get_default_model_dir(params['model_dir'])
     params['MWF'] = MWF
     # Setup config

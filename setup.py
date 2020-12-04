@@ -14,7 +14,7 @@ __license__ = 'MIT License'
 
 # Default project values.
 project_name = 'spleeter'
-project_version = '2.0.1'
+project_version = '2.0.2'
 tensorflow_dependency = 'tensorflow'
 tensorflow_version = '2.3.0'
 here = path.abspath(path.dirname(__file__))
@@ -50,11 +50,13 @@ setup(
     python_requires='>=3.6, <3.9',
     include_package_data=True,
     install_requires=[
-        'ffmpeg-python',
+        'ffmpeg-python==0.2.0',
         'importlib_resources ; python_version<"3.7"',
         'norbert==0.2.1',
+        'numpy<1.19.0,>=1.16.0',
         'pandas==1.1.2',
         'requests',
+        'scipy==1.4.1',
         'setuptools>=41.0.0',
         'librosa==0.8.0',
         '{}=={}'.format(tensorflow_dependency, tensorflow_version),

@@ -10,7 +10,7 @@ jobs:
   package-and-deploy:
     strategy:
       matrix:
-        platform: [cpu, gpu]
+        package: [spleeter, spleeter-gpu]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -23,4 +23,4 @@ jobs:
           $CONDA/bin/conda install conda-build
           $CONDA/bin/conda install anaconda-client
       - name: Build package
-        run: cd conda/${{ matrix.platform }} && $CONDA/bin/conda-build spleeter
+        run: cd conda/${{ matrix.package }} && $CONDA/bin/conda-build spleeter

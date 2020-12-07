@@ -1,0 +1,28 @@
+name: pypi
+on:
+  push:
+    branches:
+      - master
+env:
+  ANACONDA_USERNAME: ${{ secrets.ANACONDA_USERNAME }}
+  ANACONDA_PASSWORD: ${{ secrets.ANACONDA_PASSWORD }}
+jobs:
+  package-and-deploy:
+    strategy:
+      matrix:
+        platform: [cpu, gpu]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup conda
+        uses: s-weigand/setup-conda@v1
+        with:
+          update-conda: true
+          python-version: ${{ matrix.python-version }}
+          conda-channels: anaconda, conda-forge
+      - name: Setup conda-build
+        run: conda install conda-build
+      - name: Setup anaconda-client
+        run: conda install anaconda-client
+      - name: Build package
+        run: cd conda/cpu && conda-build spleeter

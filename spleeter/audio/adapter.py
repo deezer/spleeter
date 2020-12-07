@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from importlib import import_module
 from pathlib import Path
 from spleeter.audio import Codec
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 from .. import SpleeterError
 from ..types import AudioDescriptor, Signal
@@ -35,9 +35,9 @@ class AudioAdapter(ABC):
     def load(
             self,
             audio_descriptor: AudioDescriptor,
-            offset: float,
-            duration: float,
-            sample_rate: float,
+            offset: Optional[float] = None,
+            duration: Optional[float] = None,
+            sample_rate: Optional[float] = None,
             dtype: np.dtype = np.float32) -> Signal:
         """
             Loads the audio file denoted by the given audio descriptor and
@@ -47,11 +47,11 @@ class AudioAdapter(ABC):
                 audio_descriptor (AudioDescriptor):
                     Describe song to load, in case of file based audio adapter,
                     such descriptor would be a file path.
-                offset (float):
+                offset (Optional[float]):
                     Start offset to load from in seconds.
-                duration (float):
+                duration (Optional[float]):
                     Duration to load in seconds.
-                sample_rate (float):
+                sample_rate (Optional[float]):
                     Sample rate to load audio with.
                 dtype (numpy.dtype):
                     (Optional) Numpy data type to use, default to `float32`.
@@ -136,7 +136,7 @@ class AudioAdapter(ABC):
             data: np.ndarray,
             sample_rate: float,
             codec: Codec = None,
-            bitrate: str = None):
+            bitrate: str = None) -> None:
         """
             Save the given audio data to the file denoted by the given path.
 

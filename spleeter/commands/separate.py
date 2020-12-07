@@ -19,6 +19,10 @@ __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
 
+from typer import Option
+
+AudioAdapter = Option()
+
 
 def entrypoint(arguments, params):
     """ Command entrypoint.

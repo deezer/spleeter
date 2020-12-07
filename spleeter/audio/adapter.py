@@ -3,21 +3,22 @@
 
 """ AudioAdapter class defintion. """
 
-import subprocess
-
 from abc import ABC, abstractmethod
 from importlib import import_module
-from os.path import exists
+from pathlib import Path
+from spleeter.audio import Codec
+from typing import Any, Dict, List, Union
 
+from .. import SpleeterError
+from ..types import AudioDescriptor, Signal
+from ..utils.logging import get_logger
+
+# pyright: reportMissingImports=false
 # pylint: disable=import-error
 import numpy as np
 import tensorflow as tf
-
-from tensorflow.signal import stft, hann_window
 # pylint: enable=import-error
 
-from .. import SpleeterError
-from ..utils.logging import get_logger
 
 __email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
@@ -27,46 +28,72 @@ __license__ = 'MIT License'
 class AudioAdapter(ABC):
     """ An abstract class for manipulating audio signal. """
 
-    # Default audio adapter singleton instance.
-    DEFAULT = None
+    _DEFAULT: 'AudioAdapter' = None
+    """ Default audio adapter singleton instance. """
 
     @abstractmethod
     def load(
-            self, audio_descriptor, offset, duration,
-            sample_rate, dtype=np.float32):
-        """ Loads the audio file denoted by the given audio descriptor
-        and returns it data as a waveform. Aims to be implemented
-        by client.
+            self,
+            audio_descriptor: AudioDescriptor,
+            offset: float,
+            duration: float,
+            sample_rate: float,
+            dtype: np.dtype = np.float32) -> Signal:
+        """
+            Loads the audio file denoted by the given audio descriptor and
+            returns it data as a waveform. Aims to be implemented by client.
 
-        :param audio_descriptor:    Describe song to load, in case of file
-                                    based audio adapter, such descriptor would
-                                    be a file path.
-        :param offset:              Start offset to load from in seconds.
-        :param duration:            Duration to load in seconds.
-        :param sample_rate:         Sample rate to load audio with.
-        :param dtype:               Numpy data type to use, default to float32.
-        :returns:                   Loaded data as (wf, sample_rate) tuple.
+            Parameters:
+                audio_descriptor (AudioDescriptor):
+                    Describe song to load, in case of file based audio adapter,
+                    such descriptor would be a file path.
+                offset (float):
+                    Start offset to load from in seconds.
+                duration (float):
+                    Duration to load in seconds.
+                sample_rate (float):
+                    Sample rate to load audio with.
+                dtype (numpy.dtype):
+                    (Optional) Numpy data type to use, default to `float32`.
+
+            Returns:
+                Signal:
+                    Loaded data as (wf, sample_rate) tuple.
         """
         pass
 
     def load_tf_waveform(
-            self, audio_descriptor,
-            offset=0.0, duration=1800., sample_rate=44100,
-            dtype=b'float32', waveform_name='waveform'):
-        """ Load the audio and convert it to a tensorflow waveform.
+            self,
+            audio_descriptor,
+            offset: float = 0.0,
+            duration: float = 1800.,
+            sample_rate: int = 44100,
+            dtype: bytes = b'float32',
+            waveform_name: str = 'waveform') -> Dict[str, Any]:
+        """
+            Load the audio and convert it to a tensorflow waveform.
 
-        :param audio_descriptor:    Describe song to load, in case of file
-                                    based audio adapter, such descriptor would
-                                    be a file path.
-        :param offset:              Start offset to load from in seconds.
-        :param duration:            Duration to load in seconds.
-        :param sample_rate:         Sample rate to load audio with.
-        :param dtype:               Numpy data type to use, default to float32.
-        :param waveform_name:       (Optional) Name of the key in output dict.
-        :returns:                   TF output dict with waveform as
-                                    (T x chan numpy array)  and a boolean that
-                                    tells whether there were an error while
-                                    trying to load the waveform.
+            Parameters:
+                audio_descriptor ():
+                    Describe song to load, in case of file based audio adapter,
+                    such descriptor would be a file path.
+                offset (float):
+                    Start offset to load from in seconds.
+                duration (float):
+                    Duration to load in seconds.
+                sample_rate (float):
+                    Sample rate to load audio with.
+                dtype (bytes):
+                    (Optional)data type to use, default to `b'float32'`.
+                waveform_name (str):
+                    (Optional) Name of the key in output dict, default to
+                    `'waveform'`.
+
+            Returns:
+                Dict[str, Any]:
+                    TF output dict with waveform as `(T x chan numpy array)`
+                    and a boolean that tells whether there were an error while
+                    trying to load the waveform.
         """
         # Cast parameters to TF format.
         offset = tf.cast(offset, tf.float64)
@@ -100,50 +127,69 @@ class AudioAdapter(ABC):
         waveform, error = results[0]
         return {
             waveform_name: waveform,
-            f'{waveform_name}_error': error
-        }
+            f'{waveform_name}_error': error}
 
     @abstractmethod
     def save(
-            self, path, data, sample_rate,
-            codec=None, bitrate=None):
-        """ Save the given audio data to the file denoted by
-        the given path.
+            self,
+            path: Union[Path, str],
+            data: np.ndarray,
+            sample_rate: float,
+            codec: Codec = None,
+            bitrate: str = None):
+        """
+            Save the given audio data to the file denoted by the given path.
 
-        :param path: Path of the audio file to save data in.
-        :param data: Waveform data to write.
-        :param sample_rate: Sample rate to write file in.
-        :param codec: (Optional) Writing codec to use.
-        :param bitrate: (Optional) Bitrate of the written audio file.
+            Parameters:
+                path (Union[Path, str]):
+                    Path like of the audio file to save data in.
+                data (numpy.ndarray):
+                    Waveform data to write.
+                sample_rate (float):
+                    Sample rate to write file in.
+                codec ():
+                    (Optional) Writing codec to use, default to `None`.
+                bitrate (str):
+                    (Optional) Bitrate of the written audio file, default to
+                    `None`.
         """
         pass
 
+    @classmethod
+    def default(cls: type) -> 'AudioAdapter':
+        """
+            Builds and returns a default audio adapter instance.
 
-def get_default_audio_adapter():
-    """ Builds and returns a default audio adapter instance.
+            Returns:
+                AudioAdapter:
+                    Default adapter instance to use.
+        """
+        if cls._DEFAULT is None:
+            from .ffmpeg import FFMPEGProcessAudioAdapter
+            cls._DEFAULT = FFMPEGProcessAudioAdapter()
+        return cls._DEFAULT
 
-    :returns: An audio adapter instance.
-    """
-    if AudioAdapter.DEFAULT is None:
-        from .ffmpeg import FFMPEGProcessAudioAdapter
-        AudioAdapter.DEFAULT = FFMPEGProcessAudioAdapter()
-    return AudioAdapter.DEFAULT
+    @classmethod
+    def get(cls: type, descriptor: str) -> 'AudioAdapter':
+        """
+            Load dynamically an AudioAdapter from given class descriptor.
 
+            Parameters:
+                descriptor (str):
+                    Adapter class descriptor (module.Class)
 
-def get_audio_adapter(descriptor):
-    """ Load dynamically an AudioAdapter from given class descriptor.
-
-    :param descriptor: Adapter class descriptor (module.Class)
-    :returns: Created adapter instance.
-    """
-    if descriptor is None:
-        return get_default_audio_adapter()
-    module_path = descriptor.split('.')
-    adapter_class_name = module_path[-1]
-    module_path = '.'.join(module_path[:-1])
-    adapter_module = import_module(module_path)
-    adapter_class = getattr(adapter_module, adapter_class_name)
-    if not isinstance(adapter_class, AudioAdapter):
-        raise SpleeterError(
-            f'{adapter_class_name} is not a valid AudioAdapter class')
-    return adapter_class()
+            Returns:
+                AudioAdapter:
+                    Created adapter instance.
+        """
+        if not descriptor:
+            return cls.default()
+        module_path: List[str] = descriptor.split('.')
+        adapter_class_name: str = module_path[-1]
+        module_path: str = '.'.join(module_path[:-1])
+        adapter_module = import_module(module_path)
+        adapter_class = getattr(adapter_module, adapter_class_name)
+        if not isinstance(adapter_class, AudioAdapter):
+            raise SpleeterError(
+                f'{adapter_class_name} is not a valid AudioAdapter class')
+        return adapter_class()

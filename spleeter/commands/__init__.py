@@ -51,34 +51,38 @@ OPT_PARAMS = {
     'help': 'JSON filename that contains params'
 }
 
-# -s opt specification (separate).
-OPT_OFFSET = {
-    'dest': 'offset',
-    'type': float,
-    'default': 0.,
-    'help': 'Set the starting offset to separate audio from.'
-}
+Offset: OptionInfo = Option(
+    0.,
+    '--offset',
+    '-s',
+    help='Set the starting offset to separate audio from')
 
-# -d opt specification (separate).
-OPT_DURATION = {
-    'dest': 'duration',
-    'type': float,
-    'default': 600.,
-    'help': (
+Duration: OptionInfo = Option(
+    600.,
+    '--duration',
+    '-d',
+    help=(
         'Set a maximum duration for processing audio '
         '(only separate offset + duration first seconds of '
-        'the input file)')
-}
+        'the input file)'))
 
-# -w opt specification (separate)
-OPT_STFT_BACKEND = {
-    'dest': 'stft_backend',
-    'type': str,
-    'choices' : ["tensorflow", "librosa", "auto"],
-    'default': "auto",
-    'help': 'Who should be in charge of computing the stfts. Librosa is faster than tensorflow on CPU and uses'
-            ' less memory. "auto" will use tensorflow when GPU acceleration is available and librosa when not.'
-}
+
+class STFTBackendEnum(Enum, str):
+
+    AUTO: str
+    TENSORFLOW: str
+    LIBROSA: str
+
+
+STFTBackend: OptionInfo = Option(
+    STFTBackendEnum.AUTO,
+    '--stft-backend',
+    '-B',
+    case_sensitive=False,
+    help=(
+        'Who should be in charge of computing the stfts. Librosa is faster '
+        'than tensorflow on CPU and uses  less memory. "auto" will use '
+        'tensorflow when GPU acceleration is available and librosa when not'))
 
 
 # -c opt specification (separate).
@@ -127,6 +131,14 @@ OPT_ADAPTER = {
     'type': str,
     'help': 'Name of the audio adapter to use for audio I/O'
 }
+
+
+
+AudioAdapter: OptionInfo = Option(
+    'spleeter.audio.ffmpeg.FFMPEGProcessAudioAdapter',
+    '--adapter',
+    help='Name of the audio adapter to use for audio I/O')
+
 
 # -a opt specification (train, evaluate and separate).
 OPT_VERBOSE = {

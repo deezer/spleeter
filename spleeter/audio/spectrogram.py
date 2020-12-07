@@ -3,6 +3,7 @@
 
 """ Spectrogram specific data augmentation """
 
+# pyright: reportMissingImports=false
 # pylint: disable=import-error
 import numpy as np
 import tensorflow as tf

@@ -10,7 +10,7 @@ jobs:
   package-and-deploy:
     strategy:
       matrix:
-        package: [spleeter, spleeter-gpu]
+        package: [spleeter]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

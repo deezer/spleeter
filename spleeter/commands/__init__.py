@@ -3,61 +3,41 @@
 
 """ This modules provides spleeter command as well as CLI parsing methods. """
 
-import json
-import logging
-from argparse import ArgumentParser
 from tempfile import gettempdir
-from os.path import exists, join
+from os.path import join
+
+from ..separator import STFTBackend
+from ..audio import Codec
+
+from typer import Argument, Option
+from typer.models import ArgumentInfo, OptionInfo
 
 __email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
+AudioInput: ArgumentInfo = Argument(
+    ...,
+    help='List of input audio file path',
+    exists=True,
+    file_okay=True,
+    dir_okay=False,
+    readable=True,
+    resolve_path=True)
 
+AudioOutput: OptionInfo = Option(
+    join(gettempdir(), 'separated_audio'),
+    '--output_path',
+    '-o',
+    help='Path of the output directory to write audio files in')
 
-# -i opt specification (separate).
-OPT_INPUT = {
-    'dest': 'inputs',
-    'nargs': '+',
-    'help': 'List of input audio filenames',
-    'required': True
-}
-
-# -o opt specification (evaluate and separate).
-OPT_OUTPUT = {
-    'dest': 'output_path',
-    'default': join(gettempdir(), 'separated_audio'),
-    'help': 'Path of the output directory to write audio files in'
-}
-
-# -f opt specification (separate).
-OPT_FORMAT = {
-    'dest': 'filename_format',
-    'default': '{filename}/{instrument}.{codec}',
-    'help': (
-        'Template string that will be formatted to generated'
-        'output filename. Such template should be Python formattable'
-        'string, and could use {filename}, {instrument}, and {codec}'
-        'variables.'
-    )
-}
-
-# -p opt specification (train, evaluate and separate).
-OPT_PARAMS = {
-    'dest': 'configuration',
-    'default': 'spleeter:2stems',
-    'type': str,
-    'action': 'store',
-    'help': 'JSON filename that contains params'
-}
-
-Offset: OptionInfo = Option(
+AudioOffset: OptionInfo = Option(
     0.,
     '--offset',
     '-s',
     help='Set the starting offset to separate audio from')
 
-Duration: OptionInfo = Option(
+AudioDuration: OptionInfo = Option(
     600.,
     '--duration',
     '-d',
@@ -66,16 +46,25 @@ Duration: OptionInfo = Option(
         '(only separate offset + duration first seconds of '
         'the input file)'))
 
+FilenameFormat: OptionInfo = Option(
+    '{filename}/{instrument}.{codec}',
+    '--filename_format',
+    '-f',
+    help=(
+        'Template string that will be formatted to generated'
+        'output filename. Such template should be Python formattable'
+        'string, and could use {filename}, {instrument}, and {codec}'
+        'variables'))
 
-class STFTBackendEnum(Enum, str):
+ModelParameters: OptionInfo = Option(
+    'spleeter:2stems',
+    '--params_filename',
+    '-p',
+    help='JSON filename that contains params')
 
-    AUTO: str
-    TENSORFLOW: str
-    LIBROSA: str
 
-
-STFTBackend: OptionInfo = Option(
-    STFTBackendEnum.AUTO,
+AudioSTFTBackend: OptionInfo = Option(
+    STFTBackend.AUTO,
     '--stft-backend',
     '-B',
     case_sensitive=False,
@@ -84,67 +73,54 @@ STFTBackend: OptionInfo = Option(
         'than tensorflow on CPU and uses  less memory. "auto" will use '
         'tensorflow when GPU acceleration is available and librosa when not'))
 
+AudioCodec: OptionInfo = Option(
+    Codec.WAV,
+    '--codec',
+    '-c',
+    help='Audio codec to be used for the separated output')
 
-# -c opt specification (separate).
-OPT_CODEC = {
-    'dest': 'codec',
-    'choices': ('wav', 'mp3', 'ogg', 'm4a', 'wma', 'flac'),
-    'default': 'wav',
-    'help': 'Audio codec to be used for the separated output'
-}
+AudioBitrate: OptionInfo = Option(
+    '128k',
+    '--bitrate',
+    '-b',
+    help='Audio bitrate to be used for the separated output')
 
-# -b opt specification (separate).
-OPT_BITRATE = {
-    'dest': 'bitrate',
-    'default': '128k',
-    'help': 'Audio bitrate to be used for the separated output'
-}
+MWF: OptionInfo = Option(
+    False,
+    '--mwf',
+    help='Whether to use multichannel Wiener filtering for separation')
 
-# -m opt specification (evaluate and separate).
-OPT_MWF = {
-    'dest': 'MWF',
-    'action': 'store_const',
-    'const': True,
-    'default': False,
-    'help': 'Whether to use multichannel Wiener filtering for separation',
-}
+MUSDBDirectory: OptionInfo = Option(
+    ...,
+    '--mus_dir',
+    exists=True,
+    dir_okay=True,
+    file_okay=False,
+    readable=True,
+    resolve_path=True,
+    help='Path to musDB dataset directory')
 
-# --mus_dir opt specification (evaluate).
-OPT_MUSDB = {
-    'dest': 'mus_dir',
-    'type': str,
-    'required': True,
-    'help': 'Path to folder with musDB'
-}
-
-# -d opt specification (train).
-OPT_DATA = {
-    'dest': 'audio_path',
-    'type': str,
-    'required': True,
-    'help': 'Path of the folder containing audio data for training'
-}
-
-# -a opt specification (train, evaluate and separate).
-OPT_ADAPTER = {
-    'dest': 'audio_adapter',
-    'type': str,
-    'help': 'Name of the audio adapter to use for audio I/O'
-}
-
-
+TrainingDataDirectory: OptionInfo = Option(
+    ...,
+    '--data',
+    '-d',
+    exists=True,
+    dir_okay=True,
+    file_okay=False,
+    readable=True,
+    resolve_path=True,
+    help='Path of the folder containing audio data for training')
 
 AudioAdapter: OptionInfo = Option(
     'spleeter.audio.ffmpeg.FFMPEGProcessAudioAdapter',
     '--adapter',
+    '-a',
     help='Name of the audio adapter to use for audio I/O')
 
-
-# -a opt specification (train, evaluate and separate).
-OPT_VERBOSE = {
-    'action': 'store_true',
-    'help': 'Shows verbose logs'
-}
+Verbose: OptionInfo = Option(
+    False,
+    '--verbose',
+    help='Enable verbose logs')
 
 
 def _add_common_options(parser):

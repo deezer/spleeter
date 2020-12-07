@@ -26,3 +26,11 @@ class Codec(str, Enum):
     M4A: str = 'm4a'
     WMA: str = 'wma'
     FLAC: str = 'flac'
+
+
+class STFTBackend(str, Enum):
+    """ Enumeration of supported STFT backend. """
+
+    AUTO: str = 'auto'
+    TENSORFLOW: str = 'tensorflow'
+    LIBROSA: str = 'librosa'

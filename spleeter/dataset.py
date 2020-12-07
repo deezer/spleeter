@@ -16,27 +16,21 @@
 
 import time
 import os
-from os.path import exists, join, sep as SEPARATOR
 
+from os.path import exists, sep as SEPARATOR
+
+from .audio.convertor import db_uint_spectrogram_to_gain
+from .audio.convertor import spectrogram_to_db_uint
+from .audio.spectrogram import compute_spectrogram_tf
+from .audio.spectrogram import random_pitch_shift, random_time_stretch
+from .utils.logging import get_logger
+from .utils.tensor import check_tensor_shape, dataset_from_csv
+from .utils.tensor import set_tensor_shape, sync_apply
+
+# pyright: reportMissingImports=false
 # pylint: disable=import-error
-import pandas as pd
-import numpy as np
 import tensorflow as tf
 # pylint: enable=import-error
-
-from .audio.convertor import (
-    db_uint_spectrogram_to_gain,
-    spectrogram_to_db_uint)
-from .audio.spectrogram import (
-    compute_spectrogram_tf,
-    random_pitch_shift,
-    random_time_stretch)
-from .utils.logging import get_logger
-from .utils.tensor import (
-    check_tensor_shape,
-    dataset_from_csv,
-    set_tensor_shape,
-    sync_apply)
 
 __email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'

@@ -4,26 +4,33 @@
 """
     A ModelProvider backed by Github Release feature.
 
-    :Example:
+    Examples:
 
+    ```python
     >>> from spleeter.model.provider import github
     >>> provider = github.GithubModelProvider(
             'github.com',
             'Deezer/spleeter',
             'latest')
     >>> provider.download('2stems', '/path/to/local/storage')
+    ```
 """
 
 import hashlib
 import tarfile
 import os
 
+from os import environ
 from tempfile import NamedTemporaryFile
-
-import requests
+from typing import Dict
 
 from . import ModelProvider
 from ...utils.logging import get_logger
+
+# pyright: reportMissingImports=false
+# pylint: disable=import-error
+import httpx
+# pylint: enable=import-error
 
 __email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
@@ -46,69 +53,108 @@ def compute_file_checksum(path):
 class GithubModelProvider(ModelProvider):
     """ A ModelProvider implementation backed on Github for remote storage. """
 
-    LATEST_RELEASE = 'v1.4.0'
-    RELEASE_PATH = 'releases/download'
-    CHECKSUM_INDEX = 'checksum.json'
+    DEFAULT_HOST: str = 'https://github.com'
+    DEFAULT_REPOSITORY: str = 'deezer/spleeter'
 
-    def __init__(self, host, repository, release):
+    CHECKSUM_INDEX: str = 'checksum.json'
+    LATEST_RELEASE: str = 'v1.4.0'
+    RELEASE_PATH: str = 'releases/download'
+
+    def __init__(
+            self,
+            host: str,
+            repository: str,
+            release: str) -> None:
         """ Default constructor.
 
-        :param host: Host to the Github instance to reach.
-        :param repository: Repository path within target Github.
-        :param release: Release name to get models from.
+        Parameters:
+            host (str):
+                Host to the Github instance to reach.
+            repository (str):
+                Repository path within target Github.
+            release (str):
+                Release name to get models from.
         """
-        self._host = host
-        self._repository = repository
-        self._release = release
+        self._host: str = host
+        self._repository: str = repository
+        self._release: str = release
 
-    def checksum(self, name):
-        """ Downloads and returns reference checksum for the given model name.
-
-        :param name: Name of the model to get checksum for.
-        :returns: Checksum of the required model.
-        :raise ValueError: If the given model name is not indexed.
+    @classmethod
+    def from_environ(cls: type) -> 'GithubModelProvider':
         """
-        url = '{}/{}/{}/{}/{}'.format(
+            Factory method that creates provider from envvars.
+
+            Returns:
+                GithubModelProvider:
+                    Created instance.
+        """
+        return cls(
+            environ.get('GITHUB_HOST', cls.DEFAULT_HOST),
+            environ.get('GITHUB_REPOSITORY', cls.DEFAULT_REPOSITORY),
+            environ.get('GITHUB_RELEASE', cls.LATEST_RELEASE))
+
+    def checksum(self, name: str) -> str:
+        """
+            Downloads and returns reference checksum for the given model name.
+
+            Parameters:
+                name (str):
+                    Name of the model to get checksum for.
+            Returns:
+                str:
+                    Checksum of the required model.
+
+            Raises:
+                ValueError:
+                    If the given model name is not indexed.
+        """
+        url: str = '/'.join((
             self._host,
             self._repository,
             self.RELEASE_PATH,
             self._release,
-            self.CHECKSUM_INDEX)
-        response = requests.get(url)
+            self.CHECKSUM_INDEX))
+        response: httpx.Response = httpx.get(url)
         response.raise_for_status()
-        index = response.json()
+        index: Dict = response.json()
         if name not in index:
-            raise ValueError('No checksum for model {}'.format(name))
+            raise ValueError(f'No checksum for model {name}')
         return index[name]
 
-    def download(self, name, path):
-        """ Download model denoted by the given name to disk.
-
-        :param name: Name of the model to download.
-        :param path: Path of the directory to save model into.
+    def download(self, name: str, path: str) -> None:
         """
-        url = '{}/{}/{}/{}/{}.tar.gz'.format(
+            Download model denoted by the given name to disk.
+
+            Parameters:
+                name (str):
+                    Name of the model to download.
+                path (str):
+                    Path of the directory to save model into.
+        """
+        url: str = '/'.join((
             self._host,
             self._repository,
             self.RELEASE_PATH,
             self._release,
-            name)
-        get_logger().info('Downloading model archive %s', url)
-        with requests.get(url, stream=True) as response:
-            response.raise_for_status()
-            archive = NamedTemporaryFile(delete=False)
-            try:
-                with archive as stream:
-                    # Note: check for chunk size parameters ?
-                    for chunk in response.iter_content(chunk_size=8192):
-                        if chunk:
+            name))
+        url = f'{url}.tar.gz'
+        get_logger().info(f'Downloading model archive {url}')
+        with httpx.Client(http2=True) as client:
+            with client.strema('GET', url) as response:
+                response.raise_for_status()
+                archive = NamedTemporaryFile(delete=False)
+                try:
+                    with archive as stream:
+                        for chunk in response.iter_raw():
                             stream.write(chunk)
-                get_logger().info('Validating archive checksum')
-                if compute_file_checksum(archive.name) != self.checksum(name):
-                    raise IOError('Downloaded file is corrupted, please retry')
-                get_logger().info('Extracting downloaded %s archive', name)
-                with tarfile.open(name=archive.name) as tar:
-                    tar.extractall(path=path)
-            finally:
-                os.unlink(archive.name)
-        get_logger().info('%s model file(s) extracted', name)
+                    get_logger().info('Validating archive checksum')
+                    checksum: str = compute_file_checksum(archive.name)
+                    if checksum != self.checksum(name):
+                        raise IOError(
+                            'Downloaded file is corrupted, please retry')
+                    get_logger().info(f'Extracting downloaded {name} archive')
+                    with tarfile.open(name=archive.name) as tar:
+                        tar.extractall(path=path)
+                finally:
+                    os.unlink(archive.name)
+        get_logger().info(f'{name} model file(s) extracted')

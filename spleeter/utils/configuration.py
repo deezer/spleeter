@@ -4,14 +4,10 @@
 """ Module that provides configuration loading function. """
 
 import json
-
-try:
-    import importlib.resources as loader
-except ImportError:
-    # Try backported to PY<37 `importlib_resources`.
-    import importlib_resources as loader
+import importlib.resources as loader
 
 from os.path import exists
+from typing import Dict
 
 from .. import resources, SpleeterError
 
@@ -20,18 +16,28 @@ __email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
-_EMBEDDED_CONFIGURATION_PREFIX = 'spleeter:'
+_EMBEDDED_CONFIGURATION_PREFIX: str = 'spleeter:'
 
 
-def load_configuration(descriptor):
-    """ Load configuration from the given descriptor. Could be
-    either a `spleeter:` prefixed embedded configuration name
-    or a file system path to read configuration from.
+def load_configuration(descriptor: str) -> Dict:
+    """
+        Load configuration from the given descriptor. Could be either a
+        `spleeter:` prefixed embedded configuration name or a file system path
+        to read configuration from.
 
-    :param descriptor: Configuration descriptor to use for lookup.
-    :returns: Loaded description as dict.
-    :raise ValueError: If required embedded configuration does not exists.
-    :raise SpleeterError: If required configuration file does not exists.
+        Parameters:
+            descriptor (str):
+                Configuration descriptor to use for lookup.
+
+        Returns:
+            Dict:
+                Loaded description as dict.
+
+        Raises:
+            ValueError:
+                If required embedded configuration does not exists.
+            SpleeterError:
+                If required configuration file does not exists.
     """
     # Embedded configuration reading.
     if descriptor.startswith(_EMBEDDED_CONFIGURATION_PREFIX):

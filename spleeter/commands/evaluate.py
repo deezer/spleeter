@@ -163,5 +163,4 @@ def entrypoint(arguments, params):
         get_logger().info('%s:', instrument)
         for metric, value in metric.items():
             get_logger().info('%s: %s', metric, f'{np.median(value):.3f}')
-
     return metrics

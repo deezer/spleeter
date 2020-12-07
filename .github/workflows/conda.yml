@@ -23,4 +23,4 @@ jobs:
           $CONDA/bin/conda install conda-build
           $CONDA/bin/conda install anaconda-client
       - name: Build package
-        run: cd conda/${{ matrix.package }} && $CONDA/bin/conda-build spleeter
+        run: cd conda && $CONDA/bin/conda-build ${{ matrix.package }}

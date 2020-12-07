@@ -7,7 +7,7 @@ env:
   ANACONDA_USERNAME: ${{ secrets.ANACONDA_USERNAME }}
   ANACONDA_PASSWORD: ${{ secrets.ANACONDA_PASSWORD }}
 jobs:
-  package-and-deploy:
+  build-linux:
     strategy:
       matrix:
         python: [3.7, 3.8]
@@ -31,6 +31,31 @@ jobs:
       - name: Push package
         run: |
           $CONDA/bin/anaconda login --username $ANACONDA_USERNAME --password $ANACONDA_PASSWORD
-          for package in /usr/share/miniconda/conda-bld/linux-64/*.bz2; do
+          for package in /usr/share/miniconda/conda-bld/linux-64/spleeter*.bz2; do
             $CONDA/bin/anaconda upload $package
           done
+  build-windows:
+    strategy:
+      matrix:
+        python: [3.7, 3.8]
+        package: [spleeter]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          C:\Miniconda\condabin\conda.bat init powershell
+          C:\Miniconda\condabin\conda.bat install conda-build
+          C:\Miniconda\condabin\conda.bat install anaconda-client
+      - name: Build package
+        run: |
+          C:\Miniconda\condabin\conda.bat config --add channels anaconda
+          C:\Miniconda\condabin\conda.bat config --add channels conda-forge
+          C:\Miniconda\condabin\conda.bat build --python ${{ matrix.python }} conda/${{ matrix.package }}
+      - name: Push package
+        run: |
+          anaconda login --username $ANACONDA_USERNAME --password $ANACONDA_PASSWORD

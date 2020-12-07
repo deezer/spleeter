@@ -12,6 +12,7 @@ source:
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv
+  skip: True  # [osx]
   entry_points:
     - spleeter = spleeter.__main__:entrypoint
 
@@ -21,7 +22,8 @@ requirements:
     - pip
   run:
     - python {{ python }}
-    - tensorflow ==2.3.0
+    - tensorflow ==2.3.0  # [linux]
+    - tensorflow ==2.1.0  # [win]
     - pandas
     - ffmpeg-python
     - norbert

@@ -1,4 +1,4 @@
-name: pypi
+name: conda
 on:
   push:
     branches:
@@ -25,4 +25,4 @@ jobs:
       - name: Setup anaconda-client
         run: conda install anaconda-client
       - name: Build package
-        run: cd conda/cpu && conda-build spleeter
+        run: cd conda/${{ matrix.platform }} && conda-build spleeter

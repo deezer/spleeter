@@ -55,7 +55,7 @@ setup(
         'norbert==0.2.1',
         'numpy<1.19.0,>=1.16.0',
         'pandas==1.1.2',
-        'requests',
+        'httpx[h2]',
         'scipy==1.4.1',
         'setuptools>=41.0.0',
         'librosa==0.8.0',

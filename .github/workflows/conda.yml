@@ -14,15 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup conda
-        uses: s-weigand/setup-conda@v1
+      - uses: actions/setup-python@v2
         with:
-          update-conda: true
-          python-version: ${{ matrix.python-version }}
-          conda-channels: anaconda, conda-forge
+          python-version: 3.8
       - name: Setup conda-build
-        run: conda install conda-build
+        run: $CONDA/bin/conda install conda-build
       - name: Setup anaconda-client
-        run: conda install anaconda-client
+        run: $CONDA/bin/conda install anaconda-client
       - name: Build package
-        run: cd conda/${{ matrix.platform }} && conda-build spleeter
+        run: cd conda/${{ matrix.platform }} && $CONDA/bin/conda-build spleeter

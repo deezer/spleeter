@@ -18,9 +18,8 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+      - name: Build package
+        run: $CONDA/bin/conda build conda/${{ matrix.package }}/meta.yaml -c anaconda
       - name: Install dependencies
         run: |
-          $CONDA/bin/conda install conda-build
           $CONDA/bin/conda install anaconda-client
-      - name: Build package
-        run: cd conda && $CONDA/bin/conda-build ${{ matrix.package }}

@@ -10,6 +10,7 @@ jobs:
   package-and-deploy:
     strategy:
       matrix:
+        python: [3.7, 3.8]
         package: [spleeter]
     runs-on: ubuntu-latest
     steps:
@@ -26,4 +27,10 @@ jobs:
         run: |
           $CONDA/bin/conda config --add channels anaconda
           $CONDA/bin/conda config --add channels conda-forge
-          $CONDA/bin/conda build conda/${{ matrix.package }}
+          $CONDA/bin/conda build --python ${{ matrix.python }} conda/${{ matrix.package }}
+      - name: Push package
+        run: |
+          $CONDA/bin/anaconda login --username $ANACONDA_USERNAME --password $ANACONDA_PASSWORD
+          for package in /usr/share/miniconda/conda-bld/linux-64/*.bz2; do
+            $CONDA/bin/anaconda upload $package
+          done

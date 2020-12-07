@@ -14,14 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: goanpeca/setup-miniconda@v1
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
         with:
           python-version: 3.8
       - name: Install dependencies
-        shell: bash -l {0}
         run: |
-          conda install conda-build
-          conda install anaconda-client
+          $CONDA/bin/conda install conda-build
+          $CONDA/bin/conda install anaconda-client
       - name: Build package
-        shell: bash -l {0}
-        run: cd conda/${{ matrix.platform }} && conda-build spleeter
+        run: cd conda/${{ matrix.platform }} && $CONDA/bin/conda-build spleeter

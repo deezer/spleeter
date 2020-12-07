@@ -23,4 +23,7 @@ jobs:
           $CONDA/bin/conda install conda-build
           $CONDA/bin/conda install anaconda-client
       - name: Build package
-        run: $CONDA/bin/conda build conda/${{ matrix.package }} -c anaconda
+        run: |
+          $CONDA/bin/conda config --add channels anaconda
+          $CONDA/bin/conda config --add channels conda-forge
+          $CONDA/bin/conda build conda/${{ matrix.package }}

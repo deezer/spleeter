@@ -19,7 +19,7 @@ from . import Codec
 from .adapter import AudioAdapter
 from .. import SpleeterError
 from ..types import Signal
-from ..utils.logging import get_logger
+from ..utils.logging import logger
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
@@ -161,7 +161,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         if not os.path.exists(directory):
             raise SpleeterError(
                 f'output directory does not exists: {directory}')
-        get_logger().debug(f'Writing file {path}')
+        logger.debug(f'Writing file {path}')
         input_kwargs = {'ar': sample_rate, 'ac': data.shape[1]}
         output_kwargs = {'ar': sample_rate, 'strict': '-2'}
         if bitrate:
@@ -180,4 +180,4 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             process.wait()
         except IOError:
             raise SpleeterError(f'FFMPEG error: {process.stderr.read()}')
-        get_logger().info(f'File {path} written succesfully')
+        logger.info(f'File {path} written succesfully')

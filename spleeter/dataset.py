@@ -18,12 +18,14 @@ import time
 import os
 
 from os.path import exists, sep as SEPARATOR
+from typing import Any, Dict, Optional
 
+from .audio.adapter import AudioAdapter
 from .audio.convertor import db_uint_spectrogram_to_gain
 from .audio.convertor import spectrogram_to_db_uint
 from .audio.spectrogram import compute_spectrogram_tf
 from .audio.spectrogram import random_pitch_shift, random_time_stretch
-from .utils.logging import get_logger
+from .utils.logging import logger
 from .utils.tensor import check_tensor_shape, dataset_from_csv
 from .utils.tensor import set_tensor_shape, sync_apply
 
@@ -37,24 +39,34 @@ __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
 # Default audio parameters to use.
-DEFAULT_AUDIO_PARAMS = {
+DEFAULT_AUDIO_PARAMS: Dict = {
     'instrument_list': ('vocals', 'accompaniment'),
     'mix_name': 'mix',
     'sample_rate': 44100,
     'frame_length': 4096,
     'frame_step': 1024,
     'T': 512,
-    'F': 1024
-}
+    'F': 1024}
 
 
-def get_training_dataset(audio_params, audio_adapter, audio_path):
-    """ Builds training dataset.
+def get_training_dataset(
+        audio_params: Dict,
+        audio_adapter: AudioAdapter,
+        audio_path: str) -> Any:
+    """
+        Builds training dataset.
 
-    :param audio_params: Audio parameters.
-    :param audio_adapter: Adapter to load audio from.
-    :param audio_path: Path of directory containing audio.
-    :returns: Built dataset.
+        Parameters:
+            audio_params (Dict):
+                Audio parameters.
+            audio_adapter (AudioAdapter):
+                Adapter to load audio from.
+            audio_path (str):
+                Path of directory containing audio.
+
+        Returns:
+            Any:
+                Built dataset.
     """
     builder = DatasetBuilder(
         audio_params,
@@ -72,13 +84,24 @@ def get_training_dataset(audio_params, audio_adapter, audio_path):
         wait_for_cache=False)
 
 
-def get_validation_dataset(audio_params, audio_adapter, audio_path):
-    """ Builds validation dataset.
+def get_validation_dataset(
+        audio_params: Dict,
+        audio_adapter: AudioAdapter,
+        audio_path: str) -> Any:
+    """
+        Builds validation dataset.
 
-    :param audio_params: Audio parameters.
-    :param audio_adapter: Adapter to load audio from.
-    :param audio_path: Path of directory containing audio.
-    :returns: Built dataset.
+        Parameters:
+            audio_params (Dict):
+                Audio parameters.
+            audio_adapter (AudioAdapter):
+                Adapter to load audio from.
+            audio_path (str):
+                Path of directory containing audio.
+
+        Returns:
+            Any:
+                Built dataset.
     """
     builder = DatasetBuilder(
         audio_params,
@@ -102,11 +125,15 @@ def get_validation_dataset(audio_params, audio_adapter, audio_path):
 class InstrumentDatasetBuilder(object):
     """ Instrument based filter and mapper provider. """
 
-    def __init__(self, parent, instrument):
-        """ Default constructor.
+    def __init__(self, parent, instrument) -> None:
+        """
+            Default constructor.
 
-        :param parent: Parent dataset builder.
-        :param instrument: Target instrument.
+            Parameters:
+                parent:
+                    Parent dataset builder.
+                instrument:
+                    Target instrument.
         """
         self._parent = parent
         self._instrument = instrument
@@ -181,7 +208,7 @@ class InstrumentDatasetBuilder(object):
                 self._parent._T, self._parent._F, 2))
 
     def reshape_spectrogram(self, sample):
-        """ """
+        """ Reshape given sample. """
         return dict(sample, **{
             self._spectrogram_key: set_tensor_shape(
                 sample[self._spectrogram_key],
@@ -190,27 +217,35 @@ class InstrumentDatasetBuilder(object):
 
 class DatasetBuilder(object):
     """
+        TO BE DOCUMENTED.
     """
 
-    # Margin at beginning and end of songs in seconds.
-    MARGIN = 0.5
+    MARGIN: float = 0.5
+    """ Margin at beginning and end of songs in seconds. """
 
-    # Wait period for cache (in seconds).
-    WAIT_PERIOD = 60
+    WAIT_PERIOD: int = 60
+    """ Wait period for cache (in seconds). """
 
     def __init__(
             self,
-            audio_params, audio_adapter, audio_path,
-            random_seed=0, chunk_duration=20.0):
-        """ Default constructor.
+            audio_params: Dict,
+            audio_adapter: AudioAdapter,
+            audio_path: str,
+            random_seed: int = 0,
+            chunk_duration: float = 20.0) -> None:
+        """
+            Default constructor.
 
-        NOTE: Probably need for AudioAdapter.
+            NOTE: Probably need for AudioAdapter.
 
-        :param audio_params: Audio parameters to use.
-        :param audio_adapter: Audio adapter to use.
-        :param audio_path:
-        :param random_seed:
-        :param chunk_duration:
+            Parameters:
+                audio_params (Dict):
+                    Audio parameters to use.
+                audio_adapter (AudioAdapter):
+                    Audio adapter to use.
+                audio_path (str):
+                random_seed (int):
+                chunk_duration (float):
         """
         # Length of segment in frames (if fs=22050 and
         # frame_step=512, then T=512 corresponds to 11.89s)
@@ -298,12 +333,22 @@ class DatasetBuilder(object):
             for instrument in self._audio_params['instrument_list']}
         return (input_, output)
 
-    def compute_segments(self, dataset, n_chunks_per_song):
-        """ Computes segments for each song of the dataset.
+    def compute_segments(
+            self,
+            dataset: Any,
+            n_chunks_per_song: int) -> Any:
+        """
+            Computes segments for each song of the dataset.
 
-        :param dataset: Dataset to compute segments for.
-        :param n_chunks_per_song: Number of segment per song to compute.
-        :returns: Segmented dataset.
+            Parameters:
+                dataset (Any):
+                    Dataset to compute segments for.
+                n_chunks_per_song (int):
+                    Number of segment per song to compute.
+
+            Returns:
+                Any:
+                    Segmented dataset.
         """
         if n_chunks_per_song <= 0:
             raise ValueError('n_chunks_per_song must be positif')
@@ -327,10 +372,13 @@ class DatasetBuilder(object):
         return dataset
 
     @property
-    def instruments(self):
-        """ Instrument dataset builder generator.
+    def instruments(self) -> Any:
+        """
+            Instrument dataset builder generator.
 
-        :yield InstrumentBuilder instance.
+            Yields:
+                Any:
+                    InstrumentBuilder instance.
         """
         if self._instrument_builders is None:
             self._instrument_builders = []
@@ -340,22 +388,33 @@ class DatasetBuilder(object):
         for builder in self._instrument_builders:
             yield builder
 
-    def cache(self, dataset, cache, wait):
-        """ Cache the given dataset if cache is enabled. Eventually waits for
-        cache to be available (useful if another process is already computing
-        cache) if provided wait flag is True.
+    def cache(
+            self,
+            dataset: Any,
+            cache: str,
+            wait: bool) -> Any:
+        """
+            Cache the given dataset if cache is enabled. Eventually waits for
+            cache to be available (useful if another process is already
+            computing cache) if provided wait flag is `True`.
 
-        :param dataset: Dataset to be cached if cache is required.
-        :param cache: Path of cache directory to be used, None if no cache.
-        :param wait: If caching is enabled, True is cache should be waited.
-        :returns: Cached dataset if needed, original dataset otherwise.
+            Parameters:
+                dataset (Any):
+                    Dataset to be cached if cache is required.
+                cache (str):
+                    Path of cache directory to be used, None if no cache.
+                wait (bool):
+                    If caching is enabled, True is cache should be waited.
+
+            Returns:
+                Any:
+                    Cached dataset if needed, original dataset otherwise.
         """
         if cache is not None:
             if wait:
                 while not exists(f'{cache}.index'):
-                    get_logger().info(
-                        'Cache not available, wait %s',
-                        self.WAIT_PERIOD)
+                    logger.info(
+                        f'Cache not available, wait {self.WAIT_PERIOD}')
                     time.sleep(self.WAIT_PERIOD)
             cache_path = os.path.split(cache)[0]
             os.makedirs(cache_path, exist_ok=True)
@@ -363,13 +422,20 @@ class DatasetBuilder(object):
         return dataset
 
     def build(
-            self, csv_path,
-            batch_size=8, shuffle=True, convert_to_uint=True,
-            random_data_augmentation=False, random_time_crop=True,
-            infinite_generator=True, cache_directory=None,
-            wait_for_cache=False, num_parallel_calls=4, n_chunks_per_song=2,):
+            self,
+            csv_path: str,
+            batch_size: int = 8,
+            shuffle: bool = True,
+            convert_to_uint: bool = True,
+            random_data_augmentation: bool = False,
+            random_time_crop: bool = True,
+            infinite_generator: bool = True,
+            cache_directory: Optional[str] = None,
+            wait_for_cache: bool = False,
+            num_parallel_calls: int = 4,
+            n_chunks_per_song: float = 2,) -> Any:
         """
-        TO BE DOCUMENTED.
+            TO BE DOCUMENTED.
         """
         dataset = dataset_from_csv(csv_path)
         dataset = self.compute_segments(dataset, n_chunks_per_song)

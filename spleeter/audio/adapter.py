@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from .. import SpleeterError
 from ..types import AudioDescriptor, Signal
-from ..utils.logging import get_logger
+from ..utils.logging import logger
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
@@ -101,7 +101,6 @@ class AudioAdapter(ABC):
 
         # Defined safe loading function.
         def safe_load(path, offset, duration, sample_rate, dtype):
-            logger = get_logger()
             logger.info(
                 f'Loading audio {path} from {offset} to {offset + duration}')
             try:

@@ -25,7 +25,7 @@ from tempfile import NamedTemporaryFile
 from typing import Dict
 
 from . import ModelProvider
-from ...utils.logging import get_logger
+from ...utils.logging import logger
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
@@ -138,7 +138,7 @@ class GithubModelProvider(ModelProvider):
             self._release,
             name))
         url = f'{url}.tar.gz'
-        get_logger().info(f'Downloading model archive {url}')
+        logger.info(f'Downloading model archive {url}')
         with httpx.Client(http2=True) as client:
             with client.strema('GET', url) as response:
                 response.raise_for_status()
@@ -147,14 +147,14 @@ class GithubModelProvider(ModelProvider):
                     with archive as stream:
                         for chunk in response.iter_raw():
                             stream.write(chunk)
-                    get_logger().info('Validating archive checksum')
+                    logger.info('Validating archive checksum')
                     checksum: str = compute_file_checksum(archive.name)
                     if checksum != self.checksum(name):
                         raise IOError(
                             'Downloaded file is corrupted, please retry')
-                    get_logger().info(f'Extracting downloaded {name} archive')
+                    logger.info(f'Extracting downloaded {name} archive')
                     with tarfile.open(name=archive.name) as tar:
                         tar.extractall(path=path)
                 finally:
                     os.unlink(archive.name)
-        get_logger().info(f'{name} model file(s) extracted')
+        logger.info(f'{name} model file(s) extracted')

@@ -5,6 +5,7 @@
 
 import importlib
 
+# pyright: reportMissingImports=false
 # pylint: disable=import-error
 import tensorflow as tf
 

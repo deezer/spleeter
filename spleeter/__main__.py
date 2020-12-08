@@ -189,15 +189,18 @@ def evaluate(
     mixtures = [join(song, EVALUATION_MIXTURE) for song in songs]
     audio_output_directory = join(output_path, EVALUATION_AUDIO_DIRECTORY)
     separate(
-        adapter=adapter,
-        params_filename=params_filename,
         files=mixtures,
-        output_path=output_path,
-        filename_format='{foldername}/{instrument}.{codec}',
+        adapter=adapter,
+        bitrate='128k',
         codec=Codec.WAV,
+        duration=600.,
+        offset=0,
+        output_path=output_path,
+        stft_backend=stft_backend,
+        filename_format='{foldername}/{instrument}.{codec}',
+        params_filename=params_filename,
         mwf=mwf,
-        verbose=verbose,
-        stft_backend=stft_backend)
+        verbose=verbose,)
     # Compute metrics with musdb.
     metrics_output_directory = join(output_path, EVALUATION_METRICS_DIRECTORY)
     logger.info('Starting musdb evaluation (this could be long) ...')

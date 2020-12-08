@@ -26,7 +26,7 @@ AudioInputArgument: ArgumentInfo = Argument(
     resolve_path=True)
 
 AudioAdapterOption: OptionInfo = Option(
-    'spleeter.audio.ffmpeg.FFMPEGProcessAudioAdapter',
+    'spleeter.audio.adapter.ffmpeg.FFMPEGProcessAudioAdapter',
     '--adapter',
     '-a',
     help='Name of the audio adapter to use for audio I/O')

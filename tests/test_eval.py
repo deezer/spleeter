@@ -72,10 +72,13 @@ def test_evaluate(backend):
     with TemporaryDirectory() as directory:
         generate_fake_eval_dataset(directory)
         metrics = evaluate(
+            adapter='spleeter.audio.adapter.ffmpeg.FFMPEGProcessAudioAdapter',
+            output_path='eval',
             stft_backend=backend,
             params_filename='spleeter:4stems',
             mus_dir=directory,
-        )
+            mwf=False,
+            verbose=False)
         for instrument, metric in metrics.items():
             for m, value in metric.items():
                 assert np.allclose(

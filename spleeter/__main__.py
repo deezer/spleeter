@@ -85,7 +85,7 @@ def train(
     logger.info('Model training done')
 
 
-@spleeter.commmand()
+@spleeter.command()
 def separate(
         files: List[Path] = AudioInputArgument,
         adapter: str = AudioAdapterOption,

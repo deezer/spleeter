@@ -188,7 +188,7 @@ class AudioAdapter(ABC):
         module_path: str = '.'.join(module_path[:-1])
         adapter_module = import_module(module_path)
         adapter_class = getattr(adapter_module, adapter_class_name)
-        if not isinstance(adapter_class, AudioAdapter):
+        if not issubclass(adapter_class, AudioAdapter):
             raise SpleeterError(
                 f'{adapter_class_name} is not a valid AudioAdapter class')
         return adapter_class()

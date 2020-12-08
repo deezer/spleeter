@@ -4,58 +4,41 @@
 """ Centralized logging facilities for Spleeter. """
 
 import logging
+import warnings
 
 from os import environ
+
+# pyright: reportMissingImports=false
+# pylint: disable=import-error
+from tensorflow.compat.v1 import logging as tflogging
+# pylint: enable=import-error
 
 __email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
-_FORMAT = '%(levelname)s:%(name)s:%(message)s'
+
+formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+logger: logging.Logger = logging.getLogger('spleeter')
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 
-class _LoggerHolder(object):
-    """ Logger singleton instance holder. """
-
-    INSTANCE = None
-
-
-def get_tensorflow_logger():
+def configure_logger(verbose: bool) -> None:
     """
+        Configure application logger.
+
+        Parameters:
+            verbose (bool):
+                `True` to use verbose logger, `False` otherwise.
     """
-    # pylint: disable=import-error
-    from tensorflow.compat.v1 import logging
-    # pylint: enable=import-error
-    return logging
-
-
-def get_logger():
-    """ Returns library scoped logger.
-
-    :returns: Library logger.
-    """
-    if _LoggerHolder.INSTANCE is None:
-        formatter = logging.Formatter(_FORMAT)
-        handler = logging.StreamHandler()
-        handler.setFormatter(formatter)
-        logger = logging.getLogger('spleeter')
-        logger.addHandler(handler)
-        logger.setLevel(logging.INFO)
-        _LoggerHolder.INSTANCE = logger
-    return _LoggerHolder.INSTANCE
-
-
-def enable_tensorflow_logging():
-    """ Enable tensorflow logging. """
-    environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
-    tf_logger = get_tensorflow_logger()
-    tf_logger.set_verbosity(tf_logger.INFO)
-    logger = get_logger()
-    logger.setLevel(logging.DEBUG)
-
-
-def enable_logging():
-    """ Configure default logging. """
-    environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-    tf_logger = get_tensorflow_logger()
-    tf_logger.set_verbosity(tf_logger.ERROR)
+    if verbose:
+        environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+        tflogging.set_verbosity(tflogging.INFO)
+        logger.setLevel(logging.DEBUG)
+    else:
+        warnings.filterwarnings('ignore')
+        environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+        tflogging.set_verbosity(tflogging.ERROR)

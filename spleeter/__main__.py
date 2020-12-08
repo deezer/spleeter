@@ -1,13 +1,22 @@
 #!/usr/bin/env python
 # coding: utf8
 
-""" TO DOCUMENT """
+"""
+    Python oneliner script usage.
 
+    USAGE: python -m spleeter {train,evaluate,separate} ...
+"""
+
+import json
 
 from functools import partial
+from itertools import product
+from glob import glob
+from os.path import join
 from pathlib import Path
-from typing import List
+from typing import Any, Container, Dict, List
 
+from . import SpleeterError
 from .audio import Codec
 from .audio.adapter import AudioAdapter
 from .options import *
@@ -16,11 +25,12 @@ from .model import model_fn
 from .model.provider import ModelProvider
 from .separator import Separator
 from .utils.configuration import load_configuration
-from .utils.logging import get_logger
-
+from .utils.logging import configure_logger, logger
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
+import numpy as np
+import pandas as pd
 import tensorflow as tf
 
 from typer import Exit, Typer
@@ -39,8 +49,7 @@ def train(
     """
         Train a source separation model
     """
-    # TODO: try / catch or custom decorator for function handling.
-    # TODO: handle verbose flag ?
+    configure_logger(verbose)
     audio_adapter = AudioAdapter.get(adapter)
     audio_path = str(data)
     params = load_configuration(params_filename)
@@ -70,120 +79,19 @@ def train(
         input_fn=input_fn,
         steps=None,
         throttle_secs=params['throttle_secs'])
-    get_logger().info('Start model training')
+    logger.info('Start model training')
     tf.estimator.train_and_evaluate(estimator, train_spec, evaluation_spec)
     ModelProvider.writeProbe(params['model_dir'])
-    get_logger().info('Model training done')
-
-_SPLIT = 'test'
-_MIXTURE = 'mixture.wav'
-_AUDIO_DIRECTORY = 'audio'
-_METRICS_DIRECTORY = 'metrics'
-_INSTRUMENTS = ('vocals', 'drums', 'bass', 'other')
-_METRICS = ('SDR', 'SAR', 'SIR', 'ISR')
-
-
-def _compute_musdb_metrics(
-        arguments,
-        musdb_root_directory,
-        audio_output_directory):
-    """ Generates musdb metrics fro previsouly computed audio estimation.
-
-    :param arguments: Entrypoint arguments.
-    :param audio_output_directory: Directory to get audio estimation from.
-    :returns: Path of generated metrics directory.
-    """
-    metrics_output_directory = join(
-        arguments.output_path,
-        _METRICS_DIRECTORY)
-    get_logger().info('Starting musdb evaluation (this could be long) ...')
-    try:
-        import musdb
-        import museval
-    except ImportError:
-        logger = get_logger()
-        logger.error('Extra dependencies musdb and museval not found')
-        logger.error('Please install musdb and museval first, abort')
-        raise Exit(10)
-    dataset = musdb.DB(
-        root=musdb_root_directory,
-        is_wav=True,
-        subsets=[_SPLIT])
-    museval.eval_mus_dir(
-        dataset=dataset,
-        estimates_dir=audio_output_directory,
-        output_dir=metrics_output_directory)
-    get_logger().info('musdb evaluation done')
-    return metrics_output_directory
-
-
-def _compile_metrics(metrics_output_directory):
-    """ Compiles metrics from given directory and returns
-    results as dict.
-
-    :param metrics_output_directory: Directory to get metrics from.
-    :returns: Compiled metrics as dict.
-    """
-    songs = glob(join(metrics_output_directory, 'test/*.json'))
-    index = pd.MultiIndex.from_tuples(
-        product(_INSTRUMENTS, _METRICS),
-        names=['instrument', 'metric'])
-    pd.DataFrame([], index=['config1', 'config2'], columns=index)
-    metrics = {
-        instrument: {k: [] for k in _METRICS}
-        for instrument in _INSTRUMENTS}
-    for song in songs:
-        with open(song, 'r') as stream:
-            data = json.load(stream)
-        for target in data['targets']:
-            instrument = target['name']
-            for metric in _METRICS:
-                sdr_med = np.median([
-                    frame['metrics'][metric]
-                    for frame in target['frames']
-                    if not np.isnan(frame['metrics'][metric])])
-                metrics[instrument][metric].append(sdr_med)
-    return metrics
-
-
-@spleeter.command()
-def evaluate(
-        adapter: str = AudioAdapterOption,
-        output_path: Path = AudioAdapterOption,
-        stft_backend: STFTBackend = AudioSTFTBackendOption,
-        params_filename: str = ModelParametersOption,
-        mus_dir: Path = MUSDBDirectoryOption,
-        mwf: bool = MWFOption,
-        verbose: bool = VerboseOption) -> None:
-    """
-        Evaluate a model on the musDB test dataset
-    """
-    # Separate musdb sources.
-    audio_output_directory = _separate_evaluation_dataset(
-        arguments,
-        mus_dir,
-        params)
-   # Compute metrics with musdb.
-    metrics_output_directory = _compute_musdb_metrics(
-        arguments,
-        mus_dir,
-        audio_output_directory)
-    # Compute and pretty print median metrics.
-    metrics = _compile_metrics(metrics_output_directory)
-    for instrument, metric in metrics.items():
-        get_logger().info('%s:', instrument)
-        for metric, value in metric.items():
-            get_logger().info('%s: %s', metric, f'{np.median(value):.3f}')
-    return metrics
+    logger.info('Model training done')
 
 
 @spleeter.commmand()
 def separate(
+        files: List[Path] = AudioInputArgument,
         adapter: str = AudioAdapterOption,
         bitrate: str = AudioBitrateOption,
         codec: Codec = AudioCodecOption,
         duration: float = AudioDurationOption,
-        files: List[Path] = AudioInputArgument,
         offset: float = AudioOffsetOption,
         output_path: Path = AudioAdapterOption,
         stft_backend: STFTBackend = AudioSTFTBackendOption,
@@ -194,13 +102,7 @@ def separate(
     """
         Separate audio file(s)
     """
-    # TODO: try / catch or custom decorator for function handling.
-    # TODO: enable_logging()
-    # TODO: handle MWF
-    if verbose:
-        # TODO: enable_tensorflow_logging()
-        pass
-    # PREV: params = load_configuration(arguments.configuration)
+    configure_logger(verbose)
     audio_adapter: AudioAdapter = AudioAdapter.get(adapter)
     separator: Separator = Separator(
         params_filename,
@@ -220,6 +122,102 @@ def separate(
     separator.join()
 
 
+EVALUATION_SPLIT: str = 'test'
+EVALUATION_METRICS_DIRECTORY: str = 'metrics'
+EVALUATION_INSTRUMENTS: Container[str] = ('vocals', 'drums', 'bass', 'other')
+EVALUATION_METRICS: Container[str] = ('SDR', 'SAR', 'SIR', 'ISR')
+EVALUATION_MIXTURE: str = 'mixture.wav'
+EVALUATION_AUDIO_DIRECTORY: str = 'audio'
+
+
+def _compile_metrics(metrics_output_directory) -> Dict:
+    """
+        Compiles metrics from given directory and returns results as dict.
+
+        Parameters:
+            metrics_output_directory (str):
+                Directory to get metrics from.
+
+        Returns:
+            Dict:
+                Compiled metrics as dict.
+    """
+    songs = glob(join(metrics_output_directory, 'test/*.json'))
+    index = pd.MultiIndex.from_tuples(
+        product(EVALUATION_INSTRUMENTS, EVALUATION_METRICS),
+        names=['instrument', 'metric'])
+    pd.DataFrame([], index=['config1', 'config2'], columns=index)
+    metrics = {
+        instrument: {k: [] for k in EVALUATION_METRICS}
+        for instrument in EVALUATION_INSTRUMENTS}
+    for song in songs:
+        with open(song, 'r') as stream:
+            data = json.load(stream)
+        for target in data['targets']:
+            instrument = target['name']
+            for metric in EVALUATION_METRICS:
+                sdr_med = np.median([
+                    frame['metrics'][metric]
+                    for frame in target['frames']
+                    if not np.isnan(frame['metrics'][metric])])
+                metrics[instrument][metric].append(sdr_med)
+    return metrics
+
+
+@spleeter.command()
+def evaluate(
+        adapter: str = AudioAdapterOption,
+        output_path: Path = AudioAdapterOption,
+        stft_backend: STFTBackend = AudioSTFTBackendOption,
+        params_filename: str = ModelParametersOption,
+        mus_dir: Path = MUSDBDirectoryOption,
+        mwf: bool = MWFOption,
+        verbose: bool = VerboseOption) -> Dict:
+    """
+        Evaluate a model on the musDB test dataset
+    """
+    configure_logger(verbose)
+    try:
+        import musdb
+        import museval
+    except ImportError:
+        logger.error('Extra dependencies musdb and museval not found')
+        logger.error('Please install musdb and museval first, abort')
+        raise Exit(10)
+    # Separate musdb sources.
+    songs = glob(join(mus_dir, EVALUATION_SPLIT, '*/'))
+    mixtures = [join(song, EVALUATION_MIXTURE) for song in songs]
+    audio_output_directory = join(output_path, EVALUATION_AUDIO_DIRECTORY)
+    separate(
+        adapter=adapter,
+        params_filename=params_filename,
+        files=mixtures,
+        output_path=output_path,
+        filename_format='{foldername}/{instrument}.{codec}',
+        codec=Codec.WAV,
+        mwf=mwf,
+        verbose=verbose,
+        stft_backend=stft_backend)
+    # Compute metrics with musdb.
+    metrics_output_directory = join(output_path, EVALUATION_METRICS_DIRECTORY)
+    logger.info('Starting musdb evaluation (this could be long) ...')
+    dataset = musdb.DB(root=mus_dir, is_wav=True, subsets=[EVALUATION_SPLIT])
+    museval.eval_mus_dir(
+        dataset=dataset,
+        estimates_dir=audio_output_directory,
+        output_dir=metrics_output_directory)
+    logger.info('musdb evaluation done')
+    # Compute and pretty print median metrics.
+    metrics = _compile_metrics(metrics_output_directory)
+    for instrument, metric in metrics.items():
+        logger.info(f'{instrument}:')
+        for metric, value in metric.items():
+            logger.info(f'{metric}: {np.median(value):.3f}')
+    return metrics
+
+
 if __name__ == '__main__':
-    # TODO: warnings.filterwarnings('ignore')
-    spleeter()
+    try:
+        spleeter()
+    except SpleeterError as e:
+        logger.error(e)

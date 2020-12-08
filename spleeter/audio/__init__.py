@@ -12,6 +12,11 @@
 
 from enum import Enum
 
+# pyright: reportMissingImports=false
+# pylint: disable=import-error
+import tensorflow as tf
+# pylint: enable=import-error
+
 __email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
@@ -34,3 +39,12 @@ class STFTBackend(str, Enum):
     AUTO: str = 'auto'
     TENSORFLOW: str = 'tensorflow'
     LIBROSA: str = 'librosa'
+
+    def resolve(cls: type, backend: str) -> str:
+        if backend not in cls.__members__.items():
+            raise ValueError(f'Unsupported backend {backend}')
+        if backend == cls.AUTO:
+            if len(tf.config.list_physical_devices('GPU')):
+                return cls.TENSORFLOW
+            return STFTBackend.LIBROSA
+        return backend

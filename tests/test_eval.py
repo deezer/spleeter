@@ -72,7 +72,7 @@ def test_evaluate(backend):
     with TemporaryDirectory() as directory:
         generate_fake_eval_dataset(directory)
         metrics = evaluate(
-            adapter='spleeter.audio.adapter.ffmpeg.FFMPEGProcessAudioAdapter',
+            adapter='spleeter.audio.ffmpeg.FFMPEGProcessAudioAdapter',
             output_path='eval',
             stft_backend=backend,
             params_filename='spleeter:4stems',

@@ -277,9 +277,10 @@ class Separator(object):
             audio_adapter=get_default_audio_adapter(),
             offset=0,
             duration=600.,
-            codec='wav',
+            container='m4a',
+            codec='aac',
             bitrate='128k',
-            filename_format='{filename}/{instrument}.{codec}',
+            filename_format='{filename}/{instrument}.{container}',
             synchronous=True):
         """ Performs source separation and export result to file using
         given audio adapter.
@@ -313,6 +314,7 @@ class Separator(object):
             audio_descriptor,
             destination,
             filename_format,
+            container,
             codec,
             audio_adapter,
             bitrate,
@@ -323,8 +325,9 @@ class Separator(object):
             sources,
             audio_descriptor,
             destination,
-            filename_format='{filename}/{instrument}.{codec}',
-            codec='wav',
+            filename_format='{filename}/*.{container}',
+            container='m4a',
+            codec='aac',
             audio_adapter=get_default_audio_adapter(),
             bitrate='128k',
             synchronous=True):
@@ -350,35 +353,27 @@ class Separator(object):
         foldername = basename(dirname(audio_descriptor))
         filename = splitext(basename(audio_descriptor))[0]
         generated = []
-        for instrument, data in sources.items():
-            path = join(destination, filename_format.format(
-                filename=filename,
-                instrument=instrument,
-                foldername=foldername,
-                codec=codec,
-                ))
-            directory = os.path.dirname(path)
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-            if path in generated:
-                raise SpleeterError((
-                    f'Separated source path conflict : {path},'
-                    'please check your filename format'))
-            generated.append(path)
-            if self._pool:
-                task = self._pool.apply_async(audio_adapter.save, (
-                    path,
-                    data,
-                    self._sample_rate,
-                    codec,
-                    bitrate))
-                self._tasks.append(task)
-            else:
-                audio_adapter.save(
-                    path,
-                    data,
-                    self._sample_rate,
-                    codec,
-                    bitrate)
-        if synchronous and self._pool:
-            self.join()
+        stem_names = list(sources.keys())
+        data = np.array(list(sources.values()))
+
+        # TODO:  to support the stems format we would need to add the mixture
+        path = join(destination, filename_format.format(
+            filename=filename,
+            foldername=foldername,
+            container=container
+            ))
+        directory = os.path.dirname(path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        if path in generated:
+            raise SpleeterError((
+                f'Separated source path conflict : {path},'
+                'please check your filename format'))
+        audio_adapter.save(
+            path,
+            data,
+            stem_names,
+            self._sample_rate,
+            codec,
+            bitrate
+        )

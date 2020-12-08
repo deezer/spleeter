@@ -37,7 +37,7 @@ from typer import Exit, Typer
 # pylint: enable=import-error
 
 spleeter: Typer = Typer()
-""" """
+""" CLI application. """
 
 
 @spleeter.command()

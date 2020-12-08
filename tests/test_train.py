@@ -93,7 +93,7 @@ def test_train():
         TRAIN_CONFIG['model_dir'] = join(path, 'model')
         TRAIN_CONFIG['training_cache'] = join(path, 'cache', 'training')
         TRAIN_CONFIG['validation_cache'] = join(path, 'cache', 'validation')
-        with open('useless_config.json') as stream:
+        with open('useless_config.json', 'w') as stream:
             json.dump(TRAIN_CONFIG, stream)
         # execute training
         result = runner.invoke(spleeter, [

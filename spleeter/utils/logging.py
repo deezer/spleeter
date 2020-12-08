@@ -10,7 +10,7 @@ from os import environ
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-from tensorflow.compat.v1 import logging as tflogging
+from tensorflow.compat.v1 import logging as tf_logging
 from typer import echo
 # pylint: enable=import-error
 
@@ -42,11 +42,13 @@ def configure_logger(verbose: bool) -> None:
             verbose (bool):
                 `True` to use verbose logger, `False` otherwise.
     """
+    tf_logger = tf_logging._get_logger()
+    tf_logger.handlers = [handler]
     if verbose:
         environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
-        tflogging.set_verbosity(tflogging.INFO)
+        tf_logging.set_verbosity(tf_logging.INFO)
         logger.setLevel(logging.DEBUG)
     else:
         warnings.filterwarnings('ignore')
         environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-        tflogging.set_verbosity(tflogging.ERROR)
+        tf_logging.set_verbosity(tf_logging.ERROR)

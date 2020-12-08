@@ -47,5 +47,5 @@ class STFTBackend(str, Enum):
         if backend == cls.AUTO:
             if len(tf.config.list_physical_devices('GPU')):
                 return cls.TENSORFLOW
-            return STFTBackend.LIBROSA
+            return cls.LIBROSA
         return backend

@@ -140,7 +140,7 @@ class GithubModelProvider(ModelProvider):
         url = f'{url}.tar.gz'
         logger.info(f'Downloading model archive {url}')
         with httpx.Client(http2=True) as client:
-            with client.strema('GET', url) as response:
+            with client.stream('GET', url) as response:
                 response.raise_for_status()
                 archive = NamedTemporaryFile(delete=False)
                 try:

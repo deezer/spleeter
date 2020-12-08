@@ -7,6 +7,9 @@
     USAGE: python -m spleeter {train,evaluate,separate} ...
 """
 
+# NOTE: disable TF logging before import.
+from .utils.logging import configure_logger, logger
+
 import json
 
 from functools import partial
@@ -25,7 +28,6 @@ from .model import model_fn
 from .model.provider import ModelProvider
 from .separator import Separator
 from .utils.configuration import load_configuration
-from .utils.logging import configure_logger, logger
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
@@ -200,7 +202,7 @@ def evaluate(
         filename_format='{foldername}/{instrument}.{codec}',
         params_filename=params_filename,
         mwf=mwf,
-        verbose=verbose,)
+        verbose=verbose)
     # Compute metrics with musdb.
     metrics_output_directory = join(output_path, EVALUATION_METRICS_DIRECTORY)
     logger.info('Starting musdb evaluation (this could be long) ...')

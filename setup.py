@@ -55,6 +55,7 @@ setup(
         'numpy<1.19.0,>=1.16.0',
         'pandas==1.1.2',
         'httpx[http2]',
+        'typer',
         'scipy==1.4.1',
         'setuptools>=41.0.0',
         'librosa==0.8.0',

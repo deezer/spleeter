@@ -47,7 +47,7 @@ def audio_data(adapter):
 def test_default_adapter(adapter):
     """ Test adapter as default adapter. """
     assert isinstance(adapter, FFMPEGProcessAudioAdapter)
-    assert adapter is AudioAdapter.DEFAULT
+    assert adapter is AudioAdapter._DEFAULT
 
 
 def test_load(audio_data):

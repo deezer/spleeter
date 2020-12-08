@@ -93,7 +93,7 @@ def separate(
         codec: Codec = AudioCodecOption,
         duration: float = AudioDurationOption,
         offset: float = AudioOffsetOption,
-        output_path: Path = AudioAdapterOption,
+        output_path: Path = AudioOutputOption,
         stft_backend: STFTBackend = AudioSTFTBackendOption,
         filename_format: str = FilenameFormatOption,
         params_filename: str = ModelParametersOption,
@@ -167,7 +167,7 @@ def _compile_metrics(metrics_output_directory) -> Dict:
 @spleeter.command()
 def evaluate(
         adapter: str = AudioAdapterOption,
-        output_path: Path = AudioAdapterOption,
+        output_path: Path = AudioOutputOption,
         stft_backend: STFTBackend = AudioSTFTBackendOption,
         params_filename: str = ModelParametersOption,
         mus_dir: Path = MUSDBDirectoryOption,

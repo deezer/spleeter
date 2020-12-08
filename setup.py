@@ -59,11 +59,13 @@ setup(
         'scipy==1.4.1',
         'setuptools>=41.0.0',
         'librosa==0.8.0',
+        'musdb==0.3.1',
+        'museval==0.3.0',
         '{}=={}'.format(tensorflow_dependency, tensorflow_version),
     ],
-    extras_require={
-        'evaluation':  ['musdb==0.3.1', 'museval==0.3.0']
-    },
+    # extras_require={
+    #     'evaluation':  ['musdb==0.3.1', 'museval==0.3.0']
+    # },
     entry_points={
         'console_scripts': ['spleeter=spleeter.__main__:entrypoint']
     },

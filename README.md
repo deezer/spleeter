@@ -64,6 +64,18 @@ pip install . && pip install pytest pytest-xdist
 make test
 ```
 
+#### Troubleshoot dev env:
+
+In case of already having multiple python versions installed, including 3.9.
+Then if you want to explicitly use a 3.8 since TF 2.3.0 isn't on 3.9 (yet).
+And we want a clean new virtualenv on 3.8.
+Then just instead of: `python -m venv spleeterenv` use:
+ 
+```bash
+/usr/local/opt/python@3.8/bin/python3 -m venv spleeterenv
+python -m pip install --upgrade pip
+```
+
 ## Reference
 
 * Deezer Research - Source Separation Engine Story - deezer.io blog post:

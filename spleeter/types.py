@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf8
 
-""" TO DOCUMENT """
+""" Custom types definition. """
 
 from typing import Any, Tuple
 
@@ -9,7 +9,6 @@ from typing import Any, Tuple
 # pylint: disable=import-error
 import numpy as np
 # pylint: enable=import-error
-
 
 AudioDescriptor: type = Any
 Signal: type = Tuple[np.ndarray, float]

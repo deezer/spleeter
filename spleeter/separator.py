@@ -26,8 +26,10 @@ from . import SpleeterError
 from .audio import Codec, STFTBackend
 from .audio.adapter import AudioAdapter
 from .audio.convertor import to_stereo
-from .model import EstimatorSpecBuilder, InputProviderFactory
 from .model import model_fn
+from .model import EstimatorSpecBuilder, InputProviderFactory
+from .model.provider import ModelProvider
+from .types import AudioDescriptor
 from .utils.configuration import load_configuration
 
 # pyright: reportMissingImports=false
@@ -255,14 +257,14 @@ class Separator(object):
     def _separate_librosa(
             self,
             waveform: np.ndarray,
-            audio_descriptor: str) -> Dict:
+            audio_descriptor: AudioDescriptor) -> Dict:
         """
             Performs separation with librosa backend for STFT.
 
             Parameters:
                 waveform (numpy.ndarray):
                     Waveform to be separated (as a numpy array)
-                audio_descriptor (str):
+                audio_descriptor (AudioDescriptor):
         """
         with self._tf_graph.as_default():
             out = {}
@@ -292,7 +294,7 @@ class Separator(object):
     def _separate_tensorflow(
             self,
             waveform: np.ndarray,
-            audio_descriptor: str) -> Dict:
+            audio_descriptor: AudioDescriptor) -> Dict:
         """
             Performs source separation over the given waveform with tensorflow
             backend.
@@ -300,7 +302,7 @@ class Separator(object):
             Parameters:
                 waveform (numpy.ndarray):
                     Waveform to be separated (as a numpy array)
-                audio_descriptor (str):
+                audio_descriptor (AudioDescriptor):
 
             Returns:
                 Separated waveforms.
@@ -339,7 +341,7 @@ class Separator(object):
 
     def separate_to_file(
             self,
-            audio_descriptor: str,
+            audio_descriptor: AudioDescriptor,
             destination: str,
             audio_adapter: Optional[AudioAdapter] = None,
             offset: int = 0,
@@ -361,7 +363,7 @@ class Separator(object):
             - {codec}.
 
             Parameters:
-                audio_descriptor (str):
+                audio_descriptor (AudioDescriptor):
                     Describe song to separate, used by audio adapter to
                     retrieve and load audio data, in case of file based
                     audio adapter, such descriptor would be a file path.
@@ -403,7 +405,7 @@ class Separator(object):
     def save_to_file(
             self,
             sources: Dict,
-            audio_descriptor: str,
+            audio_descriptor: AudioDescriptor,
             destination: str,
             filename_format: str = '{filename}/{instrument}.{codec}',
             codec: Codec = Codec.WAV,
@@ -419,7 +421,7 @@ class Separator(object):
                     of the instruments, and the values are `N x 2` numpy arrays
                     containing the corresponding intrument waveform, as
                     returned by the separate method
-                audio_descriptor (str):
+                audio_descriptor (AudioDescriptor):
                     Describe song to separate, used by audio adapter to
                     retrieve and load audio data, in case of file based audio
                     adapter, such descriptor would be a file path.

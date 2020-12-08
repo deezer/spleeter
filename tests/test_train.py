@@ -101,6 +101,7 @@ def test_train():
             '-p', 'useless_config.json',
             '-d', path
         ])
+        raise IOError(f'STDOUT: {result.stdout}, STDERR: {result.stderr}')
         assert result.exit_code == 0
         # assert that model checkpoint was created.
         assert os.path.exists(join(path, 'model', 'model.ckpt-10.index'))

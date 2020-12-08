@@ -42,7 +42,8 @@ class STFTBackend(str, Enum):
 
     @classmethod
     def resolve(cls: type, backend: str) -> str:
-        if backend not in cls.__members__.items():
+        backend = backend.upper()
+        if backend not in cls.__members__.keys():
             raise ValueError(f'Unsupported backend {backend}')
         if backend == cls.AUTO:
             if len(tf.config.list_physical_devices('GPU')):

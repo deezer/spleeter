@@ -42,8 +42,8 @@ def configure_logger(verbose: bool) -> None:
             verbose (bool):
                 `True` to use verbose logger, `False` otherwise.
     """
-    tf_logger = tf_logging._get_logger()
-    tf_logger.handlers = [handler]
+    # tf_logger = tf_logging._get_logger()
+    # tf_logger.handlers = [handler]
     if verbose:
         environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
         tf_logging.set_verbosity(tf_logging.INFO)

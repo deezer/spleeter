@@ -39,7 +39,6 @@ setup(
     packages=[
         'spleeter',
         'spleeter.audio',
-        'spleeter.commands',
         'spleeter.model',
         'spleeter.model.functions',
         'spleeter.model.provider',

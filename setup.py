@@ -14,7 +14,7 @@ __license__ = 'MIT License'
 
 # Default project values.
 project_name = 'spleeter'
-project_version = '2.0.2'
+project_version = '2.1.0'
 tensorflow_dependency = 'tensorflow'
 tensorflow_version = '2.3.0'
 here = path.abspath(path.dirname(__file__))

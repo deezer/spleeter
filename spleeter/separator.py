@@ -127,6 +127,7 @@ class Separator(object):
         else:
             self._pool = None
         self._tasks = []
+        # NOTE: provide type check here ?
         self._params['stft_backend'] = stft_backend
         self._data_generator = DataGenerator()
 

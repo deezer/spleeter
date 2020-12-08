@@ -40,6 +40,7 @@ class STFTBackend(str, Enum):
     TENSORFLOW: str = 'tensorflow'
     LIBROSA: str = 'librosa'
 
+    @classmethod
     def resolve(cls: type, backend: str) -> str:
         if backend not in cls.__members__.items():
             raise ValueError(f'Unsupported backend {backend}')

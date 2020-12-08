@@ -10,18 +10,17 @@ __license__ = 'MIT License'
 from os.path import join
 from tempfile import TemporaryDirectory
 
+from spleeter import SpleeterError
+from spleeter.audio.adapter import AudioAdapter
+from spleeter.audio.ffmpeg import FFMPEGProcessAudioAdapter
+
+# pyright: reportMissingImports=false
 # pylint: disable=import-error
 from pytest import fixture, raises
 
 import numpy as np
 import ffmpeg
 # pylint: enable=import-error
-
-from spleeter import SpleeterError
-from spleeter.audio.adapter import AudioAdapter
-from spleeter.audio.adapter import get_default_audio_adapter
-from spleeter.audio.adapter import get_audio_adapter
-from spleeter.audio.ffmpeg import FFMPEGProcessAudioAdapter
 
 TEST_AUDIO_DESCRIPTOR = 'audio_example.mp3'
 TEST_OFFSET = 0
@@ -32,7 +31,7 @@ TEST_SAMPLE_RATE = 44100
 @fixture(scope='session')
 def adapter():
     """ Target test audio adapter fixture. """
-    return get_default_audio_adapter()
+    return AudioAdapter.default()
 
 
 @fixture(scope='session')

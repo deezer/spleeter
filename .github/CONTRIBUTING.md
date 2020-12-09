@@ -16,7 +16,7 @@ In order to contribute, the safest is to create your [own fork of spleeter](http
 ```bash
 git clone https://github.com/<your_name>/spleeter && cd spleeter
 python -m venv spleeterenv && source spleeterenv/bin/activate
-pip install -r requirements.txt && pip install pytest pytest-xdist
+pip install . && pip install pytest pytest-xdist
 make test
 ```
 

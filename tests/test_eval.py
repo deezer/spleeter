@@ -69,19 +69,20 @@ def generate_fake_eval_dataset(path):
 
 @pytest.mark.parametrize('backend', TEST_CONFIGURATIONS)
 def test_evaluate(backend):
-    with TemporaryDirectory() as directory:
-        generate_fake_eval_dataset(directory)
-        metrics = evaluate(
-            adapter='spleeter.audio.ffmpeg.FFMPEGProcessAudioAdapter',
-            output_path='eval',
-            stft_backend=backend,
-            params_filename='spleeter:4stems',
-            mus_dir=directory,
-            mwf=False,
-            verbose=False)
-        for instrument, metric in metrics.items():
-            for m, value in metric.items():
-                assert np.allclose(
-                    np.median(value),
-                    res_4stems[instrument][m],
-                    atol=1e-3)
+    with TemporaryDirectory() as dataset:
+        with TemporaryDirectory() as evaluation:
+            generate_fake_eval_dataset(dataset)
+            metrics = evaluate(
+                adapter='spleeter.audio.ffmpeg.FFMPEGProcessAudioAdapter',
+                output_path=evaluation,
+                stft_backend=backend,
+                params_filename='spleeter:4stems',
+                mus_dir=dataset,
+                mwf=False,
+                verbose=False)
+            for instrument, metric in metrics.items():
+                for m, value in metric.items():
+                    assert np.allclose(
+                        np.median(value),
+                        res_4stems[instrument][m],
+                        atol=1e-3)

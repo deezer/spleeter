@@ -197,7 +197,7 @@ def evaluate(
         codec=Codec.WAV,
         duration=600.,
         offset=0,
-        output_path=output_path,
+        output_path=join(audio_output_directory, EVALUATION_SPLIT),
         stft_backend=stft_backend,
         filename_format='{foldername}/{instrument}.{codec}',
         params_filename=params_filename,

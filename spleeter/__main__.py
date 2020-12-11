@@ -112,8 +112,8 @@ def separate(
         stft_backend=stft_backend)
     for filename in files:
         separator.separate_to_file(
-            filename,
-            output_path,
+            str(filename),
+            str(output_path),
             audio_adapter=audio_adapter,
             offset=offset,
             duration=duration,
@@ -221,8 +221,13 @@ def evaluate(
     return metrics
 
 
-if __name__ == '__main__':
+def entrypoint():
+    """ Application entrypoint. """
     try:
         spleeter()
     except SpleeterError as e:
         logger.error(e)
+
+
+if __name__ == '__main__':
+    entrypoint()

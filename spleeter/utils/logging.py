@@ -10,9 +10,6 @@ from os import environ
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import tensorflow as tf
-
-from tensorflow.compat.v1 import logging as tf_logging
 from typer import echo
 # pylint: enable=import-error
 
@@ -46,7 +43,9 @@ def configure_logger(verbose: bool) -> None:
             verbose (bool):
                 `True` to use verbose logger, `False` otherwise.
     """
-    tf_logger = tf.get_logger()
+    from tensorflow import get_logger
+    from tensorflow.compat.v1 import logging as tf_logging
+    tf_logger = get_logger()
     tf_logger.handlers = [handler]
     if verbose:
         tf_logging.set_verbosity(tf_logging.INFO)

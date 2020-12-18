@@ -38,7 +38,7 @@ import tensorflow as tf
 from typer import Exit, Typer
 # pylint: enable=import-error
 
-spleeter: Typer = Typer()
+spleeter: Typer = Typer(add_completion=False)
 """ CLI application. """
 
 

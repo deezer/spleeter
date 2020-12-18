@@ -16,8 +16,10 @@ __email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
-AudioInputArgument: ArgumentInfo = Argument(
+AudioInputOptions: ArgumentInfo = Argument(
     ...,
+    '--inputs',
+    '-i',
     help='List of input audio file path',
     exists=True,
     file_okay=True,

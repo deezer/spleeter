@@ -89,7 +89,7 @@ def train(
 
 @spleeter.command()
 def separate(
-        files: List[Path] = AudioInputArgument,
+        files: List[Path] = AudioInputOptions,
         adapter: str = AudioAdapterOption,
         bitrate: str = AudioBitrateOption,
         codec: Codec = AudioCodecOption,

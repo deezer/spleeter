@@ -16,7 +16,7 @@ __email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
-AudioInputOptions: ArgumentInfo = Argument(
+AudioInputOptions: OptionInfo = Option(
     ...,
     '--inputs',
     '-i',

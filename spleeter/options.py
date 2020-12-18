@@ -6,11 +6,10 @@
 from tempfile import gettempdir
 from os.path import join
 
-from .separator import STFTBackend
-from .audio import Codec
+from .audio import Codec, STFTBackend
 
-from typer import Argument, Option
-from typer.models import ArgumentInfo, OptionInfo
+from typer import Option
+from typer.models import OptionInfo
 
 __email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'

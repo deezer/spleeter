@@ -5,10 +5,12 @@
     Python oneliner script usage.
 
     USAGE: python -m spleeter {train,evaluate,separate} ...
-"""
 
-# NOTE: disable TF logging before import.
-from .utils.logging import configure_logger, logger
+    Notes:
+        All critical import involving TF, numpy or Pandas are deported to
+        command function scope to avoid heavy import on CLI evaluation,
+        leading to large bootstraping time.
+"""
 
 import json
 
@@ -17,24 +19,14 @@ from itertools import product
 from glob import glob
 from os.path import join
 from pathlib import Path
-from typing import Any, Container, Dict, List
+from typing import Container, Dict, List
 
 from . import SpleeterError
-from .audio import Codec
-from .audio.adapter import AudioAdapter
 from .options import *
-from .dataset import get_training_dataset, get_validation_dataset
-from .model import model_fn
-from .model.provider import ModelProvider
-from .separator import Separator
-from .utils.configuration import load_configuration
+from .utils.logging import configure_logger, logger
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import numpy as np
-import pandas as pd
-import tensorflow as tf
-
 from typer import Exit, Typer
 # pylint: enable=import-error
 
@@ -51,6 +43,14 @@ def train(
     """
         Train a source separation model
     """
+    from .audio.adapter import AudioAdapter
+    from .dataset import get_training_dataset, get_validation_dataset
+    from .model import model_fn
+    from .model.provider import ModelProvider
+    from .utils.configuration import load_configuration
+
+    import tensorflow as tf
+
     configure_logger(verbose)
     audio_adapter = AudioAdapter.get(adapter)
     audio_path = str(data)
@@ -104,6 +104,9 @@ def separate(
     """
         Separate audio file(s)
     """
+    from .audio.adapter import AudioAdapter
+    from .separator import Separator
+
     configure_logger(verbose)
     audio_adapter: AudioAdapter = AudioAdapter.get(adapter)
     separator: Separator = Separator(
@@ -144,6 +147,9 @@ def _compile_metrics(metrics_output_directory) -> Dict:
             Dict:
                 Compiled metrics as dict.
     """
+    import pandas as pd
+    import numpy as np
+
     songs = glob(join(metrics_output_directory, 'test/*.json'))
     index = pd.MultiIndex.from_tuples(
         product(EVALUATION_INSTRUMENTS, EVALUATION_METRICS),
@@ -178,6 +184,8 @@ def evaluate(
     """
         Evaluate a model on the musDB test dataset
     """
+    import numpy as np
+
     configure_logger(verbose)
     try:
         import musdb

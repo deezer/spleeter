@@ -28,7 +28,10 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y ffmpeg
       - name: Install Poetry
-        uses: dschep/install-poetry-action@v1.2
+        run: |
+          pip install poetry
+          poetry config settings.virtualenvs.in-project false
+          poetry config settings.virtualenvs.path ~/.virtualenvs
       - name: Cache Poetry virtualenv
         uses: actions/cache@v1
         id: cache
@@ -37,10 +40,6 @@ jobs:
           key: poetry-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             poetry-${{ hashFiles('**/poetry.lock') }}
-      - name: Set Poetry config
-        run: |
-          poetry config settings.virtualenvs.in-project false
-          poetry config settings.virtualenvs.path ~/.virtualenvs
       - name: Install Dependencies
         run: poetry install
         if: steps.cache.outputs.cache-hit != 'true'

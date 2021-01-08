@@ -1,5 +1,5 @@
 {% set name = "spleeter" %}
-{% set version = "2.0.2" %}
+{% set version = "2.1.2" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-    sha256: ecd3518a98f9978b9088d1cb2ef98f766401fd9007c2bf72a34e5b5bc5a6fdc3
+    sha256: 3e2df1e4369c713f28e51298df0eaba7c34db356bc7d17728bcb356eca15e2f7
 
 build:
   number: 0
@@ -32,7 +32,6 @@ requirements:
 test:
   imports:
     - spleeter
-    - spleeter.commands
     - spleeter.model
     - spleeter.utils
     - spleeter.separator

@@ -11,15 +11,31 @@ Those are the main contributing guidelines for contributing to this project:
 
 ## Get started
 
-In order to contribute, the safest is to create your [own fork of spleeter](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) first. The following set of commands will clone this new repository, create a virtual environment provisioned with the dependencies and run the tests (will take a few minutes):
+This project is managed using [Poetry](https://python-poetry.org/docs/basic-usage/),
+in order to contribute, the safest is to create your
+[own fork of spleeter](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) first and then setup your development environment:
 
 ```bash
+# Clone spleeter repository fork
 git clone https://github.com/<your_name>/spleeter && cd spleeter
-python -m venv spleeterenv && source spleeterenv/bin/activate
-pip install -r requirements.txt && pip install pytest pytest-xdist
-make test
+# Install poetry
+pip install poetry
+# Install spleeter dependencies
+poetry install
+# Run unit test suite
+poetry run pytest tests/
 ```
 
 You can then make your changes and experiment freely. Once you're done, remember to check that the tests still run. If you've added a new feature, add tests!
 
 Then finally, you're more than welcome to create a [Pull Request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) in **Spleeter** main repo. We will look at it as soon as possible and eventually integrate your changes in the project.
+
+## PR requirements
+
+Following command should be ran successfully before to consider a PR for merging:
+
+```bash
+poetry run pytest tests/
+poetry run black spleeter
+poetry run isort spleeter
+```

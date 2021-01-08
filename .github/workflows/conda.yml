@@ -1,8 +1,6 @@
 name: conda
 on:
-  push:
-    branches:
-      - master
+  - workflow_dispatch
 env:
   ANACONDA_USERNAME: ${{ secrets.ANACONDA_USERNAME }}
   ANACONDA_PASSWORD: ${{ secrets.ANACONDA_PASSWORD }}
@@ -11,7 +9,7 @@ jobs:
     strategy:
       matrix:
         python: [3.7, 3.8]
-        package: [spleeter]
+        package: [spleeter, spleeter-gpu]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

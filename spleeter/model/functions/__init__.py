@@ -3,25 +3,45 @@
 
 """ This package provide model functions. """
 
-__email__ = 'spleeter@deezer.com'
-__author__ = 'Deezer Research'
-__license__ = 'MIT License'
+from typing import Callable, Dict, Iterable, Optional
+
+# pyright: reportMissingImports=false
+# pylint: disable=import-error
+import tensorflow as tf
+
+# pylint: enable=import-error
+
+__email__ = "spleeter@deezer.com"
+__author__ = "Deezer Research"
+__license__ = "MIT License"
 
 
-def apply(function, input_tensor, instruments, params={}):
-    """ Apply given function to the input tensor.
-
-    :param function: Function to be applied to tensor.
-    :param input_tensor: Tensor to apply blstm to.
-    :param instruments: Iterable that provides a collection of instruments.
-    :param params: (Optional) dict of BLSTM parameters.
-    :returns: Created output tensor dict.
+def apply(
+    function: Callable,
+    input_tensor: tf.Tensor,
+    instruments: Iterable[str],
+    params: Optional[Dict] = None,
+) -> Dict:
     """
-    output_dict = {}
+    Apply given function to the input tensor.
+
+    Parameters:
+        function:
+            Function to be applied to tensor.
+        input_tensor (tensorflow.Tensor):
+            Tensor to apply blstm to.
+        instruments (Iterable[str]):
+            Iterable that provides a collection of instruments.
+        params:
+            (Optional) dict of BLSTM parameters.
+
+    Returns:
+        Created output tensor dict.
+    """
+    output_dict: Dict = {}
     for instrument in instruments:
-        out_name = f'{instrument}_spectrogram'
+        out_name = f"{instrument}_spectrogram"
         output_dict[out_name] = function(
-            input_tensor,
-            output_name=out_name,
-            params=params)
+            input_tensor, output_name=out_name, params=params or {}
+        )
     return output_dict

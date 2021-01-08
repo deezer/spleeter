@@ -5,12 +5,12 @@
 
 from pytest import raises
 
-from spleeter.model.provider import get_default_model_provider
+from spleeter.model.provider import ModelProvider
 
 
 def test_checksum():
     """ Test archive checksum index retrieval. """
-    provider = get_default_model_provider()
+    provider = ModelProvider.default()
     assert provider.checksum('2stems') == \
         'f3a90b39dd2874269e8b05a48a86745df897b848c61f3958efc80a39152bd692'
     assert provider.checksum('4stems') == \

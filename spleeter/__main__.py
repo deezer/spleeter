@@ -19,7 +19,7 @@ from itertools import product
 from glob import glob
 from os.path import join
 from pathlib import Path
-from typing import Container, Dict, List
+from typing import Container, Dict, List, Optional
 
 from . import SpleeterError
 from .options import *
@@ -89,7 +89,8 @@ def train(
 
 @spleeter.command()
 def separate(
-        files: List[Path] = AudioInputOptions,
+        deprecated_file: Optional[str] = AudioInputOption,
+        files: List[Path] = AudioInputArgument,
         adapter: str = AudioAdapterOption,
         bitrate: str = AudioBitrateOption,
         codec: Codec = AudioCodecOption,
@@ -108,6 +109,11 @@ def separate(
     from .separator import Separator
 
     configure_logger(verbose)
+    if deprecated_file is not None:
+        logger.error(
+            '⚠️ -i option is not supported anymore, audio files must be supplied '
+            'using input argument instead (see spleeter separate --help)')
+        raise Exit(20)
     audio_adapter: AudioAdapter = AudioAdapter.get(adapter)
     separator: Separator = Separator(
         params_filename,

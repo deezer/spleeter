@@ -8,23 +8,27 @@ from os.path import join
 
 from .audio import Codec, STFTBackend
 
-from typer import Option
-from typer.models import OptionInfo
+from typer import Argument, Option
+from typer.models import ArgumentInfo, OptionInfo
 
 __email__ = 'spleeter@deezer.com'
 __author__ = 'Deezer Research'
 __license__ = 'MIT License'
 
-AudioInputOptions: OptionInfo = Option(
+AudioInputArgument: ArgumentInfo = Argument(
     ...,
-    '--inputs',
-    '-i',
     help='List of input audio file path',
     exists=True,
     file_okay=True,
     dir_okay=False,
     readable=True,
     resolve_path=True)
+
+AudioInputOption: OptionInfo = Option(
+    None,
+    '--inputs',
+    '-i',
+    help='(DEPRECATED) placeholder for deprecated input option')
 
 AudioAdapterOption: OptionInfo = Option(
     'spleeter.audio.ffmpeg.FFMPEGProcessAudioAdapter',

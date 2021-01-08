@@ -41,7 +41,7 @@ classifiers = [
     "Topic :: Utilities"
 ]
 packages = [ { include = "spleeter" } ]
-include = ["spleeter/resources/*.json"]
+include = ["LICENSE", "spleeter/resources/*.json"]
 
 [tool.poetry.dependencies]
 python = "^3.7"

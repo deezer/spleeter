@@ -1,5 +1,26 @@
 # Changelog History
 
+## 2.1.0
+
+This version introduce design related changes, especially transition to Typer for CLI managment and Poetry as
+library build backend.
+
+* `-i` option is now deprecated and replaced by traditional CLI input argument listing
+* Project is now built using Poetry
+* Project requires code formatting using Black and iSort
+
+### API changes:
+
+* function `get_default_audio_adapter` is now available as `default()` class method within `AudioAdapter` class
+* function `get_default_model_provider` is now available as `default()` class method within `ModelProvider` class
+* `STFTBackend` and `Codec` are now string enum
+* `GithubModelProvider` now use `httpx` with HTTP/2 support
+* Commands are now located in `__main__` module, wrapped as simple function using Typer options module provide specification for each available option and argument
+* `types` module provide custom type specification and must be enhanced in future release to provide more robust typing support with MyPy
+* `utils.logging` module has been cleaned, logger instance is now a module singleton, and a single function is used to configure it with verbose parameter
+* Added a custom logger handler (see tiangolo/typer#203 discussion)
+
+
 ## 2.0
 
 First release, October 9th 2020

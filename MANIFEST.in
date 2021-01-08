@@ -1,3 +1,0 @@
-include spleeter/resources/*.json
-include README.md
-include LICENSE

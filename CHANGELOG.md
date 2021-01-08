@@ -8,6 +8,7 @@ library build backend.
 * `-i` option is now deprecated and replaced by traditional CLI input argument listing
 * Project is now built using Poetry
 * Project requires code formatting using Black and iSort
+* Dedicated GPU package `spleeter-gpu` is not supported anymore, `spleeter` package will support both CPU and GPU hardware
 
 ### API changes:
 

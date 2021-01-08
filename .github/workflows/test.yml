@@ -37,9 +37,9 @@ jobs:
         id: cache
         with:
           path: ~/.virtualenvs
-          key: poetry-${{ hashFiles('**/poetry.lock') }}
+          key: poetry-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
-            poetry-${{ hashFiles('**/poetry.lock') }}
+            poetry-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install Dependencies
         run: poetry install
         if: steps.cache.outputs.cache-hit != 'true'

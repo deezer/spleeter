@@ -35,14 +35,13 @@ jobs:
     strategy:
       matrix:
         python: [3.7, 3.8]
-        package: [spleeter]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.8
+      - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ matrix.python }}
       - name: Install dependencies
         run: |
           C:\Miniconda\condabin\conda.bat init powershell

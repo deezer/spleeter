@@ -30,8 +30,8 @@ jobs:
       - name: Install Poetry
         run: |
           pip install poetry
-          poetry config settings.virtualenvs.in-project false
-          poetry config settings.virtualenvs.path ~/.virtualenvs
+          poetry config virtualenvs.in-project false
+          poetry config virtualenvs.path ~/.virtualenvs
       - name: Cache Poetry virtualenv
         uses: actions/cache@v1
         id: cache

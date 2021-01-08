@@ -89,7 +89,7 @@ def train(
 
 @spleeter.command()
 def separate(
-        deprecated_file: Optional[str] = AudioInputOption,
+        deprecated_files: Optional[str] = AudioInputOption,
         files: List[Path] = AudioInputArgument,
         adapter: str = AudioAdapterOption,
         bitrate: str = AudioBitrateOption,
@@ -109,7 +109,7 @@ def separate(
     from .separator import Separator
 
     configure_logger(verbose)
-    if deprecated_file is not None:
+    if deprecated_files is not None:
         logger.error(
             '⚠️ -i option is not supported anymore, audio files must be supplied '
             'using input argument instead (see spleeter separate --help)')
@@ -205,6 +205,7 @@ def evaluate(
     mixtures = [join(song, EVALUATION_MIXTURE) for song in songs]
     audio_output_directory = join(output_path, EVALUATION_AUDIO_DIRECTORY)
     separate(
+        deprecated_files=None,
         files=mixtures,
         adapter=adapter,
         bitrate='128k',

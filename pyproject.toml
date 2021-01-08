@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spleeter"
-version = "2.1.1"
+version = "2.1.2"
 description = "The Deezer source separation library with pretrained models based on tensorflow."
 authors = ["Deezer Research <spleeter@deezer.com>"]
 license = "MIT License"
@@ -55,6 +55,7 @@ museval = {version = "0.3.0", optional = true}
 tensorflow = "2.3.0"
 pandas = "1.1.2"
 numpy = "<1.19.0,>=1.16.0"
+importlib-resources = {version = "^4.1.1", python = "<3.7"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.1"

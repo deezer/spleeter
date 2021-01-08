@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spleeter"
-version = "2.1.0"
+version = "2.1.1"
 description = "The Deezer source separation library with pretrained models based on tensorflow."
 authors = ["Deezer Research <spleeter@deezer.com>"]
 license = "MIT License"
@@ -44,7 +44,7 @@ packages = [ { include = "spleeter" } ]
 include = ["LICENSE", "spleeter/resources/*.json"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = ">=3.6.1,<3.9"
 ffmpeg-python = "0.2.0"
 norbert = "0.2.1"
 httpx = {extras = ["http2"], version = "^0.16.1"}

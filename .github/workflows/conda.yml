@@ -9,14 +9,13 @@ jobs:
     strategy:
       matrix:
         python: [3.7, 3.8]
-        package: [spleeter, spleeter-gpu]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.8
+      - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ matrix.python }}
       - name: Install dependencies
         run: |
           $CONDA/bin/conda install conda-build
@@ -25,7 +24,7 @@ jobs:
         run: |
           $CONDA/bin/conda config --add channels anaconda
           $CONDA/bin/conda config --add channels conda-forge
-          $CONDA/bin/conda build --python ${{ matrix.python }} conda/${{ matrix.package }}
+          $CONDA/bin/conda build --python ${{ matrix.python }} conda/spleeter
       - name: Push package
         run: |
           $CONDA/bin/anaconda login --username $ANACONDA_USERNAME --password $ANACONDA_PASSWORD
@@ -53,7 +52,7 @@ jobs:
         run: |
           C:\Miniconda\condabin\conda.bat config --add channels anaconda
           C:\Miniconda\condabin\conda.bat config --add channels conda-forge
-          C:\Miniconda\condabin\conda.bat build --python ${{ matrix.python }} conda/${{ matrix.package }}
+          C:\Miniconda\condabin\conda.bat build --python ${{ matrix.python }} conda\spleeter
       - name: Push package
         run: |
           anaconda login --username $ANACONDA_USERNAME --password $ANACONDA_PASSWORD

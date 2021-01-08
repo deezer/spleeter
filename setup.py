@@ -59,6 +59,7 @@ setup(
         'scipy==1.4.1',
         'setuptools>=41.0.0',
         'librosa==0.8.0',
+        'idna<3,>=2.5',
         '{}=={}'.format(tensorflow_dependency, tensorflow_version),
     ],
     extras_require={

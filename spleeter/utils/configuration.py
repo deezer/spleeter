@@ -3,10 +3,16 @@
 
 """ Module that provides configuration loading function. """
 
-import importlib.resources as loader
 import json
 from os.path import exists
 from typing import Dict
+
+try:
+    import importlib.resources as loader
+except ImportError:
+    # Try backported to PY<37 `importlib_resources`.
+    # pyright: reportMissingImports=false
+    import importlib_resources as loader
 
 from .. import SpleeterError, resources
 

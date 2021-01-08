@@ -5,10 +5,10 @@ title: "[Bug] name your bug"
 labels: bug, invalid
 ---
 
-<!-- PLEASE READ THIS CAREFULLY :
-- Any issue which does not respect following template or lack of information will be considered as invalid and automatically closed
-- First check FAQ from wiki to see if your problem is not already known
--->
+- [ ] I didn't find a similar issue already open.
+- [ ] I read the documentation (README AND Wiki)
+- [ ] I have installed FFMpeg
+- [ ] My problem is related to Spleeter only, not a derivative product (such as Webapplication, or GUI provided by others)
 
 ## Description
 

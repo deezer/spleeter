@@ -17,57 +17,57 @@ from abc import ABC, abstractmethod
 from os import environ, makedirs
 from os.path import exists, isabs, join, sep
 
-__email__ = 'spleeter@deezer.com'
-__author__ = 'Deezer Research'
-__license__ = 'MIT License'
+__email__ = "spleeter@deezer.com"
+__author__ = "Deezer Research"
+__license__ = "MIT License"
 
 
 class ModelProvider(ABC):
     """
-        A ModelProvider manages model files on disk and
-        file download is not available.
+    A ModelProvider manages model files on disk and
+    file download is not available.
     """
 
-    DEFAULT_MODEL_PATH: str = environ.get('MODEL_PATH', 'pretrained_models')
-    MODEL_PROBE_PATH: str = '.probe'
+    DEFAULT_MODEL_PATH: str = environ.get("MODEL_PATH", "pretrained_models")
+    MODEL_PROBE_PATH: str = ".probe"
 
     @abstractmethod
     def download(_, name: str, path: str) -> None:
         """
-            Download model denoted by the given name to disk.
+        Download model denoted by the given name to disk.
 
-            Parameters:
-                name (str):
-                    Name of the model to download.
-                path (str):
-                    Path of the directory to save model into.
+        Parameters:
+            name (str):
+                Name of the model to download.
+            path (str):
+                Path of the directory to save model into.
         """
         pass
 
     @staticmethod
     def writeProbe(directory: str) -> None:
         """
-            Write a model probe file into the given directory.
+        Write a model probe file into the given directory.
 
-            Parameters:
-                directory (str):
-                    Directory to write probe into.
+        Parameters:
+            directory (str):
+                Directory to write probe into.
         """
         probe: str = join(directory, ModelProvider.MODEL_PROBE_PATH)
-        with open(probe, 'w') as stream:
-            stream.write('OK')
+        with open(probe, "w") as stream:
+            stream.write("OK")
 
     def get(self, model_directory: str) -> str:
         """
-            Ensures required model is available at given location.
+        Ensures required model is available at given location.
 
-            Parameters:
-                model_directory (str):
-                    Expected model_directory to be available.
+        Parameters:
+            model_directory (str):
+                Expected model_directory to be available.
 
-            Raises:
-                IOError:
-                    If model can not be retrieved.
+        Raises:
+            IOError:
+                If model can not be retrieved.
         """
         # Expend model directory if needed.
         if not isabs(model_directory):
@@ -77,20 +77,19 @@ class ModelProvider(ABC):
         if not exists(model_probe):
             if not exists(model_directory):
                 makedirs(model_directory)
-                self.download(
-                    model_directory.split(sep)[-1],
-                    model_directory)
+                self.download(model_directory.split(sep)[-1], model_directory)
                 self.writeProbe(model_directory)
         return model_directory
 
     @classmethod
-    def default(_: type) -> 'ModelProvider':
+    def default(_: type) -> "ModelProvider":
         """
-            Builds and returns a default model provider.
+        Builds and returns a default model provider.
 
-            Returns:
-                ModelProvider:
-                    A default model provider instance to use.
+        Returns:
+            ModelProvider:
+                A default model provider instance to use.
         """
         from .github import GithubModelProvider
+
         return GithubModelProvider.from_environ()

@@ -1,0 +1,52 @@
+name: test
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/cache@v2
+        env:
+          model-release: 1
+        id: spleeter-model-cache
+        with:
+          path: ${{ env.GITHUB_WORKSPACE }}/pretrained_models
+          key: models-${{ env.model-release }}
+          restore-keys: |
+            models-${{ env.model-release }}
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install Poetry
+        uses: dschep/install-poetry-action@v1.2
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.virtualenvs
+          key: poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            poetry-${{ hashFiles('**/poetry.lock') }}
+      - name: Set Poetry config
+        run: |
+          poetry config settings.virtualenvs.in-project false
+          poetry config settings.virtualenvs.path ~/.virtualenvs
+      - name: Install Dependencies
+        run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
+      - name: Code quality checks
+        run: |
+          poetry run black spleeter --check
+          poetry run isort spleeter --check
+      - name: Test with pytest
+        run: poetry run pytest tests/

@@ -29,6 +29,8 @@ requirements:
     - ffmpeg-python
     - norbert
     - librosa
+    - typer
+    - httpx
 
 test:
   imports:

@@ -20,6 +20,7 @@ requirements:
   host:
     - python {{ python }}
     - pip
+    - poetry
   run:
     - python {{ python }}
     - tensorflow ==2.3.0  # [linux]

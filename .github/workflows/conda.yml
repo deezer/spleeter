@@ -1,9 +1,6 @@
 name: conda
 on:
   - workflow_dispatch
-env:
-  ANACONDA_USERNAME: ${{ secrets.ANACONDA_USERNAME }}
-  ANACONDA_PASSWORD: ${{ secrets.ANACONDA_PASSWORD }}
 jobs:
   build-linux:
     strategy:
@@ -27,7 +24,7 @@ jobs:
           $CONDA/bin/conda build --python ${{ matrix.python }} conda/spleeter
       - name: Push package
         run: |
-          $CONDA/bin/anaconda login --username $ANACONDA_USERNAME --password $ANACONDA_PASSWORD
+          $CONDA/bin/anaconda login --username ${{ secrets.ANACONDA_USERNAME }} --password ${{ secrets.ANACONDA_PASSWORD }}
           for package in /usr/share/miniconda/conda-bld/linux-64/spleeter*.bz2; do
             $CONDA/bin/anaconda upload $package
           done
@@ -54,4 +51,8 @@ jobs:
           C:\Miniconda\condabin\conda.bat build --python ${{ matrix.python }} conda\spleeter
       - name: Push package
         run: |
-          anaconda login --username $ANACONDA_USERNAME --password $ANACONDA_PASSWORD
+          anaconda login --username ${{ secrets.ANACONDA_USERNAME }} --password ${{ secrets.ANACONDA_PASSWORD }}
+          $packages = Get-ChildItem "C:\Miniconda\conda-bld\win-64\"
+          foreach ($package in $packages){
+            anaconda upload $package.FullName
+          }

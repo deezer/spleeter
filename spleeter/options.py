@@ -6,7 +6,7 @@
 from os.path import join
 from tempfile import gettempdir
 
-from typer import Argument, Option, echo, Exit
+from typer import Argument, Exit, Option, echo
 from typer.models import ArgumentInfo, OptionInfo
 
 from .audio import Codec, STFTBackend

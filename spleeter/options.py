@@ -131,7 +131,15 @@ VerboseOption: OptionInfo = Option(False, "--verbose", help="Enable verbose logs
 def version_callback(value: bool):
     if value:
         from importlib.metadata import version
+
         echo(f"Spleeter Version: {version('spleeter')}")
         raise Exit()
 
-VersionOption: OptionInfo = Option(None, "--version", callback=version_callback, is_eager=True, help="Return Spleeter version")
+
+VersionOption: OptionInfo = Option(
+    None,
+    "--version",
+    callback=version_callback,
+    is_eager=True,
+    help="Return Spleeter version",
+)

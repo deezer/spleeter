@@ -36,8 +36,9 @@ spleeter: Typer = Typer(add_completion=False)
 @spleeter.callback()
 def default(
     version: bool = VersionOption,
-) ->  None:
+) -> None:
     pass
+
 
 @spleeter.command()
 def train(

@@ -1,8 +1,6 @@
 name: pypi
 on:
-  push:
-    branches:
-      - master
+  - workflow_dispatch
 env:
   PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 jobs:

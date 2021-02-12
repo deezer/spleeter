@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         platform: [cpu, gpu]
-        distribution: [3.7, 3.8, conda]
+        distribution: [3.6, 3.7, 3.8, conda]
         model: [modelless, 2stems, 4stems, 5stems]
       fail-fast: true
     steps:

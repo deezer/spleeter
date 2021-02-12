@@ -1,6 +1,11 @@
 name: docker
 on:
-  - workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Spleeter version to build image for"
+        required: true
+        default: "2.1.2"
 jobs:
   build-test-push:
     runs-on: ubuntu-latest
@@ -19,7 +24,6 @@ jobs:
           echo "::set-env name=base::python:${{ matrix.distribution }}"
           echo "::set-env name=tag::${{ matrix.distribution }}"
           echo "::set-env name=file::spleeter"
-          echo "::set-env name=package::spleeter"
       - if: ${{ matrix.distribution == 'conda' }}
         name: Build Conda base image
         run: |
@@ -31,17 +35,16 @@ jobs:
           docker build \
             --build-arg BASE=python:${{ matrix.distribution }} \
             -t cuda:${{ matrix.distribution }} \
-            -f docker/cuda-10-0.dockerfile .
+            -f docker/cuda-10-1.dockerfile .
           echo "::set-env name=base::cuda:${{ matrix.distribution }}"
           echo "::set-env name=tag::${{ matrix.distribution }}-gpu"
-          echo "::set-env name=package::spleeter-gpu"
       # ----------------------------------------------------------------------
       # Note: image building.
       - name: Build deezer/spleeter:${{ env.tag }} image
         run: |
           docker build \
             --build-arg BASE=${{ env.base }} \
-            --build-arg SPLEETER_PACKAGE=${{ env.package }} \
+            --build-arg SPLEETER_VERSION=${{ github.event.inputs.version }} \
             -t deezer/spleeter:${{ env.tag }} \
             -f docker/${{ env.file }}.dockerfile .
           echo "::set-env name=modelargs::"
@@ -54,7 +57,7 @@ jobs:
             -t deezer/spleeter:${{ env.tag }}-${{ matrix.model }} \
             -f docker/spleeter-model.dockerfile .
           echo "::set-env name=tag::${{ env.tag }}-${{ matrix.model }}"
-          echo "::set-env name=modelarg::-p spleeter:${{ matrix.model }}"          
+          echo "::set-env name=modelarg::-p spleeter:${{ matrix.model }}"
       # ----------------------------------------------------------------------
       # Note: image testing.
       - name: Test deezer/spleeter:${{ env.tag }} image

@@ -21,14 +21,14 @@ jobs:
       # Note: base image building and env setup.
       - name: Setup Python distribution
         run: |
-          echo "::set-env name=base::python:${{ matrix.distribution }}"
-          echo "::set-env name=tag::${{ matrix.distribution }}"
-          echo "::set-env name=file::spleeter"
+          echo "base=python:${{ matrix.distribution }}" >> $GITHUB_ENV
+          echo "tag=${{ matrix.distribution }}" >> $GITHUB_ENV
+          echo "file=spleeter" >> $GITHUB_ENV
       - if: ${{ matrix.distribution == 'conda' }}
         name: Build Conda base image
         run: |
           docker build -t python:conda -f docker/conda.dockerfile .
-          echo "::set-env name=file::spleeter-conda"
+          echo "file=spleeter-conda" >> $GITHUB_ENV
       - if: ${{ matrix.platform == 'gpu' }}
         name: Build CUDA base image
         run: |
@@ -36,8 +36,8 @@ jobs:
             --build-arg BASE=python:${{ matrix.distribution }} \
             -t cuda:${{ matrix.distribution }} \
             -f docker/cuda-10-1.dockerfile .
-          echo "::set-env name=base::cuda:${{ matrix.distribution }}"
-          echo "::set-env name=tag::${{ matrix.distribution }}-gpu"
+          echo "base=${{ matrix.distribution }}" >> $GITHUB_ENV
+          echo "tag=${{ matrix.distribution }}-gpu" >> $GITHUB_ENV
       # ----------------------------------------------------------------------
       # Note: image building.
       - name: Build deezer/spleeter:${{ env.tag }} image
@@ -47,7 +47,7 @@ jobs:
             --build-arg SPLEETER_VERSION=${{ github.event.inputs.version }} \
             -t deezer/spleeter:${{ env.tag }} \
             -f docker/${{ env.file }}.dockerfile .
-          echo "::set-env name=modelargs::"
+          echo "modelargs=" >> $GITHUB_ENV
       - if: ${{ matrix.model != 'modelless' }}
         name: Build deezer/spleeter:${{ env.tag }}-${{ matrix.model }} image
         run: |
@@ -56,8 +56,8 @@ jobs:
             --build-arg MODEL=${{ matrix.model }} \
             -t deezer/spleeter:${{ env.tag }}-${{ matrix.model }} \
             -f docker/spleeter-model.dockerfile .
-          echo "::set-env name=tag::${{ env.tag }}-${{ matrix.model }}"
-          echo "::set-env name=modelarg::-p spleeter:${{ matrix.model }}"
+          echo "tag=${{ env.tag }}-${{ matrix.model }}" >> $GITHUB_ENV
+          echo "modelarg=-p spleeter:${{ matrix.model }}" >> $GITHUB_ENV
       # ----------------------------------------------------------------------
       # Note: image testing.
       - name: Test deezer/spleeter:${{ env.tag }} image

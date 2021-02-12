@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@v2
       - if: ${{ matrix.platform == 'cpu' }}
         run: |
-          echo "base=deezer/spleeter:${{ matrix.distribution }}" >> $GITHUB_ENV
+          echo "base=python:${{ matrix.distribution }}" >> $GITHUB_ENV
           echo "image=spleeter" >> $GITHUB_ENV
       - if: ${{ matrix.platform == 'gpu' }}
         run: |

@@ -111,7 +111,7 @@ jobs:
             --build-arg BASE=deezer/${{ env.image }}:${{ matrix.distribution }} \
             --build-arg MODEL=${{ matrix.model }} \
             -t deezer/${{ env.image }}:${{ matrix.distribution }}-${{ matrix.model }} \
-            -f docker/spleeter-model.dockerfile .dockerfile
+            -f docker/spleeter-model.dockerfile .
       - name: Test deezer/${{ env.image }}:${{ matrix.distribution }}-${{ matrix.model }} image
         run: |
           docker run \

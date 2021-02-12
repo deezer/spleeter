@@ -25,6 +25,7 @@ requirements:
     - python {{ python }}
     - tensorflow ==2.3.0  # [linux]
     - tensorflow ==2.3.0  # [win]
+    - numpy <1.20.0
     - pandas
     - ffmpeg-python
     - norbert

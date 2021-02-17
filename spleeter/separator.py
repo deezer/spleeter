@@ -307,7 +307,7 @@ class Separator(object):
         return prediction
 
     def separate(
-        self, waveform: np.ndarray, audio_descriptor: Optional[str] = None
+        self, waveform: np.ndarray, audio_descriptor: Optional[str] = ""
     ) -> None:
         """
         Performs separation on a waveform.
@@ -318,6 +318,7 @@ class Separator(object):
             audio_descriptor (str):
                 (Optional) string describing the waveform (e.g. filename).
         """
+        
         backend: str = self._params["stft_backend"]
         if backend == STFTBackend.TENSORFLOW:
             return self._separate_tensorflow(waveform, audio_descriptor)

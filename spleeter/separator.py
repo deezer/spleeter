@@ -318,6 +318,8 @@ class Separator(object):
             audio_descriptor (str):
                 (Optional) string describing the waveform (e.g. filename).
         """
+        if audio_descriptor is None:
+            audio_descriptor = ""
         backend: str = self._params["stft_backend"]
         if backend == STFTBackend.TENSORFLOW:
             return self._separate_tensorflow(waveform, audio_descriptor)

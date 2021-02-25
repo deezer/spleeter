@@ -307,7 +307,7 @@ class Separator(object):
         return prediction
 
     def separate(
-        self, waveform: np.ndarray, audio_descriptor: Optional[str] = None
+        self, waveform: np.ndarray, audio_descriptor: Optional[str] = ""
     ) -> None:
         """
         Performs separation on a waveform.

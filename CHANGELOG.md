@@ -1,5 +1,12 @@
 # Changelog History
 
+## 2.2.0
+
+Minor changes mainly fixing some issues:
+* mono training was not working due to hardcoded filters in the dataset
+* default argument of `separate` was of wrong type
+* added a way to request spleeter version with the `--version` argument in the CLI
+
 ## 2.1.0
 
 This version introduce design related changes, especially transition to Typer for CLI managment and Poetry as

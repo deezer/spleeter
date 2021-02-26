@@ -241,7 +241,8 @@ class InstrumentDatasetBuilder(object):
     def filter_shape(self, sample):
         """ Filter badly shaped sample. """
         return check_tensor_shape(
-            sample[self._spectrogram_key], (self._parent._T, self._parent._F, 2)
+            sample[self._spectrogram_key],
+            (self._parent._T, self._parent._F, self._parent._n_channels),
         )
 
     def reshape_spectrogram(self, sample):
@@ -250,7 +251,8 @@ class InstrumentDatasetBuilder(object):
             sample,
             **{
                 self._spectrogram_key: set_tensor_shape(
-                    sample[self._spectrogram_key], (self._parent._T, self._parent._F, 2)
+                    sample[self._spectrogram_key],
+                    (self._parent._T, self._parent._F, self._parent._n_channels),
                 )
             },
         )
@@ -299,6 +301,7 @@ class DatasetBuilder(object):
         self._frame_length = audio_params["frame_length"]
         self._frame_step = audio_params["frame_step"]
         self._mix_name = audio_params["mix_name"]
+        self._n_channels = audio_params["n_channels"]
         self._instruments = [self._mix_name] + audio_params["instrument_list"]
         self._instrument_builders = None
         self._chunk_duration = chunk_duration
@@ -306,6 +309,21 @@ class DatasetBuilder(object):
         self._audio_params = audio_params
         self._audio_path = audio_path
         self._random_seed = random_seed
+
+        self.check_parameters_compatibility()
+
+    def check_parameters_compatibility(self):
+        if self._frame_length / 2 + 1 < self._F:
+            raise ValueError(
+                "F is too large and must be set to at most frame_length/2+1. Decrease F or increase frame_length to fix."
+            )
+
+        if (
+            self._chunk_duration * self._sample_rate - self._frame_length
+        ) / self._frame_step < self._T:
+            raise ValueError(
+                "T is too large considering STFT parameters and chunk duratoin. Make sure spectrogram time dimension of chunks is larger than T (for instance reducing T or frame_step or increasing chunk duration)."
+            )
 
     def expand_path(self, sample):
         """ Expands audio paths for the given sample. """
@@ -368,7 +386,7 @@ class DatasetBuilder(object):
                 },
                 lambda x: tf.image.random_crop(
                     x,
-                    (self._T, len(self._instruments) * self._F, 2),
+                    (self._T, len(self._instruments) * self._F, self._n_channels),
                     seed=self._random_seed,
                 ),
             ),

@@ -1,5 +1,5 @@
 {% set name = "spleeter" %}
-{% set version = "2.1.2" %}
+{% set version = "2.2.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-    sha256: 3e2df1e4369c713f28e51298df0eaba7c34db356bc7d17728bcb356eca15e2f7
+    sha256: e86b434cee285af7d66787e6da8c6908fcc46d69474ac590b6846ec0e1ff09ee
 
 build:
   number: 0

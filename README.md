@@ -1,6 +1,6 @@
 <img src="https://github.com/deezer/spleeter/raw/master/images/spleeter_logo.png" height="80" />
 
-[![Github actions](https://github.com/deezer/spleeter/workflows/pytest/badge.svg)](https://github.com/deezer/spleeter/actions) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spleeter) [![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) [![Conda](https://img.shields.io/conda/vn/conda-forge/spleeter)](https://anaconda.org/conda-forge/spleeter) [![Docker Pulls](https://img.shields.io/docker/pulls/researchdeezer/spleeter)](https://hub.docker.com/r/researchdeezer/spleeter) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/spleeter/community) [![status](https://joss.theoj.org/papers/259e5efe669945a343bad6eccb89018b/status.svg)](https://joss.theoj.org/papers/259e5efe669945a343bad6eccb89018b)
+[![Github actions](https://github.com/deezer/spleeter/workflows/pytest/badge.svg)](https://github.com/deezer/spleeter/actions) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spleeter) [![PyPI version](https://badge.fury.io/py/spleeter.svg)](https://badge.fury.io/py/spleeter) [![Conda](https://img.shields.io/conda/vn/deezer-research/spleeter)](https://anaconda.org/deezer-research/spleeter) [![Docker Pulls](https://img.shields.io/docker/pulls/deezer/spleeter)](https://hub.docker.com/deezer/spleeter) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/spleeter/community) [![status](https://joss.theoj.org/papers/259e5efe669945a343bad6eccb89018b/status.svg)](https://joss.theoj.org/papers/259e5efe669945a343bad6eccb89018b)
 
 > :warning: [Spleeter 2.1.0](https://pypi.org/project/spleeter/) release introduces some breaking changes, including new CLI option naming for input, and the drop
 > of dedicated GPU package. Please read [CHANGELOG](CHANGELOG.md) for more details.
@@ -45,16 +45,18 @@ Ready to dig into it ? In a few lines you can install **Spleeter** using [Conda]
 
 ```bash
 # install using conda
-conda install -c conda-forge spleeter
+conda config --add channels conda-forge # only needed if you don't already have this channel set
+conda install -c deezer-research spleeter 
 # download an example audio file (if you don't have wget, use another tool for downloading)
 wget https://github.com/deezer/spleeter/raw/master/audio_example.mp3
 # separate the example audio into two components
 spleeter separate -p spleeter:2stems -o output audio_example.mp3
 ```
+> :warning: for Mac Users, this will work but will install an old version of spleeter. To get the latest version, you need to install **Spleeter** using `pip`. Check the [wiki](https://github.com/deezer/spleeter/wiki/1.-Installation) for details.
 
 You should get two separated audio files (`vocals.wav` and `accompaniment.wav`) in the `output/audio_example` folder.
 
-For a detailed documentation, please check the [repository wiki](https://github.com/deezer/spleeter/wiki)
+For a detailed documentation, please check the [repository wiki](https://github.com/deezer/spleeter/wiki/1.-Installation)
 
 ## Development and Testing
 

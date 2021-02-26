@@ -11,7 +11,6 @@
         command function scope to avoid heavy import on CLI evaluation,
         leading to large bootstraping time.
 """
-
 import json
 from functools import partial
 from glob import glob
@@ -32,6 +31,13 @@ from .utils.logging import configure_logger, logger
 
 spleeter: Typer = Typer(add_completion=False)
 """ CLI application. """
+
+
+@spleeter.callback()
+def default(
+    version: bool = VersionOption,
+) -> None:
+    pass
 
 
 @spleeter.command()

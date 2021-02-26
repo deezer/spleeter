@@ -6,7 +6,7 @@
 from os.path import join
 from tempfile import gettempdir
 
-from typer import Argument, Option
+from typer import Argument, Exit, Option, echo
 from typer.models import ArgumentInfo, OptionInfo
 
 from .audio import Codec, STFTBackend
@@ -126,3 +126,20 @@ TrainingDataDirectoryOption: OptionInfo = Option(
 )
 
 VerboseOption: OptionInfo = Option(False, "--verbose", help="Enable verbose logs")
+
+
+def version_callback(value: bool):
+    if value:
+        from importlib.metadata import version
+
+        echo(f"Spleeter Version: {version('spleeter')}")
+        raise Exit()
+
+
+VersionOption: OptionInfo = Option(
+    None,
+    "--version",
+    callback=version_callback,
+    is_eager=True,
+    help="Return Spleeter version",
+)

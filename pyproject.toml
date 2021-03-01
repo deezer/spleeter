@@ -56,6 +56,7 @@ tensorflow = "2.3.0"
 pandas = "1.1.2"
 numpy = "<1.19.0,>=1.16.0"
 importlib-resources = {version = "^4.1.1", python = "<3.7"}
+importlib-metadata = {version = "^3.0.0", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.1"

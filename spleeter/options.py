@@ -130,7 +130,10 @@ VerboseOption: OptionInfo = Option(False, "--verbose", help="Enable verbose logs
 
 def version_callback(value: bool):
     if value:
-        from importlib.metadata import version
+        try:
+            from importlib.metadata import version
+        except ImportError:
+            from importlib_metadata import version
 
         echo(f"Spleeter Version: {version('spleeter')}")
         raise Exit()

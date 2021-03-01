@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spleeter"
-version = "2.2.0"
+version = "2.2.1"
 description = "The Deezer source separation library with pretrained models based on tensorflow."
 authors = ["Deezer Research <spleeter@deezer.com>"]
 license = "MIT License"

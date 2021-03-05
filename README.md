@@ -19,8 +19,7 @@ already trained state of the art model for performing various flavour of separat
 2 stems and 4 stems models have [high performances](https://github.com/deezer/spleeter/wiki/Separation-Performances) on the [musdb](https://sigsep.github.io/datasets/musdb.html) dataset. **Spleeter** is also very fast as it can perform separation of audio files to 4 stems 100x faster than real-time when run on a GPU.
 
 We designed **Spleeter** so you can use it straight from [command line](https://github.com/deezer/spleeter/wiki/2.-Getting-started#usage)
-as well as directly in your own development pipeline as a [Python library](https://github.com/deezer/spleeter/wiki/4.-API-Reference#separator). It can be installed with [Conda](https://github.com/deezer/spleeter/wiki/1.-Installation#using-conda),
-with [pip](https://github.com/deezer/spleeter/wiki/1.-Installation#using-pip) or be used with
+as well as directly in your own development pipeline as a [Python library](https://github.com/deezer/spleeter/wiki/4.-API-Reference#separator). It can be installed with [pip](https://github.com/deezer/spleeter/wiki/1.-Installation#using-pip) or be used with
 [Docker](https://github.com/deezer/spleeter/wiki/2.-Getting-started#using-docker-image).
 
 ### Projects and Softwares using **Spleeter**
@@ -41,18 +40,21 @@ That being said, many cool projects have been built on top of ours. Notably the 
 
 Want to try it out but don't want to install anything ? We have set up a [Google Colab](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb).
 
-Ready to dig into it ? In a few lines you can install **Spleeter** using [Conda](https://github.com/deezer/spleeter/wiki/1.-Installation#using-conda) and separate the vocal and accompaniment parts from an example audio file:
+Ready to dig into it ? In a few lines you can install **Spleeter**  and separate the vocal and accompaniment parts from an example audio file.
+You need first to install `ffmpeg` and `libsndfile`. It can be done on most platform using [Conda](https://github.com/deezer/spleeter/wiki/1.-Installation#using-conda):
 
 ```bash
-# install using conda
-conda config --add channels conda-forge # only needed if you don't already have this channel set
-conda install -c deezer-research spleeter 
+# install dependencies using conda
+conda install -c conda-forge ffmpeg libsndfile
+# install spleeter with pip
+pip install spleeter
 # download an example audio file (if you don't have wget, use another tool for downloading)
 wget https://github.com/deezer/spleeter/raw/master/audio_example.mp3
 # separate the example audio into two components
 spleeter separate -p spleeter:2stems -o output audio_example.mp3
 ```
-> :warning: for Mac Users, this will work but will install an old version of spleeter. To get the latest version, you need to install **Spleeter** using `pip`. Check the [wiki](https://github.com/deezer/spleeter/wiki/1.-Installation) for details.
+
+> :warning: Note that we no longer recommend using `conda` for installing spleeter.
 
 You should get two separated audio files (`vocals.wav` and `accompaniment.wav`) in the `output/audio_example` folder.
 

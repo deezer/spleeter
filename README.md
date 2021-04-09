@@ -30,6 +30,9 @@ That being said, many cool projects have been built on top of ours. Notably the 
 
 **Spleeter** pre-trained models have also been used by professionnal audio softwares. Here's a non-exhaustive list:
 
+**New**
+* [Gradio App](https://gradio.app/g/AK391/spleeter) use spleeter in the web with easy to use gradio interface
+
 * [iZotope](https://www.izotope.com/en/shop/rx-8-standard.html) in its *Music Rebalance* feature within **RX 8**
 * [SpectralLayers](https://new.steinberg.net/spectralayers/) in its *Unmix* feature in **SpectralLayers 7**
 * [Acon Digital](https://acondigital.com/products/acoustica-audio-editor/) within **Acoustica 7**

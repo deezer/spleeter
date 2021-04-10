@@ -9,13 +9,16 @@ def spleeter(aud, instrument):
   except FileNotFoundError:
     pass
   separator.separate_to_file(aud.name, "output/", filename_format="audio_example/{instrument}.wav")
-  return f"./output/audio_example/{instrument}.wav"
+  return f"./output/audio_example/{instrument}.wav", f"./output/audio_example/{instrument}.wav"
 
 inputs = [
           gr.inputs.Audio(label="Input Audio", type="file"),
           gr.inputs.Radio(label="Instrument", choices=["vocals", "accompaniment"], type="value")
 ]
-outputs =  gr.outputs.Audio(label="Output Audio", type="file")
+outputs =  [
+  gr.outputs.Audio(label="Output Audio", type="file"),
+  gr.outputs.File(label="Output File")
+]
 
 title = "Spleeter"
 description = "demo for Spleeter by Deezer. To use it, simply upload your audio, or click one of the examples to load them. Read more at the links below."

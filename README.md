@@ -51,7 +51,7 @@ pip install spleeter
 # download an example audio file (if you don't have wget, use another tool for downloading)
 wget https://github.com/deezer/spleeter/raw/master/audio_example.mp3
 # separate the example audio into two components
-spleeter separate -p spleeter:2stems -o output audio_example.mp3
+spleeter separate -p spleeter:2stems -o output -i audio_example.mp3
 ```
 
 > :warning: Note that we no longer recommend using `conda` for installing spleeter.

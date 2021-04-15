@@ -1,6 +1,8 @@
 # Pull request title
 
 - [ ] I read [contributing guideline](.github/CONTRIBUTING.md)
+- [ ] I didn't find a similar pull request already open.
+- [ ] My PR is related to Spleeter only, not a derivative product (such as Webapplication, or GUI provided by others)
 
 ## Description
 

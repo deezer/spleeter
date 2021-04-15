@@ -29,7 +29,7 @@ from .utils.logging import configure_logger, logger
 
 # pylint: enable=import-error
 
-spleeter: Typer = Typer(add_completion=False)
+spleeter: Typer = Typer(add_completion=False, no_args_is_help=True, short_help="-h")
 """ CLI application. """
 
 
@@ -40,7 +40,7 @@ def default(
     pass
 
 
-@spleeter.command()
+@spleeter.command(no_args_is_help=True)
 def train(
     adapter: str = AudioAdapterOption,
     data: Path = TrainingDataDirectoryOption,
@@ -91,7 +91,7 @@ def train(
     logger.info("Model training done")
 
 
-@spleeter.command()
+@spleeter.command(no_args_is_help=True)
 def separate(
     deprecated_files: Optional[str] = AudioInputOption,
     files: List[Path] = AudioInputArgument,
@@ -189,7 +189,7 @@ def _compile_metrics(metrics_output_directory) -> Dict:
     return metrics
 
 
-@spleeter.command()
+@spleeter.command(no_args_is_help=True)
 def evaluate(
     adapter: str = AudioAdapterOption,
     output_path: Path = AudioOutputOption,

@@ -36,6 +36,8 @@ That being said, many cool projects have been built on top of ours. Notably the 
 * [VirtualDJ](https://www.virtualdj.com/stems/) in their stem isolation feature
 * [Algoriddim](https://www.algoriddim.com/apps) in their **NeuralMix** and **djayPRO** app suite
 
+🆕 **Spleeter** is a baseline in the ongoing [Music Demixing Challenge](https://www.aicrowd.com/challenges/music-demixing-challenge-ismir-2021)!
+
 ## Quick start
 
 Want to try it out but don't want to install anything ? We have set up a [Google Colab](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb).

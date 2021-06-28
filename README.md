@@ -109,6 +109,11 @@ If you use **Spleeter** in your work, please cite:
 
 The code of **Spleeter** is [MIT-licensed](LICENSE).
 
+This repository includes a demo audio file `audio_example.mp3` which is an excerpt
+from Slow Motion Dream by Steven M Bryant (c) copyright 2011 Licensed under a Creative
+Commons Attribution (3.0) [license](http://dig.ccmixter.org/files/stevieb357/34740)
+Ft: CSoul,Alex Beroza & Robert Siekawitch
+
 ## Disclaimer
 
 If you plan to use **Spleeter** on copyrighted material, make sure you get proper authorization from right owners beforehand.
@@ -124,10 +129,3 @@ If you plan to use **Spleeter** on copyrighted material, make sure you get prope
 ## Contributing
 
 If you would like to participate in the development of **Spleeter** you are more than welcome to do so. Don't hesitate to throw us a pull request and we'll do our best to examine it quickly. Please check out our [guidelines](.github/CONTRIBUTING.md) first.
-
-## Note
-
-This repository include a demo audio file `audio_example.mp3` which is an excerpt
-from Slow Motion Dream by Steven M Bryant (c) copyright 2011 Licensed under a Creative
-Commons Attribution (3.0) [license](http://dig.ccmixter.org/files/stevieb357/34740)
-Ft: CSoul,Alex Beroza & Robert Siekawitch

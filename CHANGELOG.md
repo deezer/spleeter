@@ -1,5 +1,10 @@
 # Changelog History
 
+## 2.3.0
+
+Updating dependencies:
+Loosing compatibility with Python 3.6, but should work fine now under 3.9
+
 ## 2.2.0
 
 Minor changes mainly fixing some issues:

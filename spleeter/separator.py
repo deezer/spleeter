@@ -130,10 +130,6 @@ class Separator(object):
         self._params["stft_backend"] = STFTBackend.resolve(stft_backend)
         self._data_generator = DataGenerator()
 
-    def __del__(self) -> None:
-        if self._session:
-            self._session.close()
-
     def _get_prediction_generator(self) -> Generator:
         """
         Lazy loading access method for internal prediction generator

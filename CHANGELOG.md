@@ -2,8 +2,8 @@
 
 ## 2.3.0
 
-Updating dependencies:
-Loosing compatibility with Python 3.6, but should work fine now under 3.9
+Updating dependencies to enable TensorFlow 2.5 support (and Python 3.9 overall)
+Removing the destructor from the `Separator` class
 
 ## 2.2.0
 

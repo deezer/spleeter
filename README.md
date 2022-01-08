@@ -43,20 +43,18 @@ That being said, many cool projects have been built on top of ours. Notably the 
 Want to try it out but don't want to install anything ? We have set up a [Google Colab](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb).
 
 Ready to dig into it ? In a few lines you can install **Spleeter**  and separate the vocal and accompaniment parts from an example audio file.
-You need first to install `ffmpeg` and `libsndfile`. It can be done on most platform using [Conda](https://github.com/deezer/spleeter/wiki/1.-Installation#using-conda):
+You need first to install `ffmpeg`.
 
 ```bash
-# install dependencies using conda
-conda install -c conda-forge ffmpeg libsndfile
 # install spleeter with pip
 pip install spleeter
-# download an example audio file (if you don't have wget, use another tool for downloading)
+# download an example audio file (if you want you can your own audio)
 wget https://github.com/deezer/spleeter/raw/master/audio_example.mp3
 # separate the example audio into two components
 spleeter separate -p spleeter:2stems -o output audio_example.mp3
 ```
 
-> :warning: Note that we no longer recommend using `conda` for installing spleeter.
+> :warning: Note that we are not support Python>=3.9.
 
 > ⚠️ There are known issues with Apple M1 chips, mostly due to TensorFlow compatibility. Until these are fixed, you can use [this workaround](https://github.com/deezer/spleeter/issues/607#issuecomment-828352392)
 

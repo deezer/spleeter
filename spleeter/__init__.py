@@ -19,6 +19,6 @@ __license__ = "MIT License"
 
 
 class SpleeterError(Exception):
-    """ Custom exception for Spleeter related error. """
+    """Custom exception for Spleeter related error."""
 
     pass

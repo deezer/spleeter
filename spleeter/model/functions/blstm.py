@@ -94,5 +94,5 @@ def apply_blstm(
 def blstm(
     input_tensor: tf.Tensor, output_name: str = "output", params: Optional[Dict] = None
 ) -> tf.Tensor:
-    """ Model function applier. """
+    """Model function applier."""
     return apply(apply_blstm, input_tensor, output_name, params)

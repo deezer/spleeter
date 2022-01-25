@@ -21,7 +21,7 @@ environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 
 class TyperLoggerHandler(logging.Handler):
-    """ A custom logger handler that use Typer echo. """
+    """A custom logger handler that use Typer echo."""
 
     def emit(self, record: logging.LogRecord) -> None:
         echo(self.format(record))

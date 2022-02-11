@@ -251,7 +251,7 @@ def evaluate(
 
 
 def entrypoint():
-    """ Application entrypoint. """
+    """Application entrypoint."""
     try:
         spleeter()
     except SpleeterError as e:

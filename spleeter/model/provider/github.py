@@ -51,7 +51,7 @@ def compute_file_checksum(path):
 
 
 class GithubModelProvider(ModelProvider):
-    """ A ModelProvider implementation backed on Github for remote storage. """
+    """A ModelProvider implementation backed on Github for remote storage."""
 
     DEFAULT_HOST: str = "https://github.com"
     DEFAULT_REPOSITORY: str = "deezer/spleeter"

@@ -28,7 +28,7 @@ __license__ = "MIT License"
 
 
 class AudioAdapter(ABC):
-    """ An abstract class for manipulating audio signal. """
+    """An abstract class for manipulating audio signal."""
 
     _DEFAULT: "AudioAdapter" = None
     """ Default audio adapter singleton instance. """

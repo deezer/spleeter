@@ -18,7 +18,7 @@ __license__ = "MIT License"
 
 
 class Codec(str, Enum):
-    """ Enumeration of supported audio codec. """
+    """Enumeration of supported audio codec."""
 
     WAV: str = "wav"
     MP3: str = "mp3"
@@ -29,7 +29,7 @@ class Codec(str, Enum):
 
 
 class STFTBackend(str, Enum):
-    """ Enumeration of supported STFT backend. """
+    """Enumeration of supported STFT backend."""
 
     AUTO: str = "auto"
     TENSORFLOW: str = "tensorflow"

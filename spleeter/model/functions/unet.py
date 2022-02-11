@@ -193,7 +193,7 @@ def apply_unet(
 def unet(
     input_tensor: tf.Tensor, instruments: Iterable[str], params: Optional[Dict] = None
 ) -> Dict:
-    """ Model function applier. """
+    """Model function applier."""
     return apply(apply_unet, input_tensor, instruments, params)
 
 

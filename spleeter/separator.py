@@ -53,15 +53,15 @@ class DataGenerator(object):
     """
 
     def __init__(self) -> None:
-        """ Default constructor. """
+        """Default constructor."""
         self._current_data = None
 
     def update_data(self, data) -> None:
-        """ Replace internal data. """
+        """Replace internal data."""
         self._current_data = data
 
     def __call__(self) -> Generator:
-        """ Generation process. """
+        """Generation process."""
         buffer = self._current_data
         while buffer:
             yield buffer
@@ -94,7 +94,7 @@ def create_estimator(params, MWF):
 
 
 class Separator(object):
-    """ A wrapper class for performing separation. """
+    """A wrapper class for performing separation."""
 
     def __init__(
         self,

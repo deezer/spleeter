@@ -129,7 +129,7 @@ def get_validation_dataset(
 
 
 class InstrumentDatasetBuilder(object):
-    """ Instrument based filter and mapper provider. """
+    """Instrument based filter and mapper provider."""
 
     def __init__(self, parent, instrument) -> None:
         """
@@ -148,7 +148,7 @@ class InstrumentDatasetBuilder(object):
         self._max_spectrogram_key = f"max_{instrument}_spectrogram"
 
     def load_waveform(self, sample):
-        """ Load waveform for given sample. """
+        """Load waveform for given sample."""
         return dict(
             sample,
             **self._parent._audio_adapter.load_tf_waveform(
@@ -161,7 +161,7 @@ class InstrumentDatasetBuilder(object):
         )
 
     def compute_spectrogram(self, sample):
-        """ Compute spectrogram of the given sample. """
+        """Compute spectrogram of the given sample."""
         return dict(
             sample,
             **{
@@ -187,7 +187,7 @@ class InstrumentDatasetBuilder(object):
         )
 
     def convert_to_uint(self, sample):
-        """ Convert given sample from float to unit. """
+        """Convert given sample from float to unit."""
         return dict(
             sample,
             **spectrogram_to_db_uint(
@@ -199,11 +199,11 @@ class InstrumentDatasetBuilder(object):
         )
 
     def filter_infinity(self, sample):
-        """ Filter infinity sample. """
+        """Filter infinity sample."""
         return tf.logical_not(tf.math.is_inf(sample[self._min_spectrogram_key]))
 
     def convert_to_float32(self, sample):
-        """ Convert given sample from unit to float. """
+        """Convert given sample from unit to float."""
         return dict(
             sample,
             **{
@@ -219,7 +219,7 @@ class InstrumentDatasetBuilder(object):
         """ """
 
         def start(sample):
-            """ mid_segment_start """
+            """mid_segment_start"""
             return tf.cast(
                 tf.maximum(
                     tf.shape(sample[self._spectrogram_key])[0] / 2
@@ -239,14 +239,14 @@ class InstrumentDatasetBuilder(object):
         )
 
     def filter_shape(self, sample):
-        """ Filter badly shaped sample. """
+        """Filter badly shaped sample."""
         return check_tensor_shape(
             sample[self._spectrogram_key],
             (self._parent._T, self._parent._F, self._parent._n_channels),
         )
 
     def reshape_spectrogram(self, sample):
-        """ Reshape given sample. """
+        """Reshape given sample."""
         return dict(
             sample,
             **{
@@ -326,7 +326,7 @@ class DatasetBuilder(object):
             )
 
     def expand_path(self, sample):
-        """ Expands audio paths for the given sample. """
+        """Expands audio paths for the given sample."""
         return dict(
             sample,
             **{
@@ -338,15 +338,15 @@ class DatasetBuilder(object):
         )
 
     def filter_error(self, sample):
-        """ Filter errored sample. """
+        """Filter errored sample."""
         return tf.logical_not(sample["waveform_error"])
 
     def filter_waveform(self, sample):
-        """ Filter waveform from sample. """
+        """Filter waveform from sample."""
         return {k: v for k, v in sample.items() if not k == "waveform"}
 
     def harmonize_spectrogram(self, sample):
-        """ Ensure same size for vocals and mix spectrograms. """
+        """Ensure same size for vocals and mix spectrograms."""
 
         def _reduce(sample):
             return tf.reduce_min(
@@ -367,7 +367,7 @@ class DatasetBuilder(object):
         )
 
     def filter_short_segments(self, sample):
-        """ Filter out too short segment. """
+        """Filter out too short segment."""
         return tf.reduce_any(
             [
                 tf.shape(sample[f"{instrument}_spectrogram"])[0] >= self._T
@@ -376,7 +376,7 @@ class DatasetBuilder(object):
         )
 
     def random_time_crop(self, sample):
-        """ Random time crop of 11.88s. """
+        """Random time crop of 11.88s."""
         return dict(
             sample,
             **sync_apply(
@@ -393,7 +393,7 @@ class DatasetBuilder(object):
         )
 
     def random_time_stretch(self, sample):
-        """ Randomly time stretch the given sample. """
+        """Randomly time stretch the given sample."""
         return dict(
             sample,
             **sync_apply(
@@ -406,7 +406,7 @@ class DatasetBuilder(object):
         )
 
     def random_pitch_shift(self, sample):
-        """ Randomly pitch shift the given sample. """
+        """Randomly pitch shift the given sample."""
         return dict(
             sample,
             **sync_apply(
@@ -420,7 +420,7 @@ class DatasetBuilder(object):
         )
 
     def map_features(self, sample):
-        """ Select features and annotation of the given sample. """
+        """Select features and annotation of the given sample."""
         input_ = {
             f"{self._mix_name}_spectrogram": sample[f"{self._mix_name}_spectrogram"]
         }

@@ -58,7 +58,7 @@ spleeter separate -p spleeter:2stems -o output audio_example.mp3
 
 > :warning: Note that we no longer recommend using `conda` for installing spleeter.
 
-> ⚠️ There are known issues with Apple M1 chips, mostly due to TensorFlow compatibility. Until these are fixed, you can use [this workaround](https://github.com/deezer/spleeter/issues/607#issuecomment-828352392)
+> ⚠️ There are known issues with Apple M1 chips, mostly due to TensorFlow compatibility. Until these are fixed, you can use [this workaround](https://github.com/deezer/spleeter/issues/607#issuecomment-1021669444).
 
 You should get two separated audio files (`vocals.wav` and `accompaniment.wav`) in the `output/audio_example` folder.
 

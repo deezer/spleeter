@@ -50,6 +50,10 @@ jobs:
             --build-arg SPLEETER_VERSION=${{ github.event.inputs.version }} \
             -t deezer/${{ env.image }}:${{ matrix.distribution }} \
             -f docker/spleeter.dockerfile .
+      - name: Tag deezer/${{ env.image }}:${{ matrix.distribution }} as latest if needed
+      - if: ${{ matrix.distribution == '3.8' }}
+        run: |
+          docker tag deezer/${{ env.image }}:${{ matrix.distribution }} deezer/${{ env.image }}:latest
       - name: Test deezer/${{ env.image }}:${{ matrix.distribution }} image
         run: |
           docker run \

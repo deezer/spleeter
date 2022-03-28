@@ -48,7 +48,7 @@ You need first to install `ffmpeg` and `libsndfile`. It can be done on most plat
 ```bash
 # install dependencies using conda
 conda install -c conda-forge ffmpeg libsndfile
-# some extra deps for mac users
+# for mac users, install these additional dependencies for TensorFlow compatibility
 # conda install -c apple tensorflow-deps==2.5.0 llvmlite==0.36.0 numba pandas==1.3.3
 # install spleeter with pip
 pip install spleeter
@@ -59,8 +59,6 @@ spleeter separate -p spleeter:2stems -o output audio_example.mp3
 ```
 
 > :warning: Note that we no longer recommend using `conda` for installing spleeter.
-
-> ⚠️ There are known issues with Apple M1 chips, mostly due to TensorFlow compatibility. Until these are fixed, you can use [this workaround](https://github.com/deezer/spleeter/issues/607#issuecomment-1021669444).
 
 You should get two separated audio files (`vocals.wav` and `accompaniment.wav`) in the `output/audio_example` folder.
 

@@ -45,14 +45,21 @@ Want to try it out but don't want to install anything ? We have set up a [Google
 Ready to dig into it ? In a few lines you can install **Spleeter**  and separate the vocal and accompaniment parts from an example audio file.
 You need first to install `ffmpeg` and `libsndfile`. It can be done on most platform using [Conda](https://github.com/deezer/spleeter/wiki/1.-Installation#using-conda):
 
+
+**Install dependencies using conda**
 ```bash
-# install dependencies using conda
 conda install -c conda-forge ffmpeg libsndfile
-# install spleeter with pip
+```
+**Install spleeter with pip**
+```bash
 pip install spleeter
-# download an example audio file (if you don't have wget, use another tool for downloading)
+```
+**Download an example audio file (if you don't have wget, use another tool for downloading)**
+```bash
 wget https://github.com/deezer/spleeter/raw/master/audio_example.mp3
-# separate the example audio into two components
+```
+**Separate the example audio into two components**
+```bash
 spleeter separate -p spleeter:2stems -o output audio_example.mp3
 ```
 
@@ -69,14 +76,20 @@ For a detailed documentation, please check the [repository wiki](https://github.
 This project is managed using [Poetry](https://python-poetry.org/docs/basic-usage/), to run test suite you
 can execute the following set of commands:
 
+**Clone spleeter repository**
 ```bash
-# Clone spleeter repository
 git clone https://github.com/Deezer/spleeter && cd spleeter
-# Install poetry
+```
+**Install poetry**
+```bash
 pip install poetry
-# Install spleeter dependencies
+```
+**Install spleeter dependencies**
+```bash
 poetry install
-# Run unit test suite
+```
+**Run unit test suite**
+```bash
 poetry run pytest tests/
 ```
 

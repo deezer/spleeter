@@ -85,9 +85,9 @@ class GithubModelProvider(ModelProvider):
                 Created instance.
         """
         return cls(
-            environ.get("GITHUB_HOST", cls.DEFAULT_HOST),
-            environ.get("GITHUB_REPOSITORY", cls.DEFAULT_REPOSITORY),
-            environ.get("GITHUB_RELEASE", cls.LATEST_RELEASE),
+            environ.get("GITHUB_MODEL_HOST", cls.DEFAULT_HOST),
+            environ.get("GITHUB_MODEL_REPOSITORY", cls.DEFAULT_REPOSITORY),
+            environ.get("GITHUB_MODEL_RELEASE", cls.LATEST_RELEASE),
         )
 
     def checksum(self, name: str) -> str:

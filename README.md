@@ -48,6 +48,8 @@ You need first to install `ffmpeg` and `libsndfile`. It can be done on most plat
 ```bash
 # install dependencies using conda
 conda install -c conda-forge ffmpeg libsndfile
+# install Cython static compiler
+pip install --upgrade cython
 # install spleeter with pip
 pip install spleeter
 # download an example audio file (if you don't have wget, use another tool for downloading)

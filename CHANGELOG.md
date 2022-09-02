@@ -2,7 +2,8 @@
 
 ## 2.3.2
 
-Release contrain on specific Tensorflow and Librosa versions
+Release contrain on specific Tensorflow, numpy and Librosa versions
+Dropping explicit support of python 3.6 but adding 3.10
 ## 2.3.0
 
 Updating dependencies to enable TensorFlow 2.5 support (and Python 3.9 overall)

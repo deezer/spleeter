@@ -1,5 +1,8 @@
 # Changelog History
 
+## 2.3.2
+
+Release contrain on specific Tensorflow and Librosa versions
 ## 2.3.0
 
 Updating dependencies to enable TensorFlow 2.5 support (and Python 3.9 overall)

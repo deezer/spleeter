@@ -304,7 +304,7 @@ class Separator(object):
 
     def separate(
         self, waveform: np.ndarray, audio_descriptor: Optional[str] = ""
-    ) -> None:
+    ) -> Dict:
         """
         Performs separation on a waveform.
 

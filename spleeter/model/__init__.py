@@ -109,15 +109,7 @@ class SpectralInputProvider(InputProvider):
 class InputProviderFactory(object):
     @staticmethod
     def get(params):
-        stft_backend = params["stft_backend"]
-        assert stft_backend in (
-            "tensorflow",
-            "librosa",
-        ), "Unexpected backend {}".format(stft_backend)
-        if stft_backend == "tensorflow":
-            return WaveformInputProvider(params)
-        else:
-            return SpectralInputProvider(params)
+        return WaveformInputProvider(params)
 
 
 class EstimatorSpecBuilder(object):
@@ -185,9 +177,6 @@ class EstimatorSpecBuilder(object):
         self._F = params["F"]
         self._frame_length = params["frame_length"]
         self._frame_step = params["frame_step"]
-
-    def include_stft_computations(self):
-        return self._params["stft_backend"] == "tensorflow"
 
     def _build_model_outputs(self):
         """Created a batch_sizexTxFxn_channels input tensor containing
@@ -495,10 +484,7 @@ class EstimatorSpecBuilder(object):
         return output_waveform
 
     def _build_outputs(self):
-        if self.include_stft_computations():
-            self._outputs = self._build_output_waveform(self.masked_stfts)
-        else:
-            self._outputs = self.masked_stfts
+        self._outputs = self._build_output_waveform(self.masked_stfts)
 
         if "audio_id" in self._features:
             self._outputs["audio_id"] = self._features["audio_id"]

@@ -9,7 +9,7 @@ from tempfile import gettempdir
 from typer import Argument, Exit, Option, echo
 from typer.models import ArgumentInfo, OptionInfo
 
-from .audio import Codec, STFTBackend
+from .audio import Codec
 
 __email__ = "spleeter@deezer.com"
 __author__ = "Deezer Research"
@@ -55,18 +55,6 @@ AudioDurationOption: OptionInfo = Option(
         "Set a maximum duration for processing audio "
         "(only separate offset + duration first seconds of "
         "the input file)"
-    ),
-)
-
-AudioSTFTBackendOption: OptionInfo = Option(
-    STFTBackend.AUTO,
-    "--stft-backend",
-    "-B",
-    case_sensitive=False,
-    help=(
-        "Who should be in charge of computing the stfts. Librosa is faster "
-        'than tensorflow on CPU and uses  less memory. "auto" will use '
-        "tensorflow when GPU acceleration is available and librosa when not"
     ),
 )
 
@@ -130,10 +118,7 @@ VerboseOption: OptionInfo = Option(False, "--verbose", help="Enable verbose logs
 
 def version_callback(value: bool):
     if value:
-        try:
-            from importlib.metadata import version
-        except ImportError:
-            from importlib_metadata import version
+        from importlib.metadata import version
 
         echo(f"Spleeter Version: {version('spleeter')}")
         raise Exit()

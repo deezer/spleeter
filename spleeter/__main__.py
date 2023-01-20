@@ -101,7 +101,6 @@ def separate(
     duration: float = AudioDurationOption,
     offset: float = AudioOffsetOption,
     output_path: Path = AudioOutputOption,
-    stft_backend: STFTBackend = AudioSTFTBackendOption,
     filename_format: str = FilenameFormatOption,
     params_filename: str = ModelParametersOption,
     mwf: bool = MWFOption,
@@ -121,9 +120,8 @@ def separate(
         )
         raise Exit(20)
     audio_adapter: AudioAdapter = AudioAdapter.get(adapter)
-    separator: Separator = Separator(
-        params_filename, MWF=mwf, stft_backend=stft_backend
-    )
+    separator: Separator = Separator(params_filename, MWF=mwf)
+
     for filename in files:
         separator.separate_to_file(
             str(filename),
@@ -193,7 +191,6 @@ def _compile_metrics(metrics_output_directory) -> Dict:
 def evaluate(
     adapter: str = AudioAdapterOption,
     output_path: Path = AudioOutputOption,
-    stft_backend: STFTBackend = AudioSTFTBackendOption,
     params_filename: str = ModelParametersOption,
     mus_dir: Path = MUSDBDirectoryOption,
     mwf: bool = MWFOption,
@@ -225,7 +222,6 @@ def evaluate(
         duration=600.0,
         offset=0,
         output_path=join(audio_output_directory, EVALUATION_SPLIT),
-        stft_backend=stft_backend,
         filename_format="{foldername}/{instrument}.{codec}",
         params_filename=params_filename,
         mwf=mwf,

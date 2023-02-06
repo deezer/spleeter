@@ -17,7 +17,6 @@ import numpy as np
 from spleeter.__main__ import evaluate
 from spleeter.audio.adapter import AudioAdapter
 
-BACKEND = "tensorflow"
 
 res_4stems = {
     "vocals": {"SDR": 3.25e-05, "SAR": -11.153575, "SIR": -1.3849, "ISR": 2.75e-05},
@@ -46,8 +45,7 @@ def generate_fake_eval_dataset(path):
             aa.save(filename, data, fs)
 
 
-@pytest.mark.parametrize("backend", BACKEND)
-def test_evaluate(backend):
+def test_evaluate():
     with TemporaryDirectory() as dataset:
         with TemporaryDirectory() as evaluation:
             generate_fake_eval_dataset(dataset)

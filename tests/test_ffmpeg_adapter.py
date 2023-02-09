@@ -10,16 +10,16 @@ __license__ = "MIT License"
 from os.path import join
 from tempfile import TemporaryDirectory
 
-from spleeter import SpleeterError
-from spleeter.audio.adapter import AudioAdapter
-from spleeter.audio.ffmpeg import FFMPEGProcessAudioAdapter
+import ffmpeg
+import numpy as np
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
 from pytest import fixture, raises
 
-import numpy as np
-import ffmpeg
+from spleeter import SpleeterError
+from spleeter.audio.adapter import AudioAdapter
+from spleeter.audio.ffmpeg import FFMPEGProcessAudioAdapter
 
 # pylint: enable=import-error
 

@@ -7,8 +7,9 @@ __email__ = "research@deezer.com"
 __author__ = "Deezer Research"
 __license__ = "MIT License"
 
-from spleeter.__main__ import spleeter
 from typer.testing import CliRunner
+
+from spleeter.__main__ import spleeter
 
 
 def test_version():

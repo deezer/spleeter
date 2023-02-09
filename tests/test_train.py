@@ -9,18 +9,16 @@ __license__ = "MIT License"
 
 import json
 import os
-
 from os import makedirs
 from os.path import join
 from tempfile import TemporaryDirectory
 
 import numpy as np
 import pandas as pd
-
-from spleeter.audio.adapter import AudioAdapter
-from spleeter.__main__ import spleeter
 from typer.testing import CliRunner
 
+from spleeter.__main__ import spleeter
+from spleeter.audio.adapter import AudioAdapter
 
 TRAIN_CONFIG = {
     "mix_name": "mix",

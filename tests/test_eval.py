@@ -16,7 +16,6 @@ import numpy as np
 from spleeter.__main__ import evaluate
 from spleeter.audio.adapter import AudioAdapter
 
-
 res_4stems = {
     "vocals": {"SDR": 3.25e-05, "SAR": -11.153575, "SIR": -1.3849, "ISR": 2.75e-05},
     "drums": {"SDR": -0.079505, "SAR": -15.7073575, "SIR": -4.972755, "ISR": 0.0013575},

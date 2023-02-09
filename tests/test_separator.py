@@ -8,12 +8,11 @@ __author__ = "Deezer Research"
 __license__ = "MIT License"
 
 import itertools
-from os.path import splitext, basename, exists, join
+from os.path import basename, exists, join, splitext
 from tempfile import TemporaryDirectory
 
-import pytest
 import numpy as np
-
+import pytest
 import tensorflow as tf
 
 from spleeter import SpleeterError

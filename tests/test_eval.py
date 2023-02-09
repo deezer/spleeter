@@ -11,7 +11,6 @@ from os import makedirs
 from os.path import join
 from tempfile import TemporaryDirectory
 
-import pytest
 import numpy as np
 
 from spleeter.__main__ import evaluate

@@ -52,6 +52,7 @@ musdb = {version = "^0.4.0", optional = true}
 museval = {version = "^0.4.0", optional = true}
 tensorflow = "^2.5.0"
 numpy = "1.19.*"
+norbert = "^0.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.1"

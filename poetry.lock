@@ -961,6 +961,26 @@ files = [
 ]
 
 [[package]]
+name = "norbert"
+version = "0.2.1"
+description = "Painless Wiener Filters"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "norbert-0.2.1-py2.py3-none-any.whl", hash = "sha256:409ac3f173cfb1fdaad21563b8f730d7cbe01af81349bcd96fb2b8b9d5f74339"},
+    {file = "norbert-0.2.1.tar.gz", hash = "sha256:bd4cbc2527f0550b81bf4265c1a64b352cab7f71e4e3c823d30b71a7368de74e"},
+]
+
+[package.dependencies]
+scipy = "*"
+
+[package.extras]
+dev = ["check-manifest"]
+docs = ["numpydoc", "recommonmark", "sphinx", "sphinx-rtd-theme"]
+tests = ["pytest", "pytest-pep8"]
+
+[[package]]
 name = "numpy"
 version = "1.19.5"
 description = "NumPy is the fundamental package for array computing with Python."
@@ -2141,4 +2161,4 @@ evaluation = ["musdb", "museval"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.11"
-content-hash = "85b1f5d617cd71b8ff5593e09b015ba4247dc16c359852dda383fe7a0217f509"
+content-hash = "073b887b2ac14428eb1145dfb7ea41eafca0e22b67da670ab838ed46e83acd36"

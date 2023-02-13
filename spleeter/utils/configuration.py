@@ -3,11 +3,10 @@
 
 """ Module that provides configuration loading function. """
 
+import importlib.resources as loader
 import json
 from os.path import exists
 from typing import Dict
-
-import importlib.resources as loader
 
 from .. import SpleeterError, resources
 

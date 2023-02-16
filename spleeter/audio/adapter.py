@@ -65,7 +65,7 @@ class AudioAdapter(ABC):
         """
         pass
 
-    def load_tf_waveform(
+    def load_waveform(
         self,
         audio_descriptor,
         offset: float = 0.0,

@@ -2,14 +2,14 @@
 # coding: utf8
 
 """
-    Python oneliner script usage.
+Python oneliner script usage.
 
-    USAGE: python -m spleeter {train,evaluate,separate} ...
+USAGE: python -m spleeter {train,evaluate,separate} ...
 
-    Notes:
-        All critical import involving TF, numpy or Pandas are deported to
-        command function scope to avoid heavy import on CLI evaluation,
-        leading to large bootstraping time.
+Notes:
+    All critical import involving TF, numpy or Pandas are deported to
+    command function scope to avoid heavy import on CLI evaluation,
+    leading to large bootstraping time.
 """
 import json
 from functools import partial

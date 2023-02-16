@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf8
 
-""" This modules provides spleeter command as well as CLI parsing methods. """
+"""This modules provides spleeter command as well as CLI parsing methods."""
 
 from os.path import join
 from tempfile import gettempdir

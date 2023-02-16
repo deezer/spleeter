@@ -151,7 +151,7 @@ class InstrumentDatasetBuilder(object):
         """Load waveform for given sample."""
         return dict(
             sample,
-            **self._parent._audio_adapter.load_tf_waveform(
+            **self._parent._audio_adapter.load_waveform(
                 sample[f"{self._instrument}_path"],
                 offset=sample["start"],
                 duration=self._parent._chunk_duration,
@@ -176,7 +176,6 @@ class InstrumentDatasetBuilder(object):
         )
 
     def filter_frequencies(self, sample):
-        """ """
         return dict(
             sample,
             **{
@@ -216,8 +215,6 @@ class InstrumentDatasetBuilder(object):
         )
 
     def time_crop(self, sample):
-        """ """
-
         def start(sample):
             """mid_segment_start"""
             return tf.cast(
@@ -259,15 +256,11 @@ class InstrumentDatasetBuilder(object):
 
 
 class DatasetBuilder(object):
-    """
-    TO BE DOCUMENTED.
-    """
-
     MARGIN: float = 0.5
-    """ Margin at beginning and end of songs in seconds. """
+    """Margin at beginning and end of songs in seconds."""
 
     WAIT_PERIOD: int = 60
-    """ Wait period for cache (in seconds). """
+    """Wait period for cache (in seconds)."""
 
     def __init__(
         self,
@@ -315,14 +308,17 @@ class DatasetBuilder(object):
     def check_parameters_compatibility(self):
         if self._frame_length / 2 + 1 < self._F:
             raise ValueError(
-                "F is too large and must be set to at most frame_length/2+1. Decrease F or increase frame_length to fix."
+                "F is too large and must be set to at most frame_length/2+1. \
+                Decrease F or increase frame_length to fix."
             )
 
         if (
             self._chunk_duration * self._sample_rate - self._frame_length
         ) / self._frame_step < self._T:
             raise ValueError(
-                "T is too large considering STFT parameters and chunk duratoin. Make sure spectrogram time dimension of chunks is larger than T (for instance reducing T or frame_step or increasing chunk duration)."
+                "T is too large considering STFT parameters and chunk duratoin. \
+                Make sure spectrogram time dimension of chunks is larger than T \
+                (for instance reducing T or frame_step or increasing chunk duration)."
             )
 
     def expand_path(self, sample):
@@ -543,9 +539,6 @@ class DatasetBuilder(object):
         num_parallel_calls: int = 4,
         n_chunks_per_song: float = 2,
     ) -> Any:
-        """
-        TO BE DOCUMENTED.
-        """
         dataset = dataset_from_csv(csv_path)
         dataset = self.compute_segments(dataset, n_chunks_per_song)
         # Shuffle data

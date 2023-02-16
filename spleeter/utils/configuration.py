@@ -19,9 +19,9 @@ _EMBEDDED_CONFIGURATION_PREFIX: str = "spleeter:"
 
 def load_configuration(descriptor: str) -> Dict:
     """
-    Load configuration from the given descriptor. Could be either a
-    `spleeter:` prefixed embedded configuration name or a file system path
-    to read configuration from.
+    Load configuration from the given descriptor.
+    Could be either a `spleeter:` prefixed embedded configuration name
+    or a file system path to read configuration from.
 
     Parameters:
         descriptor (str):

@@ -82,7 +82,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
                 Duration to load in seconds.
             sample_rate (Optional[float]):
                 Sample rate to load audio with.
-            dtype (numpy.dtype):
+            dtype (np.dtype):
                 (Optional) Numpy data type to use, default to `float32`.
 
         Returns:
@@ -144,11 +144,11 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         Parameters:
             path (Union[Path, str]):
                 Path like of the audio file to save data in.
-            data (numpy.ndarray):
+            data (np.ndarray):
                 Waveform data to write.
             sample_rate (float):
                 Sample rate to write file in.
-            codec ():
+            codec (Codec):
                 (Optional) Writing codec to use, default to `None`.
             bitrate (str):
                 (Optional) Bitrate of the written audio file, default to

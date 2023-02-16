@@ -2,15 +2,15 @@
 # coding: utf8
 
 """
-    This module contains building functions for U-net source
-    separation models in a similar way as in A. Jansson et al. :
+This module contains building functions for U-net source
+separation models in a similar way as in A. Jansson et al. :
 
-    "Singing voice separation with deep u-net convolutional networks",
-    ISMIR 2017
+"Singing voice separation with deep u-net convolutional networks",
+ISMIR 2017
 
-    Each instrument is modeled by a single U-net
-    convolutional / deconvolutional network that take a mix spectrogram
-    as input and the estimated sound spectrogram as output.
+Each instrument is modeled by a single U-net
+convolutional / deconvolutional network that take a mix spectrogram
+as input and the estimated sound spectrogram as output.
 """
 
 from functools import partial
@@ -92,7 +92,7 @@ def apply_unet(
     is used for each instrument).
 
     Parameters:
-        input_tensor (tensorflow.Tensor):
+        input_tensor (tf.Tensor):
         output_name (str):
         params (Optional[Dict]):
         output_mask_logit (bool):
@@ -204,11 +204,11 @@ def softmax_unet(
     Apply softmax to multitrack unet in order to have mask suming to one.
 
     Parameters:
-        input_tensor (tensorflow.Tensor):
+        input_tensor (tf.Tensor):
             Tensor to apply blstm to.
         instruments (Iterable[str]):
             Iterable that provides a collection of instruments.
-        params (Optional[Dict]):
+        params (Dict):
             (Optional) dict of BLSTM parameters.
 
     Returns:

@@ -2,12 +2,12 @@
 # coding: utf8
 
 """
-    `spleeter.utils.audio` package provides various
-    tools for manipulating audio content such as :
+`spleeter.utils.audio` package provides various
+tools for manipulating audio content such as :
 
-    - Audio adapter class for abstract interaction with audio file.
-    - FFMPEG implementation for audio adapter.
-    - Waveform convertion and transforming functions.
+- Audio adapter class for abstract interaction with audio file.
+- FFMPEG implementation for audio adapter.
+- Waveform convertion and transforming functions.
 """
 
 from enum import Enum

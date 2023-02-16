@@ -23,13 +23,13 @@ def to_n_channels(waveform: tf.Tensor, n_channels: int) -> tf.Tensor:
     needed (in tensorflow).
 
     Parameters:
-        waveform (tensorflow.Tensor):
+        waveform (tf.Tensor):
             Waveform to transform.
         n_channels (int):
             Number of channel to reshape waveform in.
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
             Reshaped waveform.
     """
     return tf.cond(
@@ -45,11 +45,11 @@ def to_stereo(waveform: np.ndarray) -> np.ndarray:
     if too many channels.
 
     Parameters:
-        waveform (numpy.ndarray):
+        waveform (np.ndarray):
             a `(N, d)` numpy array.
 
     Returns:
-        numpy.ndarray:
+        np.ndarray:
             A stereo waveform as a `(N, 1)` numpy array.
     """
     if waveform.shape[1] == 1:
@@ -64,13 +64,13 @@ def gain_to_db(tensor: tf.Tensor, espilon: float = 10e-10) -> tf.Tensor:
     Convert from gain to decibel in tensorflow.
 
     Parameters:
-        tensor (tensorflow.Tensor):
+        tensor (tf.Tensor):
             Tensor to convert
         epsilon (float):
             Operation constant.
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
             Converted tensor.
     """
     return 20.0 / np.log(10) * tf.math.log(tf.maximum(tensor, espilon))
@@ -81,11 +81,11 @@ def db_to_gain(tensor: tf.Tensor) -> tf.Tensor:
     Convert from decibel to gain in tensorflow.
 
     Parameters:
-        tensor (tensorflow.Tensor):
+        tensor (tf.Tensor):
             Tensor to convert
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
             Converted tensor.
     """
     return tf.pow(10.0, (tensor / 20.0))
@@ -98,13 +98,13 @@ def spectrogram_to_db_uint(
     Encodes given spectrogram into uint8 using decibel scale.
 
     Parameters:
-        spectrogram (tensorflow.Tensor):
+        spectrogram (tf.Tensor):
             Spectrogram to be encoded as TF float tensor.
         db_range (float):
             Range in decibel for encoding.
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
             Encoded decibel spectrogram as `uint8` tensor.
     """
     db_spectrogram: tf.Tensor = gain_to_db(spectrogram)
@@ -122,15 +122,15 @@ def db_uint_spectrogram_to_gain(
     Decode spectrogram from uint8 decibel scale.
 
     Paramters:
-        db_uint_spectrogram (tensorflow.Tensor):
+        db_uint_spectrogram (tf.Tensor):
             Decibel spectrogram to decode.
-        min_db (tensorflow.Tensor):
+        min_db (tf.Tensor):
             Lower bound limit for decoding.
-        max_db (tensorflow.Tensor):
+        max_db (tf.Tensor):
             Upper bound limit for decoding.
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
             Decoded spectrogram as `float32` tensor.
     """
     db_spectrogram: tf.Tensor = from_uint8_to_float32(

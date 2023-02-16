@@ -70,11 +70,13 @@ def create_estimator(params, MWF):
     """
     Initialize tensorflow estimator that will perform separation
 
-    Params:
-    - params: a dictionary of parameters for building the model
+    Parameters:
+        params (Dict):
+            A dictionary of parameters for building the model
 
     Returns:
-        a tensorflow estimator
+        tf.Tensor:
+            A tensorflow estimator
     """
     # Load model.
     provider: ModelProvider = ModelProvider.default()
@@ -107,7 +109,9 @@ class Separator(object):
             params_descriptor (str):
                 Descriptor for TF params to be used.
             MWF (bool):
-                (Optional) `True` if MWF should be used, `False` otherwise.
+                `True` if MWF should be used, `False` otherwise.
+            multiprocess (bool):
+                Enable multi-processing.
         """
         self._params = load_configuration(params_descriptor)
         self._sample_rate = self._params["sample_rate"]
@@ -156,7 +160,7 @@ class Separator(object):
 
         Parameters:
             timeout (int):
-                (Optional) task waiting timeout.
+                Task waiting timeout.
         """
         while len(self._tasks) > 0:
             task = self._tasks.pop()
@@ -197,12 +201,14 @@ class Separator(object):
         backend.
 
         Parameters:
-            waveform (numpy.ndarray):
+            waveform (np.ndarray):
                 Waveform to be separated (as a numpy array)
             audio_descriptor (AudioDescriptor):
+                Audio descriptor to be used.
 
         Returns:
-            Separated waveforms.
+            Dict:
+                Separated waveforms.
         """
         if not waveform.shape[-1] == 2:
             waveform = to_stereo(waveform)
@@ -227,6 +233,10 @@ class Separator(object):
                 Waveform to be separated (as a numpy array)
             audio_descriptor (str):
                 (Optional) string describing the waveform (e.g. filename).
+
+        Returns:
+            Dict:
+                Separated waveforms.
         """
         return self._separate_tensorflow(waveform, audio_descriptor)
 
@@ -261,7 +271,7 @@ class Separator(object):
                 audio adapter, such descriptor would be a file path.
             destination (str):
                 Target directory to write output to.
-            audio_adapter (Optional[AudioAdapter]):
+            audio_adapter (AudioAdapter):
                 (Optional) Audio adapter to use for I/O.
             offset (int):
                 (Optional) Offset of loaded song.

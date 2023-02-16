@@ -78,34 +78,6 @@ class WaveformInputProvider(InputProvider):
         return {features["audio_id"]: audio_id, features["waveform"]: waveform}
 
 
-class SpectralInputProvider(InputProvider):
-    def __init__(self, params):
-        super().__init__(params)
-        self.stft_input_name = "{}_stft".format(self.params["mix_name"])
-
-    @property
-    def input_names(self):
-        return ["audio_id", self.stft_input_name]
-
-    def get_input_dict_placeholders(self):
-        features = {
-            self.stft_input_name: placeholder(
-                tf.complex64,
-                shape=(
-                    None,
-                    self.params["frame_length"] // 2 + 1,
-                    self.params["n_channels"],
-                ),
-                name=self.stft_input_name,
-            ),
-            "audio_id": placeholder(tf.string, name="audio_id"),
-        }
-        return features
-
-    def get_feed_dict(self, features, stft, audio_id):
-        return {features["audio_id"]: audio_id, features[self.stft_input_name]: stft}
-
-
 class InputProviderFactory(object):
     @staticmethod
     def get(params):

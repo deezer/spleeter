@@ -21,6 +21,7 @@ classifiers = [
     "Operating System :: Unix",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -44,14 +45,14 @@ packages = [ { include = "spleeter" } ]
 include = ["LICENSE", "spleeter/resources/*.json"]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.11"
+python = ">=3.7,<3.11"
 ffmpeg-python = "^0.2.0"
 httpx = {extras = ["http2"], version = "^0.19.0"}
 typer = "^0.3.2"
 musdb = {version = "^0.4.0", optional = true}
 museval = {version = "^0.4.0", optional = true}
 tensorflow = "^2.5.0"
-numpy = "1.19.*"
+numpy = "<1.20.0"
 norbert = "^0.2.1"
 
 [tool.poetry.dev-dependencies]

@@ -1134,7 +1134,7 @@ evaluation = ["musdb", "museval"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.11"
-content-hash = "6c8956906fbb2646c9be068d51ceb5b942b27628dec3a315eb2a0ec63c2b2e4f"
+content-hash = "39bf1075e6228f51e93bceadb38ebc61032bb937814cd68754e293cc993b32fd"
 
 [metadata.files]
 absl-py = [

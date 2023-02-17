@@ -26,7 +26,7 @@ res_4stems = {
 
 def generate_fake_eval_dataset(path):
     """
-    generate fake evaluation dataset
+    Generate fake evaluation dataset
     """
     aa = AudioAdapter.default()
     n_songs = 2

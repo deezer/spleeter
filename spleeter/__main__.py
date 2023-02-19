@@ -16,15 +16,31 @@ from functools import partial
 from glob import glob
 from itertools import product
 from os.path import join
-from pathlib import Path
-from typing import Container, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
 from typer import Exit, Typer
 
 from . import SpleeterError
-from .options import *
+from .audio import Codec
+from .options import (
+    AudioAdapterOption,
+    AudioBitrateOption,
+    AudioCodecOption,
+    AudioDurationOption,
+    AudioInputArgument,
+    AudioInputOption,
+    AudioOffsetOption,
+    AudioOutputOption,
+    FilenameFormatOption,
+    ModelParametersOption,
+    MUSDBDirectoryOption,
+    MWFOption,
+    TrainingDataDirectoryOption,
+    VerboseOption,
+    VersionOption,
+)
 from .utils.logging import configure_logger, logger
 
 # pylint: enable=import-error

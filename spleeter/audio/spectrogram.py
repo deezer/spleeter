@@ -5,7 +5,6 @@
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import numpy as np
 import tensorflow as tf  # type: ignore
 from tensorflow.signal import hann_window, stft  # type: ignore
 

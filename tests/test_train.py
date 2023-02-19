@@ -70,7 +70,7 @@ def generate_fake_training_dataset(
     for song in range(n_songs):
         song_path = join(path, "train", f"song{song}")
         makedirs(song_path, exist_ok=True)
-        dataset_df.loc[song, f"duration"] = duration
+        dataset_df.loc[song, "duration"] = duration
         for instr in instrument_list + ["mix"]:
             filename = join(song_path, f"{instr}.wav")
             data = rng.rand(duration * fs, n_channels) - 0.5
@@ -94,7 +94,7 @@ def test_train():
             runner = CliRunner()
 
             model_dir = join(path, f"model_{n_channels}")
-            train_dir = join(path, f"train")
+            train_dir = join(path, "train")
             cache_dir = join(path, f"cache_{n_channels}")
 
             TRAIN_CONFIG["train_csv"] = join(train_dir, "train.csv")

@@ -5,9 +5,9 @@
 
 from os.path import join
 from tempfile import gettempdir
-from pathlib import Path
+
 from typer import Argument, Exit, Option, echo
-from typer.models import ArgumentInfo, OptionInfo, Optional, List
+from typer.models import List, Optional
 
 from .audio import Codec
 

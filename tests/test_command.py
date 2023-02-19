@@ -17,7 +17,7 @@ def test_version():
     runner = CliRunner()
 
     # execute spleeter version command
-    result = runner.invoke(
+    _ = runner.invoke(
         spleeter,
         [
             "--version",

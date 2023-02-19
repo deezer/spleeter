@@ -18,14 +18,12 @@ import atexit
 import os
 from multiprocessing import Pool
 from os.path import basename, dirname, join, splitext
-from typing import Dict, Generator, Optional, Any, List
+from typing import Any, Dict, Generator, List, Optional
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
 import numpy as np
 import tensorflow as tf  # type: ignore
-
-from spleeter.model.provider import ModelProvider
 
 from . import SpleeterError
 from .audio import Codec

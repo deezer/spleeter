@@ -18,10 +18,10 @@ from typing import Any, Dict, Iterable, Optional
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import tensorflow as tf
-from tensorflow.compat.v1 import logging
-from tensorflow.compat.v1.keras.initializers import he_uniform
-from tensorflow.keras.layers import (
+import tensorflow as tf  # type: ignore
+from tensorflow.compat.v1 import logging  # type: ignore
+from tensorflow.compat.v1.keras.initializers import he_uniform  # type: ignore
+from tensorflow.keras.layers import (  # type: ignore
     ELU,
     BatchNormalization,
     Concatenate,
@@ -54,7 +54,7 @@ def _get_conv_activation_layer(params: Dict) -> Any:
         Any:
             Required Activation function.
     """
-    conv_activation: str = params.get("conv_activation")
+    conv_activation: str = str(params.get("conv_activation"))
     if conv_activation == "ReLU":
         return ReLU()
     elif conv_activation == "ELU":
@@ -73,7 +73,7 @@ def _get_deconv_activation_layer(params: Dict) -> Any:
         Any:
             Required Activation function.
     """
-    deconv_activation: str = params.get("deconv_activation")
+    deconv_activation: str = str(params.get("deconv_activation"))
     if deconv_activation == "LeakyReLU":
         return LeakyReLU(0.2)
     elif deconv_activation == "ELU":
@@ -84,7 +84,7 @@ def _get_deconv_activation_layer(params: Dict) -> Any:
 def apply_unet(
     input_tensor: tf.Tensor,
     output_name: str = "output",
-    params: Optional[Dict] = None,
+    params: Dict = {},
     output_mask_logit: bool = False,
 ) -> Any:
     """
@@ -198,7 +198,7 @@ def unet(
 
 
 def softmax_unet(
-    input_tensor: tf.Tensor, instruments: Iterable[str], params: Optional[Dict] = None
+    input_tensor: tf.Tensor, instruments: Iterable[str], params: Dict = {}
 ) -> Dict:
     """
     Apply softmax to multitrack unet in order to have mask suming to one.

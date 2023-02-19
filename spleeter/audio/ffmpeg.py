@@ -16,7 +16,7 @@ from typing import Dict, Optional, Union
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import ffmpeg
+import ffmpeg  # type: ignore
 import numpy as np
 
 from .. import SpleeterError
@@ -67,7 +67,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         offset: Optional[float] = None,
         duration: Optional[float] = None,
         sample_rate: Optional[float] = None,
-        dtype: np.dtype = np.float32,
+        dtype: bytes = b"float32",
     ) -> Signal:
         """
         Loads the audio file denoted by the given path
@@ -82,8 +82,8 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
                 Duration to load in seconds.
             sample_rate (Optional[float]):
                 Sample rate to load audio with.
-            dtype (np.dtype):
-                (Optional) Numpy data type to use, default to `float32`.
+            dtype (bytes):
+                (Optional)data type to use, default to `b'float32'`.
 
         Returns:
             Signal:

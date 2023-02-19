@@ -7,8 +7,8 @@ import importlib
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import tensorflow as tf
-from tensorflow.signal import hann_window, inverse_stft, stft
+import tensorflow as tf  # type: ignore
+from tensorflow.signal import hann_window, inverse_stft, stft  # type: ignore
 
 from ..utils.tensor import pad_and_partition, pad_and_reshape
 
@@ -362,7 +362,7 @@ class EstimatorSpecBuilder(object):
                 Dictionary of separated waveforms (key: instrument name,
                 value: estimated waveform of the instrument)
         """
-        import norbert  # pylint: disable=import-error
+        import norbert  # type: ignore # pylint: disable=import-error
 
         output_dict = self.model_outputs
         x = self.stft_feature

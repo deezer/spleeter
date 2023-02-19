@@ -17,7 +17,7 @@ from glob import glob
 from itertools import product
 from os.path import join
 from pathlib import Path
-from typing import Container, Dict, List, Optional
+from typing import Container, Dict, List, Optional, Tuple
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
@@ -43,14 +43,14 @@ def default(
 @spleeter.command(no_args_is_help=True)
 def train(
     adapter: str = AudioAdapterOption,
-    data: Path = TrainingDataDirectoryOption,
+    data: str = TrainingDataDirectoryOption,
     params_filename: str = ModelParametersOption,
     verbose: bool = VerboseOption,
 ) -> None:
     """
     Train a source separation model
     """
-    import tensorflow as tf
+    import tensorflow as tf  # type: ignore
 
     from .audio.adapter import AudioAdapter
     from .dataset import get_training_dataset, get_validation_dataset
@@ -60,7 +60,6 @@ def train(
 
     configure_logger(verbose)
     audio_adapter = AudioAdapter.get(adapter)
-    audio_path = str(data)
     params = load_configuration(params_filename)
     session_config = tf.compat.v1.ConfigProto()
     session_config.gpu_options.per_process_gpu_memory_fraction = 0.45
@@ -77,11 +76,11 @@ def train(
             keep_checkpoint_max=2,
         ),
     )
-    input_fn = partial(get_training_dataset, params, audio_adapter, audio_path)
+    input_fn = partial(get_training_dataset, params, audio_adapter, data)
     train_spec = tf.estimator.TrainSpec(
         input_fn=input_fn, max_steps=params["train_max_steps"]
     )
-    input_fn = partial(get_validation_dataset, params, audio_adapter, audio_path)
+    input_fn = partial(get_validation_dataset, params, audio_adapter, data)
     evaluation_spec = tf.estimator.EvalSpec(
         input_fn=input_fn, steps=None, throttle_secs=params["throttle_secs"]
     )
@@ -94,13 +93,13 @@ def train(
 @spleeter.command(no_args_is_help=True)
 def separate(
     deprecated_files: Optional[str] = AudioInputOption,
-    files: List[Path] = AudioInputArgument,
+    files: List[str] = AudioInputArgument,
     adapter: str = AudioAdapterOption,
     bitrate: str = AudioBitrateOption,
     codec: Codec = AudioCodecOption,
     duration: float = AudioDurationOption,
     offset: float = AudioOffsetOption,
-    output_path: Path = AudioOutputOption,
+    output_path: str = AudioOutputOption,
     filename_format: str = FilenameFormatOption,
     params_filename: str = ModelParametersOption,
     mwf: bool = MWFOption,
@@ -124,8 +123,8 @@ def separate(
 
     for filename in files:
         separator.separate_to_file(
-            str(filename),
-            str(output_path),
+            filename,
+            output_path,
             audio_adapter=audio_adapter,
             offset=offset,
             duration=duration,
@@ -139,8 +138,8 @@ def separate(
 
 EVALUATION_SPLIT: str = "test"
 EVALUATION_METRICS_DIRECTORY: str = "metrics"
-EVALUATION_INSTRUMENTS: Container[str] = ("vocals", "drums", "bass", "other")
-EVALUATION_METRICS: Container[str] = ("SDR", "SAR", "SIR", "ISR")
+EVALUATION_INSTRUMENTS: Tuple[str, ...] = ("vocals", "drums", "bass", "other")
+EVALUATION_METRICS: Tuple[str, ...] = ("SDR", "SAR", "SIR", "ISR")
 EVALUATION_MIXTURE: str = "mixture.wav"
 EVALUATION_AUDIO_DIRECTORY: str = "audio"
 
@@ -158,7 +157,7 @@ def _compile_metrics(metrics_output_directory) -> Dict:
             Compiled metrics as dict.
     """
     import numpy as np
-    import pandas as pd
+    import pandas as pd  # type: ignore
 
     songs = glob(join(metrics_output_directory, "test/*.json"))
     index = pd.MultiIndex.from_tuples(
@@ -166,7 +165,7 @@ def _compile_metrics(metrics_output_directory) -> Dict:
         names=["instrument", "metric"],
     )
     pd.DataFrame([], index=["config1", "config2"], columns=index)
-    metrics = {
+    metrics: Dict = {
         instrument: {k: [] for k in EVALUATION_METRICS}
         for instrument in EVALUATION_INSTRUMENTS
     }
@@ -190,9 +189,9 @@ def _compile_metrics(metrics_output_directory) -> Dict:
 @spleeter.command(no_args_is_help=True)
 def evaluate(
     adapter: str = AudioAdapterOption,
-    output_path: Path = AudioOutputOption,
+    output_path: str = AudioOutputOption,
     params_filename: str = ModelParametersOption,
-    mus_dir: Path = MUSDBDirectoryOption,
+    mus_dir: str = MUSDBDirectoryOption,
     mwf: bool = MWFOption,
     verbose: bool = VerboseOption,
 ) -> Dict:
@@ -203,8 +202,8 @@ def evaluate(
 
     configure_logger(verbose)
     try:
-        import musdb
-        import museval
+        import musdb  # type: ignore
+        import museval  # type: ignore
     except ImportError:
         logger.error("Extra dependencies musdb and museval not found")
         logger.error("Please install musdb and museval first, abort")

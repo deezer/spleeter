@@ -10,7 +10,7 @@ __license__ = "MIT License"
 from os.path import join
 from tempfile import TemporaryDirectory
 
-import ffmpeg
+import ffmpeg  # type: ignore
 import numpy as np
 
 # pyright: reportMissingImports=false

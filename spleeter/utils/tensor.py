@@ -5,11 +5,11 @@
 
 from typing import Any, Callable, Dict
 
-import pandas as pd
+import pandas as pd  # type: ignore
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import tensorflow as tf
+import tensorflow as tf  # type: ignore
 
 # pylint: enable=import-error
 

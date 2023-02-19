@@ -13,7 +13,7 @@ from tempfile import TemporaryDirectory
 
 import numpy as np
 import pytest
-import tensorflow as tf
+import tensorflow as tf  # type: ignore
 
 from spleeter import SpleeterError
 from spleeter.audio.adapter import AudioAdapter

@@ -82,7 +82,7 @@ class GithubModelProvider(ModelProvider):
         self._release: str = release
 
     @classmethod
-    def from_environ(cls: type) -> "GithubModelProvider":
+    def from_environ(cls) -> "GithubModelProvider":
         """
         Factory method that creates provider from envvars.
 

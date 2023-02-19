@@ -18,12 +18,12 @@ import atexit
 import os
 from multiprocessing import Pool
 from os.path import basename, dirname, join, splitext
-from typing import Dict, Generator, Optional
+from typing import Dict, Generator, Optional, Any, List
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
 import numpy as np
-import tensorflow as tf
+import tensorflow as tf  # type: ignore
 
 from spleeter.model.provider import ModelProvider
 
@@ -117,17 +117,17 @@ class Separator(object):
         self._sample_rate = self._params["sample_rate"]
         self._MWF = MWF
         self._tf_graph = tf.Graph()
-        self._prediction_generator = None
+        self._prediction_generator: Optional[Generator] = None
         self._input_provider = None
         self._builder = None
         self._features = None
         self._session = None
         if multiprocess:
-            self._pool = Pool()
+            self._pool: Optional[Any] = Pool()
             atexit.register(self._pool.close)
         else:
             self._pool = None
-        self._tasks = []
+        self._tasks: List = []
         self._data_generator = DataGenerator()
 
     def _get_prediction_generator(self) -> Generator:
@@ -245,7 +245,7 @@ class Separator(object):
         audio_descriptor: AudioDescriptor,
         destination: str,
         audio_adapter: Optional[AudioAdapter] = None,
-        offset: int = 0,
+        offset: float = 0,
         duration: float = 600.0,
         codec: Codec = Codec.WAV,
         bitrate: str = "128k",

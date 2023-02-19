@@ -18,11 +18,11 @@ import os
 import time
 from os.path import exists
 from os.path import sep as SEPARATOR
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import tensorflow as tf
+import tensorflow as tf  # type: ignore
 
 from .audio.adapter import AudioAdapter
 from .audio.convertor import db_uint_spectrogram_to_gain, spectrogram_to_db_uint
@@ -83,9 +83,9 @@ def get_training_dataset(
         random_seed=audio_params.get("random_seed", 0),
     )
     return builder.build(
-        audio_params.get("train_csv"),
+        str(audio_params.get("train_csv")),
         cache_directory=audio_params.get("training_cache"),
-        batch_size=audio_params.get("batch_size"),
+        batch_size=audio_params.get("batch_size", 8),
         n_chunks_per_song=audio_params.get("n_chunks_per_song", 2),
         random_data_augmentation=False,
         convert_to_uint=True,
@@ -115,8 +115,8 @@ def get_validation_dataset(
         audio_params, audio_adapter, audio_path, chunk_duration=12.0
     )
     return builder.build(
-        audio_params.get("validation_csv"),
-        batch_size=audio_params.get("batch_size"),
+        str(audio_params.get("validation_csv")),
+        batch_size=audio_params.get("batch_size", 8),
         cache_directory=audio_params.get("validation_cache"),
         convert_to_uint=True,
         infinite_generator=False,
@@ -296,7 +296,7 @@ class DatasetBuilder(object):
         self._mix_name = audio_params["mix_name"]
         self._n_channels = audio_params["n_channels"]
         self._instruments = [self._mix_name] + audio_params["instrument_list"]
-        self._instrument_builders = None
+        self._instrument_builders: Optional[List] = None
         self._chunk_duration = chunk_duration
         self._audio_adapter = audio_adapter
         self._audio_params = audio_params
@@ -497,7 +497,7 @@ class DatasetBuilder(object):
         for builder in self._instrument_builders:
             yield builder
 
-    def cache(self, dataset: Any, cache: str, wait: bool) -> Any:
+    def cache(self, dataset: Any, cache: Optional[str], wait: bool) -> Any:
         """
         Cache the given dataset if cache is enabled. Eventually waits for
         cache to be available (useful if another process is already
@@ -537,7 +537,7 @@ class DatasetBuilder(object):
         cache_directory: Optional[str] = None,
         wait_for_cache: bool = False,
         num_parallel_calls: int = 4,
-        n_chunks_per_song: float = 2,
+        n_chunks_per_song: int = 2,
     ) -> Any:
         dataset = dataset_from_csv(csv_path)
         dataset = self.compute_segments(dataset, n_chunks_per_song)

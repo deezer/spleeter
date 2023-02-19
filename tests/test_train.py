@@ -14,7 +14,7 @@ from os.path import join
 from tempfile import TemporaryDirectory
 
 import numpy as np
-import pandas as pd
+import pandas as pd  # type: ignore
 from typer.testing import CliRunner
 
 from spleeter.__main__ import spleeter

@@ -24,10 +24,10 @@ from typing import Dict, Optional
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import tensorflow as tf
-from tensorflow.compat.v1.keras.initializers import he_uniform
-from tensorflow.compat.v1.keras.layers import CuDNNLSTM
-from tensorflow.keras.layers import (
+import tensorflow as tf  # type: ignore
+from tensorflow.compat.v1.keras.initializers import he_uniform  # type: ignore
+from tensorflow.compat.v1.keras.layers import CuDNNLSTM  # type: ignore
+from tensorflow.keras.layers import (  # type: ignore
     Bidirectional,
     Dense,
     Flatten,

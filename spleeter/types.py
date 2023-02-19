@@ -11,5 +11,5 @@ import numpy as np
 
 # pylint: enable=import-error
 
-AudioDescriptor: type = Any
-Signal: type = Tuple[np.ndarray, float]
+AudioDescriptor = Any
+Signal = Tuple[np.ndarray, float]

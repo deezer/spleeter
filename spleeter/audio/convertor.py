@@ -6,7 +6,7 @@
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
 import numpy as np
-import tensorflow as tf
+import tensorflow as tf  # type: ignore
 
 from ..utils.tensor import from_float32_to_uint8, from_uint8_to_float32
 
@@ -109,10 +109,10 @@ def spectrogram_to_db_uint(
     """
     db_spectrogram: tf.Tensor = gain_to_db(spectrogram)
     max_db_spectrogram: tf.Tensor = tf.reduce_max(db_spectrogram)
-    db_spectrogram: tf.Tensor = tf.maximum(
+    int_db_spectrogram: tf.Tensor = tf.maximum(
         db_spectrogram, max_db_spectrogram - db_range
     )
-    return from_float32_to_uint8(db_spectrogram, **kwargs)
+    return from_float32_to_uint8(int_db_spectrogram, **kwargs)
 
 
 def db_uint_spectrogram_to_gain(

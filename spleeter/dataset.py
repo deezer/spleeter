@@ -2,23 +2,23 @@
 # coding: utf8
 
 """
-    Module for building data preprocessing pipeline using the tensorflow
-    data API. Data preprocessing such as audio loading, spectrogram
-    computation, cropping, feature caching or data augmentation is done
-    using a tensorflow dataset object that output a tuple (input_, output)
-    where:
+Module for building data preprocessing pipeline using the tensorflow
+data API. Data preprocessing such as audio loading, spectrogram
+computation, cropping, feature caching or data augmentation is done
+using a tensorflow dataset object that output a tuple (input_, output)
+where:
 
-    -   input is a dictionary with a single key that contains the (batched)
-        mix spectrogram of audio samples
-    -   output is a dictionary of spectrogram of the isolated tracks
-        (ground truth)
+-   input is a dictionary with a single key that contains the (batched)
+    mix spectrogram of audio samples
+-   output is a dictionary of spectrogram of the isolated tracks
+    (ground truth)
 """
 
 import os
 import time
 from os.path import exists
 from os.path import sep as SEPARATOR
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
@@ -131,14 +131,14 @@ def get_validation_dataset(
 class InstrumentDatasetBuilder(object):
     """Instrument based filter and mapper provider."""
 
-    def __init__(self, parent, instrument) -> None:
+    def __init__(self, parent: Any, instrument: Any) -> None:
         """
         Default constructor.
 
         Parameters:
-            parent:
+            parent (Any):
                 Parent dataset builder.
-            instrument:
+            instrument (Any):
                 Target instrument.
         """
         self._parent = parent
@@ -147,7 +147,7 @@ class InstrumentDatasetBuilder(object):
         self._min_spectrogram_key = f"min_{instrument}_spectrogram"
         self._max_spectrogram_key = f"max_{instrument}_spectrogram"
 
-    def load_waveform(self, sample):
+    def load_waveform(self, sample: Dict) -> Dict:
         """Load waveform for given sample."""
         return dict(
             sample,
@@ -160,7 +160,7 @@ class InstrumentDatasetBuilder(object):
             ),
         )
 
-    def compute_spectrogram(self, sample):
+    def compute_spectrogram(self, sample: Dict) -> Dict:
         """Compute spectrogram of the given sample."""
         return dict(
             sample,
@@ -175,7 +175,7 @@ class InstrumentDatasetBuilder(object):
             },
         )
 
-    def filter_frequencies(self, sample):
+    def filter_frequencies(self, sample: Dict) -> Dict:
         return dict(
             sample,
             **{
@@ -185,7 +185,7 @@ class InstrumentDatasetBuilder(object):
             },
         )
 
-    def convert_to_uint(self, sample):
+    def convert_to_uint(self, sample: Dict) -> Dict:
         """Convert given sample from float to unit."""
         return dict(
             sample,
@@ -197,11 +197,11 @@ class InstrumentDatasetBuilder(object):
             ),
         )
 
-    def filter_infinity(self, sample):
+    def filter_infinity(self, sample: Dict) -> tf.Tensor:
         """Filter infinity sample."""
         return tf.logical_not(tf.math.is_inf(sample[self._min_spectrogram_key]))
 
-    def convert_to_float32(self, sample):
+    def convert_to_float32(self, sample: Dict) -> Dict:
         """Convert given sample from unit to float."""
         return dict(
             sample,
@@ -214,7 +214,7 @@ class InstrumentDatasetBuilder(object):
             },
         )
 
-    def time_crop(self, sample):
+    def time_crop(self, sample: Dict) -> Dict:
         def start(sample):
             """mid_segment_start"""
             return tf.cast(
@@ -235,14 +235,14 @@ class InstrumentDatasetBuilder(object):
             },
         )
 
-    def filter_shape(self, sample):
+    def filter_shape(self, sample: Dict) -> bool:
         """Filter badly shaped sample."""
         return check_tensor_shape(
             sample[self._spectrogram_key],
             (self._parent._T, self._parent._F, self._parent._n_channels),
         )
 
-    def reshape_spectrogram(self, sample):
+    def reshape_spectrogram(self, sample: Dict) -> Dict:
         """Reshape given sample."""
         return dict(
             sample,
@@ -272,17 +272,6 @@ class DatasetBuilder(object):
     ) -> None:
         """
         Default constructor.
-
-        NOTE: Probably need for AudioAdapter.
-
-        Parameters:
-            audio_params (Dict):
-                Audio parameters to use.
-            audio_adapter (AudioAdapter):
-                Audio adapter to use.
-            audio_path (str):
-            random_seed (int):
-            chunk_duration (float):
         """
         # Length of segment in frames (if fs=22050 and
         # frame_step=512, then T=512 corresponds to 11.89s)
@@ -321,7 +310,7 @@ class DatasetBuilder(object):
                 "(for instance reducing T or frame_step or increasing chunk duration)."
             )
 
-    def expand_path(self, sample):
+    def expand_path(self, sample: Dict) -> Dict:
         """Expands audio paths for the given sample."""
         return dict(
             sample,
@@ -333,15 +322,15 @@ class DatasetBuilder(object):
             },
         )
 
-    def filter_error(self, sample):
+    def filter_error(self, sample: Dict) -> tf.Tensor:
         """Filter errored sample."""
         return tf.logical_not(sample["waveform_error"])
 
-    def filter_waveform(self, sample):
+    def filter_waveform(self, sample: Dict) -> Dict:
         """Filter waveform from sample."""
         return {k: v for k, v in sample.items() if not k == "waveform"}
 
-    def harmonize_spectrogram(self, sample):
+    def harmonize_spectrogram(self, sample: Dict) -> Dict:
         """Ensure same size for vocals and mix spectrograms."""
 
         def _reduce(sample):
@@ -362,7 +351,7 @@ class DatasetBuilder(object):
             },
         )
 
-    def filter_short_segments(self, sample):
+    def filter_short_segments(self, sample: Dict) -> tf.Tensor:
         """Filter out too short segment."""
         return tf.reduce_any(
             [
@@ -371,7 +360,7 @@ class DatasetBuilder(object):
             ]
         )
 
-    def random_time_crop(self, sample):
+    def random_time_crop(self, sample: Dict) -> Dict:
         """Random time crop of 11.88s."""
         return dict(
             sample,
@@ -388,7 +377,7 @@ class DatasetBuilder(object):
             ),
         )
 
-    def random_time_stretch(self, sample):
+    def random_time_stretch(self, sample: Dict) -> Dict:
         """Randomly time stretch the given sample."""
         return dict(
             sample,
@@ -401,7 +390,7 @@ class DatasetBuilder(object):
             ),
         )
 
-    def random_pitch_shift(self, sample):
+    def random_pitch_shift(self, sample: Dict) -> Dict:
         """Randomly pitch shift the given sample."""
         return dict(
             sample,
@@ -415,7 +404,7 @@ class DatasetBuilder(object):
             ),
         )
 
-    def map_features(self, sample):
+    def map_features(self, sample: Dict) -> Tuple[Dict, Dict]:
         """Select features and annotation of the given sample."""
         input_ = {
             f"{self._mix_name}_spectrogram": sample[f"{self._mix_name}_spectrogram"]

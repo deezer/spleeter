@@ -55,7 +55,7 @@ def apply_blstm(
             Input of the model.
         output_name (str):
             (Optional) name of the output, default to 'output'.
-        params (Dict):
+        params (Optional[Dict]):
             (Optional) dict of BLSTM parameters.
 
     Returns:

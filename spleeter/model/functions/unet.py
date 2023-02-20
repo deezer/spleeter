@@ -45,10 +45,9 @@ __license__ = "MIT License"
 
 def _get_conv_activation_layer(params: Dict) -> Any:
     """
-    > To be documented.
-
     Parameters:
         params (Dict):
+            Model parameters.
 
     Returns:
         Any:
@@ -64,10 +63,9 @@ def _get_conv_activation_layer(params: Dict) -> Any:
 
 def _get_deconv_activation_layer(params: Dict) -> Any:
     """
-    > To be documented.
-
     Parameters:
         params (Dict):
+            Model parameters.
 
     Returns:
         Any:
@@ -86,16 +84,24 @@ def apply_unet(
     output_name: str = "output",
     params: Dict = {},
     output_mask_logit: bool = False,
-) -> Any:
+) -> tf.Tensor:
     """
     Apply a convolutionnal U-net to model a single instrument (one U-net
     is used for each instrument).
 
     Parameters:
         input_tensor (tf.Tensor):
+            Input of the model.
         output_name (str):
-        params (Optional[Dict]):
+            (Optional) name of the output, default to 'output'.
+        params (Dict):
+            (Optional) dict of BLSTM parameters.
         output_mask_logit (bool):
+            (Optional) Sigmoid or logit?
+
+    Returns:
+        tf.Tensor:
+            Output tensor.
     """
     logging.info(f"Apply unet for {output_name}")
     conv_n_filters = params.get("conv_n_filters", [16, 32, 64, 128, 256, 512])

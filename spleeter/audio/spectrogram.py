@@ -30,15 +30,15 @@ def compute_spectrogram_tf(
         waveform (tf.Tensor):
             Input waveform as `(times x number of channels)` tensor.
         frame_length (int):
-            Length of a STFT frame to use.
+            (Optional) Length of a STFT frame to use.
         frame_step (int):
-            HOP between successive frames.
+            (Optional) HOP between successive frames.
         spec_exponent (float):
-            Exponent of the spectrogram (usually 1 for magnitude
-            spectrogram, or 2 for power spectrogram).
+            (Optional) Exponent of the spectrogram (usually 1 for
+            magnitude spectrogram, or 2 for power spectrogram).
         window_exponent (float):
-            Exponent applied to the Hann windowing function (may be
-            useful for making perfect STFT/iSTFT reconstruction).
+            (Optional) Exponent applied to the Hann windowing function
+            (may be useful for making perfect STFT/iSTFT reconstruction).
 
     Returns:
         tf.Tensor:

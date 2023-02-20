@@ -2,10 +2,10 @@
 # coding: utf8
 
 """
-    This module provides an AudioAdapter implementation based on FFMPEG
-    process. Such implementation is POSIXish and depends on nothing except
-    standard Python libraries. Thus this implementation is the default one
-    used within this library.
+This module provides an AudioAdapter implementation based on FFMPEG
+process. Such implementation is POSIXish and depends on nothing except
+standard Python libraries. Thus this implementation is the default one
+used within this library.
 """
 
 import datetime as dt
@@ -77,13 +77,13 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             path (Union[Path, str]:
                 Path of the audio file to load data from.
             offset (Optional[float]):
-                Start offset to load from in seconds.
+                (Optional) Start offset to load from in seconds.
             duration (Optional[float]):
-                Duration to load in seconds.
+                (Optional) Duration to load in seconds.
             sample_rate (Optional[float]):
-                Sample rate to load audio with.
+                (Optional) Sample rate to load audio with.
             dtype (bytes):
-                (Optional)data type to use, default to `b'float32'`.
+                (Optional) Data type to use, default to `b'float32'`.
 
         Returns:
             Signal:

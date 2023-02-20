@@ -31,7 +31,7 @@ class AudioAdapter(ABC):
     """An abstract class for manipulating audio signal."""
 
     _DEFAULT: Optional["AudioAdapter"] = None
-    """ Default audio adapter singleton instance. """
+    """Default audio adapter singleton instance."""
 
     @abstractmethod
     def load(
@@ -51,13 +51,13 @@ class AudioAdapter(ABC):
                 Describe song to load, in case of file based audio adapter,
                 such descriptor would be a file path.
             offset (Optional[float]):
-                Start offset to load from in seconds.
+                (Optional) Start offset to load from in seconds.
             duration (Optional[float]):
-                Duration to load in seconds.
+                (Optional) Duration to load in seconds.
             sample_rate (Optional[float]):
-                Sample rate to load audio with.
+                (Optional) Sample rate to load audio with.
             dtype (bytes):
-                (Optional)data type to use, default to `b'float32'`.
+                (Optional) Data type to use, default to `b'float32'`.
 
         Returns:
             Signal:
@@ -78,17 +78,17 @@ class AudioAdapter(ABC):
         Load the audio and convert it to a tensorflow waveform.
 
         Parameters:
-            audio_descriptor ():
+            audio_descriptor (Any):
                 Describe song to load, in case of file based audio adapter,
                 such descriptor would be a file path.
             offset (float):
-                Start offset to load from in seconds.
+                (Optional) Start offset to load from in seconds.
             duration (float):
-                Duration to load in seconds.
+                (Optional) Duration to load in seconds.
             sample_rate (float):
-                Sample rate to load audio with.
+                (Optional) Sample rate to load audio with.
             dtype (bytes):
-                (Optional)data type to use, default to `b'float32'`.
+                (Optional) Data type to use, default to `b'float32'`.
             waveform_name (str):
                 (Optional) Name of the key in output dict, default to
                 `'waveform'`.
@@ -146,11 +146,11 @@ class AudioAdapter(ABC):
         Parameters:
             path (Union[Path, str]):
                 Path like of the audio file to save data in.
-            data (numpy.ndarray):
+            data (np.ndarray):
                 Waveform data to write.
             sample_rate (float):
                 Sample rate to write file in.
-            codec ():
+            codec (Codec):
                 (Optional) Writing codec to use, default to `None`.
             bitrate (str):
                 (Optional) Bitrate of the written audio file, default to

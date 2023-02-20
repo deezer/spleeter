@@ -32,7 +32,7 @@ def apply(
             Tensor to apply blstm to.
         instruments (Iterable[str]):
             Iterable that provides a collection of instruments.
-        params (Dict):
+        params (Optional[Dict]):
             (Optional) dict of BLSTM parameters.
 
     Returns:

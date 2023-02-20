@@ -40,7 +40,7 @@ def sync_apply(
             Function to be applied to the concatenation of the tensors in
             `tensor_dict`.
         concat_axis (int):
-            The axis on which to perform the concatenation.
+            (Optional) The axis on which to perform the concatenation.
 
     Returns:
         Dict[str, tf.Tensor]:

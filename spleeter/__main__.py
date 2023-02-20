@@ -160,7 +160,7 @@ EVALUATION_MIXTURE: str = "mixture.wav"
 EVALUATION_AUDIO_DIRECTORY: str = "audio"
 
 
-def _compile_metrics(metrics_output_directory) -> Dict:
+def _compile_metrics(metrics_output_directory: str) -> Dict:
     """
     Compiles metrics from given directory and returns results as dict.
 

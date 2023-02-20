@@ -2,16 +2,16 @@
 # coding: utf8
 
 """
-    Module that provides a class wrapper for source separation.
+Module that provides a class wrapper for source separation.
 
-    Examples:
+Examples:
 
-    ```python
-    >>> from spleeter.separator import Separator
-    >>> separator = Separator('spleeter:2stems')
-    >>> separator.separate(waveform, lambda instrument, data: ...)
-    >>> separator.separate_to_file(...)
-    ```
+```python
+>>> from spleeter.separator import Separator
+>>> separator = Separator('spleeter:2stems')
+>>> separator.separate(waveform, lambda instrument, data: ...)
+>>> separator.separate_to_file(...)
+```
 """
 
 import atexit
@@ -64,13 +64,15 @@ class DataGenerator(object):
             buffer = self._current_data
 
 
-def create_estimator(params, MWF):
+def create_estimator(params: Dict, MWF: bool) -> tf.Tensor:
     """
     Initialize tensorflow estimator that will perform separation
 
     Parameters:
         params (Dict):
             A dictionary of parameters for building the model
+        MWF (bool):
+            Wiener filter enabled?
 
     Returns:
         tf.Tensor:
@@ -107,9 +109,9 @@ class Separator(object):
             params_descriptor (str):
                 Descriptor for TF params to be used.
             MWF (bool):
-                `True` if MWF should be used, `False` otherwise.
+                (Optional) `True` if MWF should be used, `False` otherwise.
             multiprocess (bool):
-                Enable multi-processing.
+                (Optional) Enable multi-processing.
         """
         self._params = load_configuration(params_descriptor)
         self._sample_rate = self._params["sample_rate"]
@@ -158,7 +160,7 @@ class Separator(object):
 
         Parameters:
             timeout (int):
-                Task waiting timeout.
+                (Optional) Task waiting timeout.
         """
         while len(self._tasks) > 0:
             task = self._tasks.pop()
@@ -227,9 +229,9 @@ class Separator(object):
         Performs separation on a waveform.
 
         Parameters:
-            waveform (numpy.ndarray):
+            waveform (np.ndarray):
                 Waveform to be separated (as a numpy array)
-            audio_descriptor (str):
+            audio_descriptor (Optional[str]):
                 (Optional) string describing the waveform (e.g. filename).
 
         Returns:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf8
 
-""" Centralized logging facilities for Spleeter. """
+"""Centralized logging facilities for Spleeter."""
 
 import logging
 import warnings

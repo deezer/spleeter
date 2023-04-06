@@ -2,18 +2,18 @@
 # coding: utf8
 
 """
-    A ModelProvider backed by Github Release feature.
+A ModelProvider backed by Github Release feature.
 
-    Examples:
+Examples:
 
-    ```python
-    >>> from spleeter.model.provider import github
-    >>> provider = github.GithubModelProvider(
-            'github.com',
-            'Deezer/spleeter',
-            'latest')
-    >>> provider.download('2stems', '/path/to/local/storage')
-    ```
+```python
+>>> from spleeter.model.provider import github
+>>> provider = github.GithubModelProvider(
+        'github.com',
+        'Deezer/spleeter',
+        'latest')
+>>> provider.download('2stems', '/path/to/local/storage')
+```
 """
 
 import hashlib
@@ -38,10 +38,16 @@ __license__ = "MIT License"
 
 
 def compute_file_checksum(path):
-    """Computes given path file sha256.
+    """
+    Computes given path file sha256.
 
-    :param path: Path of the file to compute checksum for.
-    :returns: File checksum.
+    Parameters:
+        path (str):
+            Path of the file to compute checksum for.
+
+    Returns:
+        str:
+            File checksum.
     """
     sha256 = hashlib.sha256()
     with open(path, "rb") as stream:
@@ -76,7 +82,7 @@ class GithubModelProvider(ModelProvider):
         self._release: str = release
 
     @classmethod
-    def from_environ(cls: type) -> "GithubModelProvider":
+    def from_environ(cls) -> "GithubModelProvider":
         """
         Factory method that creates provider from envvars.
 
@@ -97,6 +103,7 @@ class GithubModelProvider(ModelProvider):
         Parameters:
             name (str):
                 Name of the model to get checksum for.
+
         Returns:
             str:
                 Checksum of the required model.

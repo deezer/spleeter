@@ -2,15 +2,15 @@
 # coding: utf8
 
 """
-    This module contains building functions for U-net source
-    separation models in a similar way as in A. Jansson et al. :
+This module contains building functions for U-net source
+separation models in a similar way as in A. Jansson et al. :
 
-    "Singing voice separation with deep u-net convolutional networks",
-    ISMIR 2017
+"Singing voice separation with deep u-net convolutional networks",
+ISMIR 2017
 
-    Each instrument is modeled by a single U-net
-    convolutional / deconvolutional network that take a mix spectrogram
-    as input and the estimated sound spectrogram as output.
+Each instrument is modeled by a single U-net
+convolutional / deconvolutional network that take a mix spectrogram
+as input and the estimated sound spectrogram as output.
 """
 
 from functools import partial
@@ -18,10 +18,10 @@ from typing import Any, Dict, Iterable, Optional
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import tensorflow as tf
-from tensorflow.compat.v1 import logging
-from tensorflow.compat.v1.keras.initializers import he_uniform
-from tensorflow.keras.layers import (
+import tensorflow as tf  # type: ignore
+from tensorflow.compat.v1 import logging  # type: ignore
+from tensorflow.compat.v1.keras.initializers import he_uniform  # type: ignore
+from tensorflow.keras.layers import (  # type: ignore
     ELU,
     BatchNormalization,
     Concatenate,
@@ -45,16 +45,15 @@ __license__ = "MIT License"
 
 def _get_conv_activation_layer(params: Dict) -> Any:
     """
-    > To be documented.
-
     Parameters:
         params (Dict):
+            Model parameters.
 
     Returns:
         Any:
             Required Activation function.
     """
-    conv_activation: str = params.get("conv_activation")
+    conv_activation: str = str(params.get("conv_activation"))
     if conv_activation == "ReLU":
         return ReLU()
     elif conv_activation == "ELU":
@@ -64,16 +63,15 @@ def _get_conv_activation_layer(params: Dict) -> Any:
 
 def _get_deconv_activation_layer(params: Dict) -> Any:
     """
-    > To be documented.
-
     Parameters:
         params (Dict):
+            Model parameters.
 
     Returns:
         Any:
             Required Activation function.
     """
-    deconv_activation: str = params.get("deconv_activation")
+    deconv_activation: str = str(params.get("deconv_activation"))
     if deconv_activation == "LeakyReLU":
         return LeakyReLU(0.2)
     elif deconv_activation == "ELU":
@@ -84,18 +82,26 @@ def _get_deconv_activation_layer(params: Dict) -> Any:
 def apply_unet(
     input_tensor: tf.Tensor,
     output_name: str = "output",
-    params: Optional[Dict] = None,
+    params: Dict = {},
     output_mask_logit: bool = False,
-) -> Any:
+) -> tf.Tensor:
     """
     Apply a convolutionnal U-net to model a single instrument (one U-net
     is used for each instrument).
 
     Parameters:
-        input_tensor (tensorflow.Tensor):
+        input_tensor (tf.Tensor):
+            Input of the model.
         output_name (str):
-        params (Optional[Dict]):
+            (Optional) name of the output, default to 'output'.
+        params (Dict):
+            (Optional) dict of BLSTM parameters.
         output_mask_logit (bool):
+            (Optional) Sigmoid or logit?
+
+    Returns:
+        tf.Tensor:
+            Output tensor.
     """
     logging.info(f"Apply unet for {output_name}")
     conv_n_filters = params.get("conv_n_filters", [16, 32, 64, 128, 256, 512])
@@ -198,17 +204,17 @@ def unet(
 
 
 def softmax_unet(
-    input_tensor: tf.Tensor, instruments: Iterable[str], params: Optional[Dict] = None
+    input_tensor: tf.Tensor, instruments: Iterable[str], params: Dict = {}
 ) -> Dict:
     """
     Apply softmax to multitrack unet in order to have mask suming to one.
 
     Parameters:
-        input_tensor (tensorflow.Tensor):
+        input_tensor (tf.Tensor):
             Tensor to apply blstm to.
         instruments (Iterable[str]):
             Iterable that provides a collection of instruments.
-        params (Optional[Dict]):
+        params (Dict):
             (Optional) dict of BLSTM parameters.
 
     Returns:

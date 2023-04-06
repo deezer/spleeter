@@ -2,15 +2,14 @@
 # coding: utf8
 
 """
-    This package provides tools for downloading model from network
-    using remote storage abstraction.
+This package provides tools for downloading model from network
+using remote storage abstraction.
 
-    Examples:
-
-    ```python
-    >>> provider = MyProviderImplementation()
-    >>> provider.get('/path/to/local/storage', params)
-    ```
+Example:
+```python
+>>> provider = MyProviderImplementation()
+>>> provider.get('/path/to/local/storage', params)
+```
 """
 
 from abc import ABC, abstractmethod
@@ -68,6 +67,10 @@ class ModelProvider(ABC):
         Raises:
             IOError:
                 If model can not be retrieved.
+
+        Returns:
+            str:
+                Available model directory.
         """
         # Expend model directory if needed.
         if not isabs(model_directory):

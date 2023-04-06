@@ -3,12 +3,13 @@
 
 """ Unit testing for Separator class. """
 
-__email__ = 'research@deezer.com'
-__author__ = 'Deezer Research'
-__license__ = 'MIT License'
+__email__ = "research@deezer.com"
+__author__ = "Deezer Research"
+__license__ = "MIT License"
+
+from typer.testing import CliRunner
 
 from spleeter.__main__ import spleeter
-from typer.testing import CliRunner
 
 
 def test_version():
@@ -16,6 +17,9 @@ def test_version():
     runner = CliRunner()
 
     # execute spleeter version command
-    result = runner.invoke(spleeter, [
-        '--version',
-    ])
+    _ = runner.invoke(
+        spleeter,
+        [
+            "--version",
+        ],
+    )

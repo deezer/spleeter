@@ -3,16 +3,10 @@
 
 """ Module that provides configuration loading function. """
 
+import importlib.resources as loader
 import json
 from os.path import exists
 from typing import Dict
-
-try:
-    import importlib.resources as loader
-except ImportError:
-    # Try backported to PY<37 `importlib_resources`.
-    # pyright: reportMissingImports=false
-    import importlib_resources as loader
 
 from .. import SpleeterError, resources
 
@@ -25,9 +19,9 @@ _EMBEDDED_CONFIGURATION_PREFIX: str = "spleeter:"
 
 def load_configuration(descriptor: str) -> Dict:
     """
-    Load configuration from the given descriptor. Could be either a
-    `spleeter:` prefixed embedded configuration name or a file system path
-    to read configuration from.
+    Load configuration from the given descriptor.
+    Could be either a `spleeter:` prefixed embedded configuration name
+    or a file system path to read configuration from.
 
     Parameters:
         descriptor (str):

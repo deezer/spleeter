@@ -2,35 +2,31 @@
 # coding: utf8
 
 """
-    Module that provides a class wrapper for source separation.
+Module that provides a class wrapper for source separation.
 
-    Examples:
+Examples:
 
-    ```python
-    >>> from spleeter.separator import Separator
-    >>> separator = Separator('spleeter:2stems')
-    >>> separator.separate(waveform, lambda instrument, data: ...)
-    >>> separator.separate_to_file(...)
-    ```
+```python
+>>> from spleeter.separator import Separator
+>>> separator = Separator('spleeter:2stems')
+>>> separator.separate(waveform, lambda instrument, data: ...)
+>>> separator.separate_to_file(...)
+```
 """
 
 import atexit
 import os
 from multiprocessing import Pool
 from os.path import basename, dirname, join, splitext
-from typing import Dict, Generator, Optional
+from typing import Any, Dict, Generator, List, Optional
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
 import numpy as np
-import tensorflow as tf
-from librosa.core import istft, stft
-from scipy.signal.windows import hann
-
-from spleeter.model.provider import ModelProvider
+import tensorflow as tf  # type: ignore
 
 from . import SpleeterError
-from .audio import Codec, STFTBackend
+from .audio import Codec
 from .audio.adapter import AudioAdapter
 from .audio.convertor import to_stereo
 from .model import EstimatorSpecBuilder, InputProviderFactory, model_fn
@@ -68,15 +64,19 @@ class DataGenerator(object):
             buffer = self._current_data
 
 
-def create_estimator(params, MWF):
+def create_estimator(params: Dict, MWF: bool) -> tf.Tensor:
     """
     Initialize tensorflow estimator that will perform separation
 
-    Params:
-    - params: a dictionary of parameters for building the model
+    Parameters:
+        params (Dict):
+            A dictionary of parameters for building the model
+        MWF (bool):
+            Wiener filter enabled?
 
     Returns:
-        a tensorflow estimator
+        tf.Tensor:
+            A tensorflow estimator
     """
     # Load model.
     provider: ModelProvider = ModelProvider.default()
@@ -100,7 +100,6 @@ class Separator(object):
         self,
         params_descriptor: str,
         MWF: bool = False,
-        stft_backend: STFTBackend = STFTBackend.AUTO,
         multiprocess: bool = True,
     ) -> None:
         """
@@ -111,23 +110,24 @@ class Separator(object):
                 Descriptor for TF params to be used.
             MWF (bool):
                 (Optional) `True` if MWF should be used, `False` otherwise.
+            multiprocess (bool):
+                (Optional) Enable multi-processing.
         """
         self._params = load_configuration(params_descriptor)
         self._sample_rate = self._params["sample_rate"]
         self._MWF = MWF
         self._tf_graph = tf.Graph()
-        self._prediction_generator = None
+        self._prediction_generator: Optional[Generator] = None
         self._input_provider = None
         self._builder = None
         self._features = None
         self._session = None
         if multiprocess:
-            self._pool = Pool()
+            self._pool: Optional[Any] = Pool()
             atexit.register(self._pool.close)
         else:
             self._pool = None
-        self._tasks = []
-        self._params["stft_backend"] = STFTBackend.resolve(stft_backend)
+        self._tasks: List = []
         self._data_generator = DataGenerator()
 
     def _get_prediction_generator(self) -> Generator:
@@ -160,59 +160,12 @@ class Separator(object):
 
         Parameters:
             timeout (int):
-                (Optional) task waiting timeout.
+                (Optional) Task waiting timeout.
         """
         while len(self._tasks) > 0:
             task = self._tasks.pop()
             task.get()
             task.wait(timeout=timeout)
-
-    def _stft(
-        self, data: np.ndarray, inverse: bool = False, length: Optional[int] = None
-    ) -> np.ndarray:
-        """
-        Single entrypoint for both stft and istft. This computes stft and
-        istft with librosa on stereo data. The two channels are processed
-        separately and are concatenated together in the result. The
-        expected input formats are: (n_samples, 2) for stft and (T, F, 2)
-        for istft.
-
-        Parameters:
-            data (numpy.array):
-                Array with either the waveform or the complex spectrogram
-                depending on the parameter inverse
-            inverse (bool):
-                (Optional) Should a stft or an istft be computed.
-            length (Optional[int]):
-
-        Returns:
-            numpy.ndarray:
-                Stereo data as numpy array for the transform. The channels
-                are stored in the last dimension.
-        """
-        assert not (inverse and length is None)
-        data = np.asfortranarray(data)
-        N = self._params["frame_length"]
-        H = self._params["frame_step"]
-        win = hann(N, sym=False)
-        fstft = istft if inverse else stft
-        win_len_arg = {"win_length": None, "length": None} if inverse else {"n_fft": N}
-        n_channels = data.shape[-1]
-        out = []
-        for c in range(n_channels):
-            d = (
-                np.concatenate((np.zeros((N,)), data[:, c], np.zeros((N,))))
-                if not inverse
-                else data[:, :, c].T
-            )
-            s = fstft(d, hop_length=H, window=win, center=False, **win_len_arg)
-            if inverse:
-                s = s[N : N + length]
-            s = np.expand_dims(s.T, 2 - inverse)
-            out.append(s)
-        if len(out) == 1:
-            return out[0]
-        return np.concatenate(out, axis=2 - inverse)
 
     def _get_input_provider(self):
         if self._input_provider is None:
@@ -240,41 +193,6 @@ class Separator(object):
             saver.restore(self._session, latest_checkpoint)
         return self._session
 
-    def _separate_librosa(
-        self, waveform: np.ndarray, audio_descriptor: AudioDescriptor
-    ) -> Dict:
-        """
-        Performs separation with librosa backend for STFT.
-
-        Parameters:
-            waveform (numpy.ndarray):
-                Waveform to be separated (as a numpy array)
-            audio_descriptor (AudioDescriptor):
-        """
-        with self._tf_graph.as_default():
-            out = {}
-            features = self._get_features()
-            # TODO: fix the logic, build sometimes return,
-            #       sometimes set attribute.
-            outputs = self._get_builder().outputs
-            stft = self._stft(waveform)
-            if stft.shape[-1] == 1:
-                stft = np.concatenate([stft, stft], axis=-1)
-            elif stft.shape[-1] > 2:
-                stft = stft[:, :2]
-            sess = self._get_session()
-            outputs = sess.run(
-                outputs,
-                feed_dict=self._get_input_provider().get_feed_dict(
-                    features, stft, audio_descriptor
-                ),
-            )
-            for inst in self._get_builder().instruments:
-                out[inst] = self._stft(
-                    outputs[inst], inverse=True, length=waveform.shape[0]
-                )
-            return out
-
     def _separate_tensorflow(
         self, waveform: np.ndarray, audio_descriptor: AudioDescriptor
     ) -> Dict:
@@ -283,12 +201,14 @@ class Separator(object):
         backend.
 
         Parameters:
-            waveform (numpy.ndarray):
+            waveform (np.ndarray):
                 Waveform to be separated (as a numpy array)
             audio_descriptor (AudioDescriptor):
+                Audio descriptor to be used.
 
         Returns:
-            Separated waveforms.
+            Dict:
+                Separated waveforms.
         """
         if not waveform.shape[-1] == 2:
             waveform = to_stereo(waveform)
@@ -309,24 +229,23 @@ class Separator(object):
         Performs separation on a waveform.
 
         Parameters:
-            waveform (numpy.ndarray):
+            waveform (np.ndarray):
                 Waveform to be separated (as a numpy array)
-            audio_descriptor (str):
+            audio_descriptor (Optional[str]):
                 (Optional) string describing the waveform (e.g. filename).
+
+        Returns:
+            Dict:
+                Separated waveforms.
         """
-        backend: str = self._params["stft_backend"]
-        if backend == STFTBackend.TENSORFLOW:
-            return self._separate_tensorflow(waveform, audio_descriptor)
-        elif backend == STFTBackend.LIBROSA:
-            return self._separate_librosa(waveform, audio_descriptor)
-        raise ValueError(f"Unsupported STFT backend {backend}")
+        return self._separate_tensorflow(waveform, audio_descriptor)
 
     def separate_to_file(
         self,
         audio_descriptor: AudioDescriptor,
         destination: str,
         audio_adapter: Optional[AudioAdapter] = None,
-        offset: int = 0,
+        offset: float = 0,
         duration: float = 600.0,
         codec: Codec = Codec.WAV,
         bitrate: str = "128k",
@@ -352,7 +271,7 @@ class Separator(object):
                 audio adapter, such descriptor would be a file path.
             destination (str):
                 Target directory to write output to.
-            audio_adapter (Optional[AudioAdapter]):
+            audio_adapter (AudioAdapter):
                 (Optional) Audio adapter to use for I/O.
             offset (int):
                 (Optional) Offset of loaded song.

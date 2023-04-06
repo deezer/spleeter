@@ -2,10 +2,10 @@
 # coding: utf8
 
 """
-    This module provides an AudioAdapter implementation based on FFMPEG
-    process. Such implementation is POSIXish and depends on nothing except
-    standard Python libraries. Thus this implementation is the default one
-    used within this library.
+This module provides an AudioAdapter implementation based on FFMPEG
+process. Such implementation is POSIXish and depends on nothing except
+standard Python libraries. Thus this implementation is the default one
+used within this library.
 """
 
 import datetime as dt
@@ -16,7 +16,7 @@ from typing import Dict, Optional, Union
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import ffmpeg
+import ffmpeg  # type: ignore
 import numpy as np
 
 from .. import SpleeterError
@@ -67,7 +67,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         offset: Optional[float] = None,
         duration: Optional[float] = None,
         sample_rate: Optional[float] = None,
-        dtype: np.dtype = np.float32,
+        dtype: bytes = b"float32",
     ) -> Signal:
         """
         Loads the audio file denoted by the given path
@@ -77,13 +77,13 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             path (Union[Path, str]:
                 Path of the audio file to load data from.
             offset (Optional[float]):
-                Start offset to load from in seconds.
+                (Optional) Start offset to load from in seconds.
             duration (Optional[float]):
-                Duration to load in seconds.
+                (Optional) Duration to load in seconds.
             sample_rate (Optional[float]):
-                Sample rate to load audio with.
-            dtype (numpy.dtype):
-                (Optional) Numpy data type to use, default to `float32`.
+                (Optional) Sample rate to load audio with.
+            dtype (bytes):
+                (Optional) Data type to use, default to `b'float32'`.
 
         Returns:
             Signal:
@@ -144,11 +144,11 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
         Parameters:
             path (Union[Path, str]):
                 Path like of the audio file to save data in.
-            data (numpy.ndarray):
+            data (np.ndarray):
                 Waveform data to write.
             sample_rate (float):
                 Sample rate to write file in.
-            codec ():
+            codec (Codec):
                 (Optional) Writing codec to use, default to `None`.
             bitrate (str):
                 (Optional) Bitrate of the written audio file, default to

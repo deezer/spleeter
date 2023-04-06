@@ -1,5 +1,5 @@
 {% set name = "spleeter" %}
-{% set version = "2.2.1" %}
+{% set version = "2.4.0" %}
 
 package:
   name: {{ name|lower }}
@@ -23,13 +23,12 @@ requirements:
     - poetry
   run:
     - python {{ python }}
-    - tensorflow ==2.3.0  # [linux]
-    - tensorflow ==2.3.0  # [win]
-    - numpy <1.20.0
+    - tensorflow ==2.5.0  # [linux]
+    - tensorflow ==2.5.0  # [win]
+    - numpy
     - pandas
     - ffmpeg-python
     - norbert
-    - librosa
     - typer
     - httpx
 

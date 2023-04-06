@@ -4,11 +4,12 @@
 """ This package provide an estimator builder as well as model functions. """
 
 import importlib
+from typing import Any, Dict, Optional, Tuple
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import tensorflow as tf
-from tensorflow.signal import hann_window, inverse_stft, stft
+import tensorflow as tf  # type: ignore
+from tensorflow.signal import hann_window, inverse_stft, stft  # type: ignore
 
 from ..utils.tensor import pad_and_partition, pad_and_reshape
 
@@ -29,13 +30,14 @@ def get_model_function(model_type):
     For instance "unet.softmax_unet" will return the softmax_unet function
     in the "unet.py" submodule of the current module (spleeter.model).
 
-    Params:
-    - model_type: str
-    the relative module path to the model function.
+    Parameters:
+        model_type (str):
+            The relative module path to the model function.
 
     Returns:
-    A tensorflow function to be applied to the input tensor to get the
-    multitrack output.
+        Function:
+            A tensorflow function to be applied to the input tensor to get the
+            multitrack output.
     """
     relative_path_to_module = ".".join(model_type.split(".")[:-1])
     model_name = model_type.split(".")[-1]
@@ -78,62 +80,27 @@ class WaveformInputProvider(InputProvider):
         return {features["audio_id"]: audio_id, features["waveform"]: waveform}
 
 
-class SpectralInputProvider(InputProvider):
-    def __init__(self, params):
-        super().__init__(params)
-        self.stft_input_name = "{}_stft".format(self.params["mix_name"])
-
-    @property
-    def input_names(self):
-        return ["audio_id", self.stft_input_name]
-
-    def get_input_dict_placeholders(self):
-        features = {
-            self.stft_input_name: placeholder(
-                tf.complex64,
-                shape=(
-                    None,
-                    self.params["frame_length"] // 2 + 1,
-                    self.params["n_channels"],
-                ),
-                name=self.stft_input_name,
-            ),
-            "audio_id": placeholder(tf.string, name="audio_id"),
-        }
-        return features
-
-    def get_feed_dict(self, features, stft, audio_id):
-        return {features["audio_id"]: audio_id, features[self.stft_input_name]: stft}
-
-
 class InputProviderFactory(object):
     @staticmethod
     def get(params):
-        stft_backend = params["stft_backend"]
-        assert stft_backend in (
-            "tensorflow",
-            "librosa",
-        ), "Unexpected backend {}".format(stft_backend)
-        if stft_backend == "tensorflow":
-            return WaveformInputProvider(params)
-        else:
-            return SpectralInputProvider(params)
+        return WaveformInputProvider(params)
 
 
 class EstimatorSpecBuilder(object):
-    """A builder class that allows to builds a multitrack unet model
+    """
+    A builder class that allows to builds a multitrack unet model
     estimator. The built model estimator has a different behaviour when
     used in a train/eval mode and in predict mode.
 
-    * In train/eval mode:   it takes as input and outputs magnitude spectrogram
-    * In predict mode:      it takes as input and outputs waveform. The whole
-                            separation process is then done in this function
-                            for performance reason: it makes it possible to run
-                            the whole spearation process (including STFT and
-                            inverse STFT) on GPU.
+    * In train/eval mode:
+        It takes as input and outputs magnitude spectrogram
+    * In predict mode:
+        It takes as input and outputs waveform.
+        The whole separation process is then done in this function
+        for performance reason: it makes it possible to run the whole
+        separation process (including STFT and inverse STFT) on GPU.
 
-    :Example:
-
+    Example:
     >>> from spleeter.model import EstimatorSpecBuilder
     >>> builder = EstimatorSpecBuilder()
     >>> builder.build_predict_model()
@@ -159,19 +126,23 @@ class EstimatorSpecBuilder(object):
     WINDOW_COMPENSATION_FACTOR = 2.0 / 3.0
     EPSILON = 1e-10
 
-    def __init__(self, features, params):
-        """Default constructor. Depending on built model
-        usage, the provided features should be different:
+    def __init__(self, features: Dict, params: Dict) -> None:
+        """
+        Default constructor. Depending on built model usage,
+        the provided features should be different:
 
-        * In train/eval mode:   features is a dictionary with a
-                                "mix_spectrogram" key, associated to the
-                                mix magnitude spectrogram.
-        * In predict mode:      features is a dictionary with a "waveform"
-                                key, associated to the waveform of the sound
-                                to be separated.
+        * In train/eval mode:
+            Features is a dictionary with a "mix_spectrogram" key,
+            associated to the mix magnitude spectrogram.
+        * In predict mode:
+            Features is a dictionary with a "waveform" key,
+            associated to the waveform of the sound to be separated.
 
-        :param features: The input features for the estimator.
-        :param params: Some hyperparameters as a dictionary.
+        Parameters:
+            features ():
+                The input features for the estimator.
+            params ():
+                Some hyperparameters as a dictionary.
         """
 
         self._features = features
@@ -186,18 +157,16 @@ class EstimatorSpecBuilder(object):
         self._frame_length = params["frame_length"]
         self._frame_step = params["frame_step"]
 
-    def include_stft_computations(self):
-        return self._params["stft_backend"] == "tensorflow"
-
     def _build_model_outputs(self):
-        """Created a batch_sizexTxFxn_channels input tensor containing
-        mix magnitude spectrogram, then an output dict from it according
-        to the selected model in internal parameters.
-
-        :returns: Build output dict.
-        :raise ValueError: If required model_type is not supported.
         """
+        Created a batch_sizexTxFxn_channels input tensor containing
+        mix magnitude spectrogram, then an output dict from it
+        according to the selected model in internal parameters.
 
+        Raises:
+            ValueError:
+                If required model_type is not supported.
+        """
         input_tensor = self.spectrogram_feature
         model = self._params.get("model", None)
         if model is not None:
@@ -212,14 +181,18 @@ class EstimatorSpecBuilder(object):
             input_tensor, self._instruments, self._params["model"]["params"]
         )
 
-    def _build_loss(self, labels):
-        """Construct tensorflow loss and metrics
+    def _build_loss(self, labels: Dict) -> Tuple[tf.Tensor, Dict]:
+        """
+        Construct tensorflow loss and metrics
 
-        :param output_dict: dictionary of network outputs (key: instrument
-            name, value: estimated spectrogram of the instrument)
-        :param labels: dictionary of target outputs (key: instrument
-            name, value: ground truth spectrogram of the instrument)
-        :returns: tensorflow (loss, metrics) tuple.
+        Parameters:
+            labels (Dict):
+                Dictionary of target outputs (key: instrument name,
+                value: ground truth spectrogram of the instrument)
+
+        Returns:
+            Tuple[tf.Tensor, Dict]:
+                Tensorflow (loss, metrics) tuple.
         """
         output_dict = self.model_outputs
         loss_type = self._params.get("loss_type", self.L1_MASK)
@@ -244,12 +217,14 @@ class EstimatorSpecBuilder(object):
         metrics["absolute_difference"] = tf.compat.v1.metrics.mean(loss)
         return loss, metrics
 
-    def _build_optimizer(self):
-        """Builds an optimizer instance from internal parameter values.
-
+    def _build_optimizer(self) -> tf.Tensor:
+        """
+        Builds an optimizer instance from internal parameter values.
         Default to AdamOptimizer if not specified.
 
-        :returns: Optimizer instance from internal configuration.
+        Returns:
+            tf.Tensor:
+                Optimizer instance from internal configuration.
         """
         name = self._params.get("optimizer")
         if name == self.ADADELTA:
@@ -272,10 +247,10 @@ class EstimatorSpecBuilder(object):
         return f"{self._mix_name}_spectrogram"
 
     def _build_stft_feature(self):
-        """Compute STFT of waveform and slice the STFT in segment
+        """
+        Compute STFT of waveform and slice the STFT in segment
         with the right length to feed the network.
         """
-
         stft_name = self.stft_name
         spec_name = self.spectrogram_name
 
@@ -342,11 +317,21 @@ class EstimatorSpecBuilder(object):
             self._build_masked_stfts()
         return self._masked_stfts
 
-    def _inverse_stft(self, stft_t, time_crop=None):
-        """Inverse and reshape the given STFT
+    def _inverse_stft(
+        self, stft_t: tf.Tensor, time_crop: Optional[Any] = None
+    ) -> tf.Tensor:
+        """
+        Inverse and reshape the given STFT
 
-        :param stft_t: input STFT
-        :returns: inverse STFT (waveform)
+        Parameters:
+            stft_t (tf.Tensor):
+                Input STFT.
+            time_crop (Optional[Any]):
+                Time cropping.
+
+        Returns:
+            tf.Tensor:
+                Inverse STFT (waveform).
         """
         inversed = (
             inverse_stft(
@@ -364,15 +349,19 @@ class EstimatorSpecBuilder(object):
             time_crop = tf.shape(self._features["waveform"])[0]
         return reshaped[self._frame_length : self._frame_length + time_crop, :]
 
-    def _build_mwf_output_waveform(self):
-        """Perform separation with multichannel Wiener Filtering using Norbert.
-        Note: multichannel Wiener Filtering is not coded in Tensorflow and thus
-        may be quite slow.
-
-        :returns: dictionary of separated waveforms (key: instrument name,
-            value: estimated waveform of the instrument)
+    def _build_mwf_output_waveform(self) -> Dict:
         """
-        import norbert  # pylint: disable=import-error
+        Perform separation with multichannel Wiener Filtering using Norbert.
+
+        Note: multichannel Wiener Filtering is not coded in Tensorflow
+        and thus may be quite slow.
+
+        Returns:
+            Dict:
+                Dictionary of separated waveforms (key: instrument name,
+                value: estimated waveform of the instrument)
+        """
+        import norbert  # type: ignore # pylint: disable=import-error
 
         output_dict = self.model_outputs
         x = self.stft_feature
@@ -400,13 +389,22 @@ class EstimatorSpecBuilder(object):
             for k, instrument in enumerate(self._instruments)
         }
 
-    def _extend_mask(self, mask):
-        """Extend mask, from reduced number of frequency bin to the number of
-        frequency bin in the STFT.
+    def _extend_mask(self, mask: tf.Tensor) -> tf.Tensor:
+        """
+        Extend mask, from reduced number of frequency bin to
+        the number of frequency bin in the STFT.
 
-        :param mask: restricted mask
-        :returns: extended mask
-        :raise ValueError: If invalid mask_extension parameter is set.
+        Parameters:
+            mask (tf.Tensor):
+                Restricted mask.
+
+        Returns:
+            tf.Tensor:
+                Extended mask
+
+        Raises:
+            ValueError:
+                If invalid mask_extension parameter is set.
         """
         extension = self._params["mask_extension"]
         # Extend with average
@@ -427,7 +425,6 @@ class EstimatorSpecBuilder(object):
     def _build_masks(self):
         """
         Compute masks from the output spectrograms of the model.
-        :return:
         """
         output_dict = self.model_outputs
         stft_feature = self.stft_feature
@@ -466,26 +463,38 @@ class EstimatorSpecBuilder(object):
             out[instrument] = tf.cast(mask, dtype=tf.complex64) * input_stft
         self._masked_stfts = out
 
-    def _build_manual_output_waveform(self, masked_stft):
-        """Perform ratio mask separation
-
-        :param output_dict: dictionary of estimated spectrogram (key: instrument
-            name, value: estimated spectrogram of the instrument)
-        :returns: dictionary of separated waveforms (key: instrument name,
-            value: estimated waveform of the instrument)
+    def _build_manual_output_waveform(self, masked_stft: Dict) -> Dict:
         """
+        Perform ratio mask separation
 
+        Parameters:
+            masked_stft (Dict):
+                Dictionary of estimated spectrogram (key: instrument name,
+                value: estimated spectrogram of the instrument).
+
+        Returns:
+            Dict:
+                Dictionary of separated waveforms (key: instrument name,
+                value: estimated waveform of the instrument).
+        """
         output_waveform = {}
         for instrument, stft_data in masked_stft.items():
             output_waveform[instrument] = self._inverse_stft(stft_data)
         return output_waveform
 
-    def _build_output_waveform(self, masked_stft):
-        """Build output waveform from given output dict in order to be used in
-        prediction context. Regarding of the configuration building method will
-        be using MWF.
+    def _build_output_waveform(self, masked_stft: Dict) -> Dict:
+        """
+        Build output waveform from given output dict in order
+        to be used in prediction context. The configuration
+        building method will be using MWF.
 
-        :returns: Built output waveform.
+        masked_stft (Dict):
+                Dictionary of estimated spectrogram (key: instrument name,
+                value: estimated spectrogram of the instrument).
+
+        Returns:
+            Dict:
+                Built output waveform.
         """
 
         if self._params.get("MWF", False):
@@ -495,49 +504,62 @@ class EstimatorSpecBuilder(object):
         return output_waveform
 
     def _build_outputs(self):
-        if self.include_stft_computations():
-            self._outputs = self._build_output_waveform(self.masked_stfts)
-        else:
-            self._outputs = self.masked_stfts
+        self._outputs = self._build_output_waveform(self.masked_stfts)
 
         if "audio_id" in self._features:
             self._outputs["audio_id"] = self._features["audio_id"]
 
-    def build_predict_model(self):
-        """Builder interface for creating model instance that aims to perform
+    def build_predict_model(self) -> tf.Tensor:
+        """
+        Builder interface for creating model instance that aims to perform
         prediction / inference over given track. The output of such estimator
-        will be a dictionary with a "<instrument>" key per separated instrument
-        , associated to the estimated separated waveform of the instrument.
+        will be a dictionary with a "<instrument>" key per separated instrument,
+        associated to the estimated separated waveform of the instrument.
 
-        :returns: An estimator for performing prediction.
+        Returns:
+            tf.Tensor:
+                An estimator for performing prediction.
         """
 
         return tf.estimator.EstimatorSpec(
             tf.estimator.ModeKeys.PREDICT, predictions=self.outputs
         )
 
-    def build_evaluation_model(self, labels):
-        """Builder interface for creating model instance that aims to perform
-        model evaluation. The output of such estimator will be a dictionary
-        with a key "<instrument>_spectrogram" per separated instrument,
-        associated to the estimated separated instrument magnitude spectrogram.
+    def build_evaluation_model(self, labels: Dict) -> tf.Tensor:
+        """
+        Builder interface for creating model instance that aims
+        to perform model evaluation. The output of such estimator
+        will be a dictionary with a key "<instrument>_spectrogram"
+        per separated instrument, associated to the estimated
+        separated instrument magnitude spectrogram.
 
-        :param labels: Model labels.
-        :returns: An estimator for performing model evaluation.
+        Parameters:
+            labels (Dict):
+                Model labels.
+
+        Returns:
+            tf.Tensor:
+                An estimator for performing model evaluation.
         """
         loss, metrics = self._build_loss(labels)
         return tf.estimator.EstimatorSpec(
             tf.estimator.ModeKeys.EVAL, loss=loss, eval_metric_ops=metrics
         )
 
-    def build_train_model(self, labels):
-        """Builder interface for creating model instance that aims to perform
+    def build_train_model(self, labels: Dict) -> tf.Tensor:
+        """
+        Builder interface for creating model instance that aims to perform
         model training. The output of such estimator will be a dictionary
         with a key "<instrument>_spectrogram" per separated instrument,
         associated to the estimated separated instrument magnitude spectrogram.
 
-        :param labels: Model labels.
-        :returns: An estimator for performing model training.
+        Parameters:
+            labels (Dict):
+                Model labels.
+
+        Returns:
+            tf.Tensor:
+                An estimator for performing model training.
         """
         loss, metrics = self._build_loss(labels)
         optimizer = self._build_optimizer()
@@ -552,17 +574,7 @@ class EstimatorSpecBuilder(object):
         )
 
 
-def model_fn(features, labels, mode, params, config):
-    """
-
-    :param features:
-    :param labels:
-    :param mode: Estimator mode.
-    :param params:
-    :param config: TF configuration (not used).
-    :returns: Built EstimatorSpec.
-    :raise ValueError: If estimator mode is not supported.
-    """
+def model_fn(features, labels, mode, params):
     builder = EstimatorSpecBuilder(features, params)
     if mode == tf.estimator.ModeKeys.PREDICT:
         return builder.build_predict_model()

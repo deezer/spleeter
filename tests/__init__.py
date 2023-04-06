@@ -3,6 +3,6 @@
 
 """ Unit testing package. """
 
-__email__ = 'spleeter@deezer.com'
-__author__ = 'Deezer Research'
-__license__ = 'MIT License'
+__email__ = "spleeter@deezer.com"
+__author__ = "Deezer Research"
+__license__ = "MIT License"

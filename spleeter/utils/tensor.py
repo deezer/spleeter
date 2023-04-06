@@ -5,11 +5,11 @@
 
 from typing import Any, Callable, Dict
 
-import pandas as pd
+import pandas as pd  # type: ignore
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import tensorflow as tf
+import tensorflow as tf  # type: ignore
 
 # pylint: enable=import-error
 
@@ -19,7 +19,7 @@ __license__ = "MIT License"
 
 
 def sync_apply(
-    tensor_dict: tf.Tensor, func: Callable, concat_axis: int = 1
+    tensor_dict: Dict[str, tf.Tensor], func: Callable, concat_axis: int = 1
 ) -> Dict[str, tf.Tensor]:
     """
     Return a function that applies synchronously the provided func on the
@@ -30,20 +30,20 @@ def sync_apply(
     same crop should be applied to both input data and label, so random
     crop cannot be applied separately on each of them).
 
-    Notes:
+    Note:
         All tensor are assumed to be the same shape.
 
     Parameters:
-        tensor_dict (Dict[str, tensorflow.Tensor]):
+        tensor_dict (Dict[str, tf.Tensor]):
             A dictionary of tensor.
         func (Callable):
             Function to be applied to the concatenation of the tensors in
             `tensor_dict`.
         concat_axis (int):
-            The axis on which to perform the concatenation.
+            (Optional) The axis on which to perform the concatenation.
 
     Returns:
-        Dict[str, tensorflow.Tensor]:
+        Dict[str, tf.Tensor]:
             Processed tensors dictionary with the same name (keys) as input
             tensor_dict.
     """
@@ -73,17 +73,6 @@ def from_float32_to_uint8(
     min_key: str = "min",
     max_key: str = "max",
 ) -> tf.Tensor:
-    """
-
-    Parameters:
-        tensor (tensorflow.Tensor):
-        tensor_key (str):
-        min_key (str):
-        max_key (str):
-
-    Returns:
-        tensorflow.Tensor:
-    """
     tensor_min = tf.reduce_min(tensor)
     tensor_max = tf.reduce_max(tensor)
     return {
@@ -99,16 +88,6 @@ def from_float32_to_uint8(
 def from_uint8_to_float32(
     tensor: tf.Tensor, tensor_min: tf.Tensor, tensor_max: tf.Tensor
 ) -> tf.Tensor:
-    """
-
-    Parameters:
-        tensor (tensorflow.Tensor):
-        tensor_min (tensorflow.Tensor):
-        tensor_max (tensorflow.Tensor):
-
-    Returns:
-        tensorflow.Tensor:
-    """
     return (
         tf.cast(tensor, tf.float32) * (tensor_max - tensor_min) / 255.9999 + tensor_min
     )
@@ -120,23 +99,23 @@ def pad_and_partition(tensor: tf.Tensor, segment_len: int) -> tf.Tensor:
     along the first dimension. The tensor is padded with 0 in order
     to ensure that the first dimension is a multiple of `segment_len`.
 
-    Tensor must be of known fixed rank
-
     Examples:
-
-        ```python
-        >>> tensor = [[1, 2, 3], [4, 5, 6]]
-        >>> segment_len = 2
-        >>> pad_and_partition(tensor, segment_len)
-        [[[1, 2], [4, 5]], [[3, 0], [6, 0]]]
-        ````
+    ```python
+    >>> tensor = [[1, 2, 3], [4, 5, 6]]
+    >>> segment_len = 2
+    >>> pad_and_partition(tensor, segment_len)
+    [[[1, 2], [4, 5]], [[3, 0], [6, 0]]]
+    ````
 
     Parameters:
-        tensor (tensorflow.Tensor):
+        tensor (tf.Tensor):
+            Tensor of known fixed rank
         segment_len (int):
+            Segment length.
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
+            Padded and partitioned tensor.
     """
     tensor_size = tf.math.floormod(tf.shape(tensor)[0], segment_len)
     pad_size = tf.math.floormod(segment_len - tensor_size, segment_len)
@@ -148,15 +127,6 @@ def pad_and_partition(tensor: tf.Tensor, segment_len: int) -> tf.Tensor:
 
 
 def pad_and_reshape(instr_spec, frame_length, F) -> Any:
-    """
-    Parameters:
-        instr_spec:
-        frame_length:
-        F:
-
-    Returns:
-        Any:
-    """
     spec_shape = tf.shape(instr_spec)
     extension_row = tf.zeros((spec_shape[0], spec_shape[1], 1, spec_shape[-1]))
     n_extra_row = (frame_length) // 2 + 1 - F
@@ -170,8 +140,8 @@ def pad_and_reshape(instr_spec, frame_length, F) -> Any:
 
 def dataset_from_csv(csv_path: str, **kwargs) -> Any:
     """
-    Load dataset from a CSV file using Pandas. kwargs if any are
-    forwarded to the `pandas.read_csv` function.
+    Load dataset from a CSV file using Pandas.
+    kwargs if any are forwarded to the `pandas.read_csv` function.
 
     Parameters:
         csv_path (str):
@@ -189,8 +159,8 @@ def dataset_from_csv(csv_path: str, **kwargs) -> Any:
 def check_tensor_shape(tensor_tf: tf.Tensor, target_shape: Any) -> bool:
     """
     Return a Tensorflow boolean graph that indicates whether
-    sample[features_key] has the specified target shape. Only check
-    not None entries of target_shape.
+    sample[features_key] has the specified target shape.
+    Only check not None entries of target_shape.
 
     Parameters:
         tensor_tf (tensorflow.Tensor):
@@ -213,7 +183,7 @@ def check_tensor_shape(tensor_tf: tf.Tensor, target_shape: Any) -> bool:
 
 def set_tensor_shape(tensor: tf.Tensor, tensor_shape: Any) -> tf.Tensor:
     """
-    Set shape for a tensor (not in place, as opposed to tf.set_shape)
+    Set shape for a tensor (not in place, as opposed to tf.set_shape).
 
     Parameters:
         tensor (tensorflow.Tensor):
@@ -225,6 +195,5 @@ def set_tensor_shape(tensor: tf.Tensor, tensor_shape: Any) -> tf.Tensor:
         tensorflow.Tensor:
             A reshaped tensor.
     """
-    # NOTE: That SOUND LIKE IN PLACE HERE ?
     tensor.set_shape(tensor_shape)
     return tensor

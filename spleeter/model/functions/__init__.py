@@ -7,7 +7,7 @@ from typing import Callable, Dict, Iterable, Optional
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import tensorflow as tf
+import tensorflow as tf  # type: ignore
 
 # pylint: enable=import-error
 
@@ -26,17 +26,18 @@ def apply(
     Apply given function to the input tensor.
 
     Parameters:
-        function:
+        function (Callable):
             Function to be applied to tensor.
-        input_tensor (tensorflow.Tensor):
+        input_tensor (tf.Tensor):
             Tensor to apply blstm to.
         instruments (Iterable[str]):
             Iterable that provides a collection of instruments.
-        params:
+        params (Optional[Dict]):
             (Optional) dict of BLSTM parameters.
 
     Returns:
-        Created output tensor dict.
+        Dict:
+            Created output tensor dict.
     """
     output_dict: Dict = {}
     for instrument in instruments:

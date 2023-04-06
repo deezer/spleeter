@@ -5,9 +5,8 @@
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import numpy as np
-import tensorflow as tf
-from tensorflow.signal import hann_window, stft
+import tensorflow as tf  # type: ignore
+from tensorflow.signal import hann_window, stft  # type: ignore
 
 # pylint: enable=import-error
 
@@ -28,21 +27,21 @@ def compute_spectrogram_tf(
     `n_samples x n_channels` tensor.
 
     Parameters:
-        waveform (tensorflow.Tensor):
+        waveform (tf.Tensor):
             Input waveform as `(times x number of channels)` tensor.
         frame_length (int):
-            Length of a STFT frame to use.
+            (Optional) Length of a STFT frame to use.
         frame_step (int):
-            HOP between successive frames.
+            (Optional) HOP between successive frames.
         spec_exponent (float):
-            Exponent of the spectrogram (usually 1 for magnitude
-            spectrogram, or 2 for power spectrogram).
+            (Optional) Exponent of the spectrogram (usually 1 for
+            magnitude spectrogram, or 2 for power spectrogram).
         window_exponent (float):
-            Exponent applied to the Hann windowing function (may be
-            useful for making perfect STFT/iSTFT reconstruction).
+            (Optional) Exponent applied to the Hann windowing function
+            (may be useful for making perfect STFT/iSTFT reconstruction).
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
             Computed magnitude / power spectrogram as a
             `(T x F x n_channels)` tensor.
     """
@@ -71,15 +70,15 @@ def time_stretch(
     this is an approximation in the frequency domain.
 
     Parameters:
-        spectrogram (tensorflow.Tensor):
+        spectrogram (tf.Tensor):
             Input spectrogram to be time stretched as tensor.
         factor (float):
             (Optional) Time stretch factor, must be > 0, default to `1`.
-        method (tensorflow.image.ResizeMethod):
+        method (tf.image.ResizeMethod):
             (Optional) Interpolation method, default to `BILINEAR`.
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
             Time stretched spectrogram as tensor with same shape.
     """
     T = tf.shape(spectrogram)[0]
@@ -100,15 +99,17 @@ def random_time_stretch(
     drawn uniformly in `[factor_min, factor_max]`.
 
     Parameters:
-        spectrogram (tensorflow.Tensor):
+        spectrogram (tf.Tensor):
             Input spectrogram to be time stretched as tensor.
         factor_min (float):
             (Optional) Min time stretch factor, default to `0.9`.
         factor_max (float):
             (Optional) Max time stretch factor, default to `1.1`.
+        ** kwargs:
+            Time stretch args.
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
             Randomly time stretched spectrogram as tensor with same shape.
     """
     factor = (
@@ -127,15 +128,15 @@ def pitch_shift(
     this is an approximation in the frequency domain.
 
     Parameters:
-        spectrogram (tensorflow.Tensor):
+        spectrogram (tf.Tensor):
             Input spectrogram to be pitch shifted as tensor.
         semitone_shift (float):
             (Optional) Pitch shift in semitone, default to `0.0`.
-        method (tensorflow.image.ResizeMethod):
+        method (tf.image.ResizeMethod):
             (Optional) Interpolation method, default to `BILINEAR`.
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
             Pitch shifted spectrogram (same shape as spectrogram).
     """
     factor = 2 ** (semitone_shift / 12.0)
@@ -159,7 +160,7 @@ def random_pitch_shift(
     `[shift_min, shift_max]`.
 
     Parameters:
-        spectrogram (tensorflow.Tensor):
+        spectrogram (tf.Tensor):
             Input spectrogram to be pitch shifted as tensor.
         shift_min (float):
             (Optional) Min pitch shift in semitone, default to -1.
@@ -167,7 +168,7 @@ def random_pitch_shift(
             (Optional) Max pitch shift in semitone, default to 1.
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
             Randomly pitch shifted spectrogram (same shape as spectrogram).
     """
     semitone_shift = (

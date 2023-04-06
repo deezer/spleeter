@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf8
 
-""" Centralized logging facilities for Spleeter. """
+"""Centralized logging facilities for Spleeter."""
 
 import logging
 import warnings
@@ -43,8 +43,8 @@ def configure_logger(verbose: bool) -> None:
         verbose (bool):
             `True` to use verbose logger, `False` otherwise.
     """
-    from tensorflow import get_logger
-    from tensorflow.compat.v1 import logging as tf_logging
+    from tensorflow import get_logger  # type: ignore
+    from tensorflow.compat.v1 import logging as tf_logging  # type: ignore
 
     tf_logger = get_logger()
     tf_logger.handlers = [handler]

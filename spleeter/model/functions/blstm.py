@@ -2,32 +2,32 @@
 # coding: utf8
 
 """
-    This system (UHL1) uses a bi-directional LSTM network as described in :
+This system (UHL1) uses a bi-directional LSTM network as described in :
 
-    `S. Uhlich, M. Porcu, F. Giron, M. Enenkl, T. Kemp, N. Takahashi and
-    Y. Mitsufuji.
+`S. Uhlich, M. Porcu, F. Giron, M. Enenkl, T. Kemp, N. Takahashi and
+Y. Mitsufuji.
 
-    "Improving music source separation based on deep neural networks through
-    data augmentation and network blending", Proc. ICASSP, 2017.`
+"Improving music source separation based on deep neural networks through
+data augmentation and network blending", Proc. ICASSP, 2017.`
 
-    It has three BLSTM layers, each having 500 cells.  For each instrument,
-    a network is trained which predicts the target instrument amplitude from
-    the mixture amplitude in the STFT domain (frame size: 4096, hop size:
-    1024). The raw output of each network is then combined by a multichannel
-    Wiener filter. The network is trained on musdb where we split train into
-    train_train and train_valid with 86 and 14 songs, respectively. The
-    validation set is used to perform early stopping and hyperparameter
-    selection (LSTM layer dropout rate, regularization strength).
+It has three BLSTM layers, each having 500 cells.  For each instrument,
+a network is trained which predicts the target instrument amplitude from
+the mixture amplitude in the STFT domain (frame size: 4096, hop size:
+1024). The raw output of each network is then combined by a multichannel
+Wiener filter. The network is trained on musdb where we split train into
+train_train and train_valid with 86 and 14 songs, respectively. The
+validation set is used to perform early stopping and hyperparameter
+selection (LSTM layer dropout rate, regularization strength).
 """
 
 from typing import Dict, Optional
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
-import tensorflow as tf
-from tensorflow.compat.v1.keras.initializers import he_uniform
-from tensorflow.compat.v1.keras.layers import CuDNNLSTM
-from tensorflow.keras.layers import (
+import tensorflow as tf  # type: ignore
+from tensorflow.compat.v1.keras.initializers import he_uniform  # type: ignore
+from tensorflow.compat.v1.keras.layers import CuDNNLSTM  # type: ignore
+from tensorflow.keras.layers import (  # type: ignore
     Bidirectional,
     Dense,
     Flatten,
@@ -51,7 +51,7 @@ def apply_blstm(
     Apply BLSTM to the given input_tensor.
 
     Parameters:
-        input_tensor (tensorflow.Tensor):
+        input_tensor (tf.Tensor):
             Input of the model.
         output_name (str):
             (Optional) name of the output, default to 'output'.
@@ -59,7 +59,7 @@ def apply_blstm(
             (Optional) dict of BLSTM parameters.
 
     Returns:
-        tensorflow.Tensor:
+        tf.Tensor:
             Output tensor.
     """
     if params is None:

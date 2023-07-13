@@ -38,6 +38,10 @@ That being said, many cool projects have been built on top of ours. Notably the 
 
 🆕 **Spleeter** is a baseline in the ongoing [Music Demixing Challenge](https://www.aicrowd.com/challenges/music-demixing-challenge-ismir-2021)!
 
+## Spleeter Pro (Commercial version)
+
+Check out our commercial version : [Spleeter Pro](https://www.deezer-techservices.com/solutions/spleeter/). Benefit from our expertise for precise audio separation, faster processing speeds, and dedicated professional support. 
+
 ## Quick start
 
 Want to try it out but don't want to install anything ? We have set up a [Google Colab](https://colab.research.google.com/github/deezer/spleeter/blob/master/spleeter.ipynb).

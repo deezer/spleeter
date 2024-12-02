@@ -28,7 +28,7 @@ Since it's been released, there are multiple forks exposing **Spleeter** through
 
 That being said, many cool projects have been built on top of ours. Notably the porting to the *Ableton Live* ecosystem through the [Spleeter 4 Max](https://github.com/diracdeltas/spleeter4max#spleeter-for-max) project.
 
-**Spleeter** pre-trained models have also been used by professionnal audio softwares. Here's a non-exhaustive list:
+**Spleeter** pre-trained models have also been used by professional audio softwares. Here's a non-exhaustive list:
 
 * [iZotope](https://www.izotope.com/en/shop/rx-8-standard.html) in its *Music Rebalance* feature within **RX 8**
 * [SpectralLayers](https://new.steinberg.net/spectralayers/) in its *Unmix* feature in **SpectralLayers 7**

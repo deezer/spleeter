@@ -1,5 +1,9 @@
 # Changelog History
 
+## 2.4.2
+
+Dependecy upgrades and adding support for python 3.11 (dropping 3.7)
+
 ## 2.3.2
 
 Release contrain on specific Tensorflow, numpy and Librosa versions

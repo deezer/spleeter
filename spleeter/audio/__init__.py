@@ -10,14 +10,23 @@ tools for manipulating audio content such as :
 - Waveform convertion and transforming functions.
 """
 
-from enum import Enum
+# Python 3.11 is not backward compatible for String Enum
+# https://tomwojcik.com/posts/2023-01-02/python-311-str-enum-breaking-change
+try:
+    from enum import StrEnum
+except ImportError:
+    from enum import Enum
+
+    class StrEnum(str, Enum):
+        pass
+
 
 __email__ = "spleeter@deezer.com"
 __author__ = "Deezer Research"
 __license__ = "MIT License"
 
 
-class Codec(str, Enum):
+class Codec(StrEnum):
     """Enumeration of supported audio codec."""
 
     WAV: str = "wav"

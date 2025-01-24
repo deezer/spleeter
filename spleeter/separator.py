@@ -122,9 +122,7 @@ class Separator(object):
         def get_dataset():
             return tf.data.Dataset.from_tensors(data)
 
-        return self.estimator.predict(
-            get_dataset, yield_single_examples=False
-        )
+        return self.estimator.predict(get_dataset, yield_single_examples=False)
 
     def join(self, timeout: int = 200) -> None:
         """

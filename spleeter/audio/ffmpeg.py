@@ -115,7 +115,7 @@ class FFMPEGProcessAudioAdapter(AudioAdapter):
             sample_rate = metadata["sample_rate"]
         output_kwargs = {"format": "f32le", "ar": sample_rate}
         if duration is not None:
-            output_kwargs["t"] = str(dt.timedelta(seconds=duration))
+            output_kwargs["t" if duration > 0 else "sseof"] = str(duration)
         if offset is not None:
             output_kwargs["ss"] = str(dt.timedelta(seconds=offset))
         process = (

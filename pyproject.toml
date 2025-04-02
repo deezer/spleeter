@@ -2,7 +2,7 @@
 name = "spleeter"
 version = "2.4.2"
 description = "The Deezer source separation library with pretrained models based on tensorflow."
-authors = ["Manuel Moussallam <manuel.moussallam@deezer.com>","Deezer Research <spleeter@deezer.com>"]
+authors = ["Deezer Research <spleeter@deezer.com>"]
 license = "MIT License"
 readme = "README.md"
 repository = "https://github.com/deezer/spleeter"

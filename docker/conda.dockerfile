@@ -1,4 +1,4 @@
-ARG BASE=python:3.7
+ARG BASE=python:3.11
 FROM ${BASE}
 
 RUN apt-get update --fix-missing \

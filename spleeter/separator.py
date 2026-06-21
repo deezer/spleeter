@@ -163,9 +163,7 @@ class Separator(object):
             saver.restore(self._session, latest_checkpoint)
         return self._session
 
-    def _separate_tensorflow(
-        self, waveform: np.ndarray, audio_descriptor: AudioDescriptor
-    ) -> Dict:
+    def _separate_tensorflow(self, waveform: np.ndarray, audio_descriptor: AudioDescriptor) -> Dict:
         """
         Performs source separation over the given waveform with tensorflow
         backend.
@@ -190,9 +188,7 @@ class Separator(object):
         prediction.pop("audio_id")
         return prediction
 
-    def separate(
-        self, waveform: np.ndarray, audio_descriptor: Optional[str] = ""
-    ) -> Dict:
+    def separate(self, waveform: np.ndarray, audio_descriptor: Optional[str] = "") -> Dict:
         """
         Performs separation on a waveform.
 
@@ -330,17 +326,10 @@ class Separator(object):
             if not os.path.exists(directory):
                 os.makedirs(directory)
             if path in generated:
-                raise SpleeterError(
-                    (
-                        f"Separated source path conflict : {path},"
-                        "please check your filename format"
-                    )
-                )
+                raise SpleeterError((f"Separated source path conflict : {path},please check your filename format"))
             generated.append(path)
             if self._pool:
-                task = self._pool.apply_async(
-                    audio_adapter.save, (path, data, self._sample_rate, codec, bitrate)
-                )
+                task = self._pool.apply_async(audio_adapter.save, (path, data, self._sample_rate, codec, bitrate))
                 self._tasks.append(task)
             else:
                 audio_adapter.save(path, data, self._sample_rate, codec, bitrate)

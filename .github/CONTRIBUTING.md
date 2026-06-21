@@ -36,6 +36,7 @@ Following command should be ran successfully before to consider a PR for merging
 
 ```bash
 poetry run pytest tests/
-poetry run black spleeter
-poetry run isort spleeter
+qa-clean:
+poetry run ruff check --fix spleeter
+poetry run ruff format spleeter
 ```

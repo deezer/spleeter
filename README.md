@@ -28,7 +28,7 @@ Since it's been released, there are multiple forks exposing **Spleeter** through
 
 That being said, many cool projects have been built on top of ours. Notably the porting to the *Ableton Live* ecosystem through the [Spleeter 4 Max](https://github.com/diracdeltas/spleeter4max#spleeter-for-max) project.
 
-**Spleeter** pre-trained models have also been used by professionnal audio softwares. Here's a non-exhaustive list:
+**Spleeter** pre-trained models have also been used by professional audio softwares. Here's a non-exhaustive list:
 
 * [iZotope](https://www.izotope.com/en/shop/rx-8-standard.html) in its *Music Rebalance* feature within **RX 8**
 * [SpectralLayers](https://new.steinberg.net/spectralayers/) in its *Unmix* feature in **SpectralLayers 7**
@@ -119,7 +119,7 @@ If you plan to use **Spleeter** on copyrighted material, make sure you get prope
 
 ## Troubleshooting
 
-**Spleeter** is a complex piece of software and although we continously try to improve and test it you may encounter unexpected issues running it. If that's the case please check the [FAQ page](https://github.com/deezer/spleeter/wiki/5.-FAQ) first as well as the list of [currently open issues](https://github.com/deezer/spleeter/issues)
+**Spleeter** is a complex piece of software and although we continuously try to improve and test it you may encounter unexpected issues running it. If that's the case please check the [FAQ page](https://github.com/deezer/spleeter/wiki/5.-FAQ) first as well as the list of [currently open issues](https://github.com/deezer/spleeter/issues)
 
 ### Windows users
 
@@ -131,7 +131,7 @@ If you would like to participate in the development of **Spleeter** you are more
 
 ## Note
 
-This repository include a demo audio file `audio_example.mp3` which is an excerpt
+This repository includes a demo audio file `audio_example.mp3` which is an excerpt
 from Slow Motion Dream by Steven M Bryant (c) copyright 2011 Licensed under a Creative
 Commons Attribution (3.0) [license](http://dig.ccmixter.org/files/stevieb357/34740)
 Ft: CSoul,Alex Beroza & Robert Siekawitch

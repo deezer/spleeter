@@ -11,6 +11,7 @@ Notes:
     command function scope to avoid heavy import on CLI evaluation,
     leading to large bootstraping time.
 """
+
 import json
 from functools import partial
 from glob import glob
@@ -93,9 +94,7 @@ def train(
         ),
     )
     input_fn = partial(get_training_dataset, params, audio_adapter, data)
-    train_spec = tf.estimator.TrainSpec(
-        input_fn=input_fn, max_steps=params["train_max_steps"]
-    )
+    train_spec = tf.estimator.TrainSpec(input_fn=input_fn, max_steps=params["train_max_steps"])
     input_fn = partial(get_validation_dataset, params, audio_adapter, data)
     evaluation_spec = tf.estimator.EvalSpec(
         input_fn=input_fn, steps=None, throttle_secs=params["throttle_secs"]
@@ -181,10 +180,7 @@ def _compile_metrics(metrics_output_directory: str) -> Dict:
         names=["instrument", "metric"],
     )
     pd.DataFrame([], index=["config1", "config2"], columns=index)
-    metrics: Dict = {
-        instrument: {k: [] for k in EVALUATION_METRICS}
-        for instrument in EVALUATION_INSTRUMENTS
-    }
+    metrics: Dict = {instrument: {k: [] for k in EVALUATION_METRICS} for instrument in EVALUATION_INSTRUMENTS}
     for song in songs:
         with open(song, "r") as stream:
             data = json.load(stream)
@@ -192,11 +188,7 @@ def _compile_metrics(metrics_output_directory: str) -> Dict:
             instrument = target["name"]
             for metric in EVALUATION_METRICS:
                 sdr_med = np.median(
-                    [
-                        frame["metrics"][metric]
-                        for frame in target["frames"]
-                        if not np.isnan(frame["metrics"][metric])
-                    ]
+                    [frame["metrics"][metric] for frame in target["frames"] if not np.isnan(frame["metrics"][metric])]
                 )
                 metrics[instrument][metric].append(sdr_med)
     return metrics

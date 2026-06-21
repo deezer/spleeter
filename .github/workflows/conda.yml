@@ -5,7 +5,7 @@ jobs:
   build-linux:
     strategy:
       matrix:
-        python: [3.7, 3.8]
+        python: [3.9, 3.10, 3.11, 3.12]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,7 +31,7 @@ jobs:
   build-windows:
     strategy:
       matrix:
-        python: [3.7]
+        python: [3.0, 3.10, 3.11, 3.12]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2

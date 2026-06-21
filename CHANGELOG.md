@@ -1,5 +1,11 @@
 # Changelog History
 
+## 2.5.0
+
+* Fix CI/CD and add support for python 3.12, dropping 3.8 as it is EOL.
+* Update Tensorflow to 2.14.0
+* Use Ruff for linting and formatting instead of Flake8, Black and isort.
+
 ## 2.4.2
 
 Dependecy upgrades and adding support for python 3.11 (dropping 3.7)
@@ -8,6 +14,7 @@ Dependecy upgrades and adding support for python 3.11 (dropping 3.7)
 
 Release contrain on specific Tensorflow, numpy and Librosa versions
 Dropping explicit support of python 3.6 but adding 3.10
+
 ## 2.3.0
 
 Updating dependencies to enable TensorFlow 2.5 support (and Python 3.9 overall)

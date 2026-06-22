@@ -1,0 +1,65 @@
+https://drive.google.com/file/d/1PA7JhqpiCvGA-0ooZgYFC06XjX-Q2B7T/view?usp=sharing
+(main executable file link)
+
+
+
+This are the command line options:
+
+spleeter separate
+Usage: spleeter separate [OPTIONS] FILES...
+
+Separate audio file(s)
+
+Arguments:
+FILES... List of input audio file path [required]
+
+Options:
+-i, --inputs TEXT (DEPRECATED) placeholder for deprecated
+input option
+
+-a, --adapter TEXT Name of the audio adapter to use for audio
+I/O [default: spleeter.audio.ffmpeg.FFMPEGP
+rocessAudioAdapter]
+
+-b, --bitrate TEXT Audio bitrate to be used for the separated
+output [default: 128k]
+
+-c, --codec [wav|mp3|ogg|m4a|wma|flac]
+Audio codec to be used for the separated
+output [default: wav]
+
+-d, --duration FLOAT Set a maximum duration for processing audio
+(only separate offset + duration first
+seconds of the input file) [default: 600.0]
+
+-s, --offset FLOAT Set the starting offset to separate audio
+from [default: 0.0]
+
+-o, --output_path PATH Path of the output directory to write audio
+files in [default: C:\Users\D\AppData\Local
+\Temp\separated_audio]
+
+-B, --stft-backend [auto|tensorflow|librosa]
+Who should be in charge of computing the
+stfts. Librosa is faster than tensorflow on
+CPU and uses less memory. "auto" will use
+tensorflow when GPU acceleration is
+available and librosa when not [default:
+auto]
+
+
+-f, --filename_format TEXT Template string that will be formatted to
+generatedoutput filename. Such template
+should be Python formattablestring, and
+could use {filename}, {instrument}, and
+{codec}variables [default:
+{filename}/{instrument}.{codec}]
+
+-p, --params_filename TEXT JSON filename that contains params
+[default: spleeter:2stems]
+
+--mwf Whether to use multichannel Wiener filtering
+for separation [default: False]
+
+--verbose Enable verbose logs [default: False]
+--help Show this message and exit.

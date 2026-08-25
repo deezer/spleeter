@@ -14,7 +14,7 @@ jobs:
         distribution: [3.6, 3.7, 3.8]
       fail-fast: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - name: Build CUDA base image
         run: |
           docker build \
@@ -34,7 +34,7 @@ jobs:
         distribution: [3.6, 3.7, 3.8]
       fail-fast: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - if: ${{ matrix.platform == 'cpu' }}
         run: |
           echo "base=python:${{ matrix.distribution }}" >> $GITHUB_ENV
@@ -71,7 +71,7 @@ jobs:
         platform: [cpu, gpu]
       fail-fast: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - if: ${{ matrix.platform == 'cpu' }}
         name: Build Conda base image
         run: |
@@ -103,7 +103,7 @@ jobs:
         model: [2stems, 4stems, 5stems]
       fail-fast: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - if: ${{ matrix.platform == 'cpu' }}
         run: echo "image=spleeter" >> $GITHUB_ENV
       - if: ${{ matrix.platform == 'gpu' }}

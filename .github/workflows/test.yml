@@ -10,12 +10,12 @@ jobs:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11']
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v6
         env:
           model-release: 1
         id: spleeter-model-cache
@@ -33,7 +33,7 @@ jobs:
           poetry config virtualenvs.in-project false
           poetry config virtualenvs.path ~/.virtualenvs
       - name: Cache Poetry virtualenv
-        uses: actions/cache@v1
+        uses: actions/cache@v6
         id: cache
         with:
           path: ~/.virtualenvs

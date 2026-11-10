@@ -14,11 +14,11 @@ Examples:
 ```
 """
 
-import atexit
 import os
 from multiprocessing import Pool
 from os.path import basename, dirname, join, splitext
 from typing import Any, Dict, Generator, List, Optional
+from weakref import finalize
 
 # pyright: reportMissingImports=false
 # pylint: disable=import-error
@@ -70,6 +70,13 @@ def create_estimator(params: Dict, MWF: bool) -> tf.Tensor:
     return estimator
 
 
+def _close_pool(pool: Any, owner_pid: int) -> None:
+    """Let pending exports finish when the owning separator is collected."""
+    # A forked child may collect its copy of a separator owned by the parent.
+    if os.getpid() == owner_pid:
+        pool.close()
+
+
 class Separator(object):
     """A wrapper class for performing separation."""
 
@@ -101,7 +108,7 @@ class Separator(object):
         self._session = None
         if multiprocess:
             self._pool: Optional[Any] = Pool()
-            atexit.register(self._pool.close)
+            finalize(self, _close_pool, self._pool, os.getpid())
         else:
             self._pool = None
         self._tasks: List = []

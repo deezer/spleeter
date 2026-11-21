@@ -82,6 +82,8 @@ pip install poetry
 poetry install
 # Run unit test suite
 poetry run pytest tests/
+# Run the tool itself
+poetry run spleeter separate --help
 ```
 
 ## Reference

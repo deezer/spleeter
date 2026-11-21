@@ -134,8 +134,7 @@ class Separator(object):
         """
         while len(self._tasks) > 0:
             task = self._tasks.pop()
-            task.get()
-            task.wait(timeout=timeout)
+            task.get(timeout=timeout)
 
     def _get_input_provider(self):
         if self._input_provider is None:

@@ -1,8 +1,8 @@
-ARG BASE=python:3.6
+ARG BASE=python:3.12
 
 FROM ${BASE}
 
-ARG SPLEETER_VERSION=1.5.3
+ARG SPLEETER_VERSION=2.5.0
 ENV MODEL_PATH /model
 
 RUN mkdir -p /model

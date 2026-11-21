@@ -1,4 +1,4 @@
-ARG BASE=python:3.7
+ARG BASE=python:3.11
 FROM ${BASE}
 
 # FROM 9.2-base-ubuntu18.04
@@ -13,7 +13,7 @@ ENV CUDA_VERSION 9.2.148
 ENV CUDA_PKG_VERSION 9-2=$CUDA_VERSION-1
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        cuda-cudart-$CUDA_PKG_VERSION \
+    cuda-cudart-$CUDA_PKG_VERSION \
     && ln -s cuda-9.2 /usr/local/cuda \
     && rm -rf /var/lib/apt/lists/*
 LABEL com.nvidia.volumes.needed="nvidia_driver"
@@ -31,9 +31,9 @@ ENV NVIDIA_REQUIRE_CUDA "cuda>=9.2"
 ENV NCCL_VERSION 2.3.7
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        cuda-libraries-$CUDA_PKG_VERSION \
-        cuda-nvtx-$CUDA_PKG_VERSION \
-        libnccl2=$NCCL_VERSION-1+cuda9.2 \
+    cuda-libraries-$CUDA_PKG_VERSION \
+    cuda-nvtx-$CUDA_PKG_VERSION \
+    libnccl2=$NCCL_VERSION-1+cuda9.2 \
     && apt-mark hold libnccl2 \
     && rm -rf /var/lib/apt/lists/*
 

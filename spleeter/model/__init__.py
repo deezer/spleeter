@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf8
 
-""" This package provide an estimator builder as well as model functions. """
+"""This package provide an estimator builder as well as model functions."""
 
 import importlib
 from typing import Any, Dict, Optional, Tuple
@@ -177,9 +177,7 @@ class EstimatorSpecBuilder(object):
             apply_model = get_model_function(model_type)
         except ModuleNotFoundError:
             raise ValueError(f"No model function {model_type} found")
-        self._model_outputs = apply_model(
-            input_tensor, self._instruments, self._params["model"]["params"]
-        )
+        self._model_outputs = apply_model(input_tensor, self._instruments, self._params["model"]["params"])
 
     def _build_loss(self, labels: Dict) -> Tuple[tf.Tensor, Dict]:
         """
@@ -197,15 +195,11 @@ class EstimatorSpecBuilder(object):
         output_dict = self.model_outputs
         loss_type = self._params.get("loss_type", self.L1_MASK)
         if loss_type == self.L1_MASK:
-            losses = {
-                name: tf.reduce_mean(tf.abs(output - labels[name]))
-                for name, output in output_dict.items()
-            }
+            losses = {name: tf.reduce_mean(tf.abs(output - labels[name])) for name, output in output_dict.items()}
         elif loss_type == self.WEIGHTED_L1_MASK:
             losses = {
                 name: tf.reduce_mean(
-                    tf.reduce_mean(labels[name], axis=[1, 2, 3], keep_dims=True)
-                    * tf.abs(output - labels[name])
+                    tf.reduce_mean(labels[name], axis=[1, 2, 3], keep_dims=True) * tf.abs(output - labels[name])
                 )
                 for name, output in output_dict.items()
             }
@@ -268,18 +262,16 @@ class EstimatorSpecBuilder(object):
                     tf.transpose(waveform),
                     self._frame_length,
                     self._frame_step,
-                    window_fn=lambda frame_length, dtype: (
-                        hann_window(frame_length, periodic=True, dtype=dtype)
-                    ),
+                    window_fn=lambda frame_length, dtype: (hann_window(frame_length, periodic=True, dtype=dtype)),
                     pad_end=True,
                 ),
                 perm=[1, 2, 0],
             )
             self._features[f"{self._mix_name}_stft"] = stft_feature
         if spec_name not in self._features:
-            self._features[spec_name] = tf.abs(
-                pad_and_partition(self._features[stft_name], self._T)
-            )[:, :, : self._F, :]
+            self._features[spec_name] = tf.abs(pad_and_partition(self._features[stft_name], self._T))[
+                :, :, : self._F, :
+            ]
 
     @property
     def model_outputs(self):
@@ -317,9 +309,7 @@ class EstimatorSpecBuilder(object):
             self._build_masked_stfts()
         return self._masked_stfts
 
-    def _inverse_stft(
-        self, stft_t: tf.Tensor, time_crop: Optional[Any] = None
-    ) -> tf.Tensor:
+    def _inverse_stft(self, stft_t: tf.Tensor, time_crop: Optional[Any] = None) -> tf.Tensor:
         """
         Inverse and reshape the given STFT
 
@@ -338,9 +328,7 @@ class EstimatorSpecBuilder(object):
                 tf.transpose(stft_t, perm=[2, 0, 1]),
                 self._frame_length,
                 self._frame_step,
-                window_fn=lambda frame_length, dtype: (
-                    hann_window(frame_length, periodic=True, dtype=dtype)
-                ),
+                window_fn=lambda frame_length, dtype: (hann_window(frame_length, periodic=True, dtype=dtype)),
             )
             * self.WINDOW_COMPENSATION_FACTOR
         )
@@ -429,26 +417,17 @@ class EstimatorSpecBuilder(object):
         output_dict = self.model_outputs
         stft_feature = self.stft_feature
         separation_exponent = self._params["separation_exponent"]
-        output_sum = (
-            tf.reduce_sum(
-                [e ** separation_exponent for e in output_dict.values()], axis=0
-            )
-            + self.EPSILON
-        )
+        output_sum = tf.reduce_sum([e**separation_exponent for e in output_dict.values()], axis=0) + self.EPSILON
         out = {}
         for instrument in self._instruments:
             output = output_dict[f"{instrument}_spectrogram"]
             # Compute mask with the model.
-            instrument_mask = (
-                output ** separation_exponent + (self.EPSILON / len(output_dict))
-            ) / output_sum
+            instrument_mask = (output**separation_exponent + (self.EPSILON / len(output_dict))) / output_sum
             # Extend mask;
             instrument_mask = self._extend_mask(instrument_mask)
             # Stack back mask.
             old_shape = tf.shape(instrument_mask)
-            new_shape = tf.concat(
-                [[old_shape[0] * old_shape[1]], old_shape[2:]], axis=0
-            )
+            new_shape = tf.concat([[old_shape[0] * old_shape[1]], old_shape[2:]], axis=0)
             instrument_mask = tf.reshape(instrument_mask, new_shape)
             # Remove padded part (for mask having the same size as STFT);
 
@@ -521,9 +500,7 @@ class EstimatorSpecBuilder(object):
                 An estimator for performing prediction.
         """
 
-        return tf.estimator.EstimatorSpec(
-            tf.estimator.ModeKeys.PREDICT, predictions=self.outputs
-        )
+        return tf.estimator.EstimatorSpec(tf.estimator.ModeKeys.PREDICT, predictions=self.outputs)
 
     def build_evaluation_model(self, labels: Dict) -> tf.Tensor:
         """
@@ -563,9 +540,7 @@ class EstimatorSpecBuilder(object):
         """
         loss, metrics = self._build_loss(labels)
         optimizer = self._build_optimizer()
-        train_operation = optimizer.minimize(
-            loss=loss, global_step=tf.compat.v1.train.get_global_step()
-        )
+        train_operation = optimizer.minimize(loss=loss, global_step=tf.compat.v1.train.get_global_step())
         return tf.estimator.EstimatorSpec(
             mode=tf.estimator.ModeKeys.TRAIN,
             loss=loss,

@@ -113,6 +113,23 @@ def test_join_respects_timeout():
         pool.join()
 
 
+def test_join_waits_without_limit_by_default():
+    """Test that Separator.join() keeps waiting for slow tasks unless told otherwise."""
+
+    class RecordingTask:
+        def __init__(self):
+            self.timeouts = []
+
+        def get(self, timeout=None):
+            self.timeouts.append(timeout)
+
+    separator = Separator.__new__(Separator)
+    task = RecordingTask()
+    separator._tasks = [task]
+    separator.join()
+    assert task.timeouts == [None]
+
+
 def test_join_drains_tasks_and_propagates_errors():
     """Test that Separator.join drains completed tasks and surfaces task errors."""
     separator = Separator.__new__(Separator)

@@ -124,13 +124,19 @@ class Separator(object):
 
         return self.estimator.predict(get_dataset, yield_single_examples=False)
 
-    def join(self, timeout: int = 200) -> None:
+    def join(self, timeout: Optional[float] = None) -> None:
         """
         Wait for all pending tasks to be finished.
 
         Parameters:
-            timeout (int):
-                (Optional) Task waiting timeout.
+            timeout (Optional[float]):
+                (Optional) Maximum seconds to wait for each task. `None`
+                (default) waits until every task is done, so long batches
+                started by the CLI are not cut off.
+
+        Raises:
+            multiprocessing.TimeoutError:
+                If a task is still running after `timeout` seconds.
         """
         while len(self._tasks) > 0:
             task = self._tasks.pop()

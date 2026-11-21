@@ -8,6 +8,9 @@ __author__ = "Deezer Research"
 __license__ = "MIT License"
 
 import itertools
+import threading
+from multiprocessing import TimeoutError as MPTimeoutError
+from multiprocessing.pool import ThreadPool
 from os.path import basename, exists, join, splitext
 from tempfile import TemporaryDirectory
 
@@ -93,3 +96,55 @@ def test_filename_conflict(test_file, configuration):
             separator.separate_to_file(
                 test_file, directory, filename_format="I wanna be your lover"
             )
+
+
+def test_join_respects_timeout():
+    """Test that Separator.join forwards timeout to AsyncResult.get."""
+    separator = Separator.__new__(Separator)
+    release = threading.Event()
+    pool = ThreadPool(1)
+    try:
+        separator._tasks = [pool.apply_async(release.wait, (5.0,))]
+        with pytest.raises(MPTimeoutError):
+            separator.join(timeout=0.05)
+    finally:
+        release.set()
+        pool.close()
+        pool.join()
+
+
+def test_join_waits_without_limit_by_default():
+    """Test that Separator.join() keeps waiting for slow tasks unless told otherwise."""
+
+    class RecordingTask:
+        def __init__(self):
+            self.timeouts = []
+
+        def get(self, timeout=None):
+            self.timeouts.append(timeout)
+
+    separator = Separator.__new__(Separator)
+    task = RecordingTask()
+    separator._tasks = [task]
+    separator.join()
+    assert task.timeouts == [None]
+
+
+def test_join_drains_tasks_and_propagates_errors():
+    """Test that Separator.join drains completed tasks and surfaces task errors."""
+    separator = Separator.__new__(Separator)
+    pool = ThreadPool(1)
+    try:
+        separator._tasks = [pool.apply_async(lambda: 42)]
+        separator.join(timeout=5)
+        assert separator._tasks == []
+
+        def fail():
+            raise RuntimeError("worker failure")
+
+        separator._tasks = [pool.apply_async(fail)]
+        with pytest.raises(RuntimeError, match="worker failure"):
+            separator.join(timeout=5)
+    finally:
+        pool.close()
+        pool.join()

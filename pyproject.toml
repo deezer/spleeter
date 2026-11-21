@@ -47,7 +47,7 @@ include = ["LICENSE", "spleeter/resources/*.json"]
 [tool.poetry.dependencies]
 python = ">=3.8,<3.12"
 ffmpeg-python = "^0.2.0"
-httpx = {extras = ["http2"], version = "^0.19.0"}
+httpx = {extras = ["http2"], version = "^0.23.1"}
 typer = "^0.3.2"
 musdb = {version = "^0.4.0", optional = true}
 museval = {version = "^0.4.0", optional = true}
